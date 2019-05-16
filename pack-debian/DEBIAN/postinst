@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Removing the default invisible cursor"
+sed -i.bak s/'awful.util.spawn_with_shell("xsetroot -cursor'/'-- awful.util.spawn_with_shell("xsetroot -cursor'/g /home/chip/.config/awesome/rc.lua
+echo "Please REBOOT to make the changes effective"

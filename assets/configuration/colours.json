@@ -1,0 +1,77 @@
+{
+    "Window background"                       : "0xffe9e9e9",
+    "Widget background"                       : "0xffb8b8b8",
+    "Widget"                                  : "0xffbc3662",
+    "Widget(off)"                             : "0xff393939",
+    "Menu background"                         : "0xffe9e9e9",
+    "Outline"                                 : "0xffb8b8b8",
+    "Focused outline"                         : "0xffb88e47",
+    "Text"                                    : "0xffbc3662",
+    "Highlighted text"                        : "0xffeb008b",
+    "Text field"                              : "0xffe9e9e9",
+    "Highlighted text field"                  : "0xff393939",
+    "none"                                    : "",
+
+
+    "Text button(off) background"             : "",
+    "Text button background"                  : "0xffb8b8b8",
+
+    "Label background"                        : "0x00ffffff",
+    "Label text"                              : "",
+    "Label outline"                           : "0x00ffffff",
+
+    "Combo box text"                          : "",
+    "Combo box background"                    : "",
+    "Combo box outline"                       : "0xffb88e47",
+    "Combo box arrow"                         : "",
+    "Combo box focused outline"               : "",
+
+    "Slider background"                       : "",
+    "Slider thumb"                            : "",
+    "Slider track"                            : "0xff393939",
+
+    "Alert window background"                 : "",
+    "Alert window text"                       : "",
+    "Alert window outline"                    : "0xffb88e47",
+
+    "Image0"                                  : "0xffffffff",
+    "Image1"                                  : "0xff000000",
+    "Image2"                                  : "0xffff0000",
+    "Image3"                                  : "0xff00ff00",
+    "Image4"                                  : "0xff0000ff",
+
+    "List editor background"                  : "",
+    "List editor item"                        : "",
+    "List editor selected item"               : "",
+    "List editor text"                        : "",
+
+    "AppMenu button text"                     : "",
+    "AppMenu button selected text"            : "",
+    "AppMenu button text background"          : "0xa5ffffff",
+    "AppMenu button selected text background" : "0xa5ffffff",
+    "AppMenu button background"               : "0x00000000",
+    "AppMenu button selected background"      : "0xe6bc3662",
+    "AppMenu button border"                   : "0x9bb88e47",
+    "AppMenu button selected border"          : "0xffb88e47",
+
+    "File selection window"                   : "",
+    "File selection text"                     : "",
+
+    "Overlay spinner background"              : "0xeec9c9c9",
+    "Overlay spinner text"                    : "",
+
+    "Page background"                         : "0xffffffff",
+
+    "Colour picker checkerboard(light)"       : "0xffaaaaaa",
+    "Colour picker checkerboard(dark)"        : "0xffe0e0e0",
+    "Colour picker colour outline"            : "",
+    "Colour picker focused colour outline"    : "",
+
+    "Switch background"                       : "",
+    "Switch handle"                           : "0xffbc3662",
+    "Switch handle(off)"                      : "0xff393939",
+
+    "HomePage widget text"                    : "0xffffffff",
+
+    "Power page background"                   : ""
+}

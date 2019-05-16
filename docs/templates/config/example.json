@@ -1,0 +1,12 @@
+{
+    "example integer": 10,
+    "example string" : "This is a config file implementation example.",
+    "example bool"   : true,
+    "example double" : 0.01,
+    "example array"  : [1, 2, 3],
+    "example object" : 
+    {
+        "example object num"  : 5,
+        "example object bool" : false
+    }
+}

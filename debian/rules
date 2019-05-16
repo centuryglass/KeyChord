@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+
+%:
+	dh $@ --parallel
+
+# Everything install by install file
+override_dh_auto_install:
+	true
+
+override_dh_install:
+	dh_install --exclude=Lato-Regular.ttf

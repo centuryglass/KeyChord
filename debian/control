@@ -1,0 +1,13 @@
+Source: your-package-name
+Section: x11
+Priority: optional
+Maintainer: Anthony Brown <anthony0857@gmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.8
+Homepage: https://github.com/centuryglass
+
+Package: your-package-name
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: JUCE Project Template
+ Replace with your project's description.

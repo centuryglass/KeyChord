@@ -1,0 +1,24 @@
+{
+    "PROJECT_SCRIPTS" : "/usr/share/JUCE-Template/scripts",
+
+    "shutdown"            : "systemctl poweroff",
+    "restart"             : "systemctl reboot",
+    "sleep"               : "xset dpms force off",
+    "wake"                : "xset dpms force on",
+    "calibrate"           : "PROJECT_SCRIPTS/calibrate.sh",
+    "set volume"          : "amixer sset 'Power Amplifier'",
+    "set brightness"      : "PROJECT_SCRIPTS/setBrightness.sh",
+
+    "sleep check"         : "PROJECT_SCRIPTS/sleepCheck.sh",
+    "command check"       : "command -v",
+
+    "get volume"          : "PROJECT_SCRIPTS/printVolume.sh",
+    "get brightness"      : "cat /sys/class/backlight/backlight/brightness",
+
+    "get local IP"        : "PROJECT_SCRIPTS/printLocalIP.sh",
+    "get public IP"       : "PROJECT_SCRIPTS/printPublicIP.sh",
+
+    "find battery"        : "PROJECT_SCRIPTS/batteryCheck.sh",
+    "get battery percent" : "PROJECT_SCRIPTS/batteryPercent.sh",
+    "is battery charging" : "PROJECT_SCRIPTS/batteryCharging.sh"
+}

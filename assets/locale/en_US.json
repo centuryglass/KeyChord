@@ -1,0 +1,34 @@
+{
+    "Locale::Time":
+    {
+        "never"          : "never",
+        "now"            : "now",
+        "momentsAgo"     : "moments ago",
+        "secondsPrefix"  : "",
+        "minutesPrefix"  : "",
+        "hoursPrefix"    : "",
+        "daysPrefix"     : "",
+        "weeksPrefix"    : "",
+        "yearsPrefix"    : "",
+        "secondsPostfix" : " seconds ago",
+        "minutesPostfix" : " minutes ago",
+        "hoursPostfix"   : " hours ago",
+        "daysPostfix"    : " days ago",
+        "weeksPostfix"   : " weeks ago",
+        "yearsPostfix"   : " years ago"
+    },
+    "Process::Launcher":
+    {
+        "couldNotOpen"    : "Couldn't open application",
+        "notValidCommand" : " is not a valid command."
+    },
+    "Widgets::ColourPicker" :
+    {
+        "setColour" : "Set Color"
+    },
+    "Widgets::FilePathEditor":
+    {
+        "defaultTitle"       : "Select an image file",
+        "defaultDescription" : "Please select an image file"
+    }
+}

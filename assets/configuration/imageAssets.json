@@ -1,0 +1,69 @@
+{
+    "home page background"    : "wallpaper/chipDark.png",
+    "popup menu" :
+    {
+        "colours" :
+        [
+            "0xffb88e47",
+            "0xffe9e9e9"
+        ],
+        "image files" :
+        [
+            "component assets/PopupEditor/popupFrame.svg"
+        ]
+    },
+    "navigation buttons" :
+    {
+        "colours" :
+        [
+            "0xffeb008b"
+        ],
+        "image files" :
+        [
+            "component assets/NavButton/upIcon.svg",
+            "component assets/NavButton/downIcon.svg",
+            "component assets/NavButton/leftIcon.svg",
+            "component assets/NavButton/rightIcon.svg"
+        ]
+    },
+    "loading spinner" :
+    {
+        "colours" :
+        [
+            "0xffeb008b"
+        ],
+        "image files" : 
+        [
+            "component assets/Spinner/spinner0.svg",
+            "component assets/Spinner/spinner1.svg",
+            "component assets/Spinner/spinner2.svg",
+            "component assets/Spinner/spinner3.svg",
+            "component assets/Spinner/spinner4.svg",
+            "component assets/Spinner/spinner5.svg",
+            "component assets/Spinner/spinner6.svg",
+            "component assets/Spinner/spinner7.svg"
+        ]
+    },
+    "cancel button" : 
+    {
+        "colours" :
+        [
+            "0xffbc3662"
+        ],
+        "image files" :
+        [
+            "component assets/PopupEditor/cancel.svg"
+        ]
+    },
+    "confirm button" : 
+    {
+        "colours" :
+        [
+            "0xffbc3662"
+        ],
+        "image files" :
+        [
+            "component assets/PopupEditor/confirm.svg"
+        ]
+    }
+}

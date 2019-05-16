@@ -1,0 +1,11 @@
+Source: your-project-name
+Version: 0.0.1
+Section: x11
+Priority: optional
+Maintainer: [Your Name] <[your email]>
+Homepage: https://github.com/centuryglass
+Package: your-project-name
+Architecture: your-arch
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Brief project description.
+ Replace this with a sentence describing your project.

@@ -1,0 +1,4 @@
+build/Release/your-app-name /usr/bin
+debian/desktop/* /usr/share/applications
+assets/* /usr/share/your-app-name
+debian/icon/* /usr/share/icons/hicolor

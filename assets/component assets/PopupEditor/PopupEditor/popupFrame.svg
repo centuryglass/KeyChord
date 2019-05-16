@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100mm"
+   height="99.999992mm"
+   viewBox="0 0 100 99.999992"
+   version="1.1"
+   id="svg18"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   sodipodi:docname="popupFrame.svg">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.78"
+     inkscape:cx="121.66961"
+     inkscape:cy="199.75441"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1918"
+     inkscape:window-height="1028"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:lockguides="false" />
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-30.312169,-42.410494)">
+    <g
+       id="g27" />
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke-width:0.83233058"
+       d="M 18.898438,0 0,18.898438 V 359.05469 l 18.898438,18.89843 H 359.05469 l 18.89843,-18.89843 V 18.898438 L 359.05469,0 Z"
+       id="rect7-7-5"
+       transform="matrix(0.26458333,0,0,0.26458333,30.312169,42.410494)"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke-width:0.21581617"
+       d="m 36.212372,43.41049 -4.900203,4.900203 v 88.199597 l 4.900203,4.9002 h 88.199598 l 4.9002,-4.9002 V 48.310693 l -4.9002,-4.900203 z"
+       id="rect7-7-5-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc" />
+  </g>
+</svg>
