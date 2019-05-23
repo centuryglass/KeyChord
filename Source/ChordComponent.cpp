@@ -1,198 +1,187 @@
 #include "ChordComponent.h"
+#include "CharPainter.h"
 #include <map>
+#include <vector>
+
+// Characters drawn to represent the five chord buttons:
+static const char chordChars [] = { 'A', 'S', 'D', 'F', 'G' };
+static const constexpr int numChordKeys = 5;
 
 
-static const juce::Colour colourMap [] =
+//  Requests keyboard focus on construction.
+ChordComponent::ChordComponent()
 {
-    juce::Colour(0xffff0000),
-    juce::Colour(0xff00ff00),
-    juce::Colour(0xff0000ff),
-    juce::Colour(0xffff00ff),
-    juce::Colour(0xffff5500)
-};
-
-static const char chordChars [] =
-{
-    'A',
-    'S',
-    'D',
-    'F',
-    'G'
-};
-
-// Initializes the component and starts listening for key events.
-ChordComponent::ChordComponent() :
-    chordTracker(this)
-{
-    chordTracker.addListener(this);
     setWantsKeyboardFocus(true);
 }
 
 
-// Draws all pressed keys and the demo keyboard.
+// Sets the current state of the chorded keyboard, immediately redrawing the
+// component if the state changes.
+void ChordComponent::updateChordState(const Alphabet* activeAlphabet, 
+        const juce::uint8 heldKeys, const juce::String input)
+{
+    bool shouldRepaint = false;
+    if (activeAlphabet != currentAlphabet)
+    {
+        currentAlphabet = activeAlphabet;
+        shouldRepaint = true;
+    }
+    if (heldKeys != lastHeldKeys)
+    {
+        lastHeldKeys = heldKeys;
+        shouldRepaint = true;
+    }
+    if (input != bufferedInput)
+    {
+        bufferedInput = input;
+        shouldRepaint = true;
+    }
+
+    if (shouldRepaint)
+    {
+        repaint();
+    }
+}
+
+// Draws all chord mappings within the current alphabet, which chord keys are
+// currently held down, and the buffered input string waiting to be sent to the
+// target window.
 void ChordComponent::paint(juce::Graphics& g)
 {
+    if (currentAlphabet == nullptr)
+    {
+        return;
+    }
+
     using juce::uint8;
     using juce::Colour;
     using juce::Colours;
     using juce::Rectangle;
-    // Get chord and character data:
-    const Alphabet& alphabet = chordTracker.getAlphabet();
-    const uint8 charCount = alphabet.getSize();
-    const uint8 heldChord = chordTracker.getHeldKeys();
-    const uint8 selection = chordTracker.getSelectedKey();
+
+    // Save the character set size:
+    const uint8 charCount = currentAlphabet->getSize();
 
     // Calculate layout values:
-    const int charWidth = getWidth() / (charCount + 1);
-    const int rowHeight = getHeight() / 9;
-    const int padding = std::max<int>(2, charWidth / 30);
-    const int paddedCharWidth = charWidth - padding * 2;
-    const int paddedRowHeight = rowHeight - padding * 2;
-    const int line = std::max<int>(1, padding / 4);
-    const float cornerSize = std::max<int>(line, paddedCharWidth / 30);;
-    int xPos = getX();
+    const int paddedRowHeight = getHeight() / 8;
+    const int paddedCharWidth = getWidth() / (charCount + 1);
+    const int yPadding = paddedRowHeight * 0.1;
+    const int xPadding = paddedCharWidth * 0.1;
+    const int rowHeight = paddedRowHeight - yPadding;
+    const int charWidth = paddedCharWidth - xPadding;
     int yPos = getY();
+    int xPos = getX();
     g.setFont(juce::Font(rowHeight * 0.9));
 
-    // Draw chord key guides:
-    for(int keyIdx = 0; keyIdx < chordTracker.getNumChordKeys(); keyIdx++)
+
+    // A convenience function to more easily request charadcter drawing 
+    // operations:
+    const auto drawChar = 
+        [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
+        (const char toDraw)
     {
-        yPos += rowHeight;
-        const uint8 keyMask = 1 << keyIdx;
-        g.setColour(colourMap[keyIdx]);
-        Rectangle<float> keyBox(xPos + padding, yPos + padding, paddedCharWidth,
-                paddedRowHeight);
-        if ((keyMask & heldChord) == keyMask)
-        {
-            g.fillRoundedRectangle(keyBox, cornerSize);
-            g.setColour(colourMap[keyIdx].contrasting());
-        }
-        else
-        {
-            g.drawRoundedRectangle(keyBox, cornerSize, line);
-        }
-        g.drawText(juce::String::charToString(chordChars[keyIdx]), keyBox,
-                juce::Justification::centred);
-    }
-    
-    // Draw alternate alphabet guides:
-    xPos += charWidth;
-    yPos += rowHeight;
-    Rectangle<float> keyBounds(xPos + padding, yPos + padding, paddedCharWidth,
-            paddedRowHeight);
-    Rectangle<float> textBounds(keyBounds.getRight() + padding, yPos + padding, 
-            (getWidth() - charWidth * 6) / 4, paddedRowHeight);
-    static const std::map<juce::String, juce::String> modMap =
-    {
-        { "H", ": upper case" },
-        { "J", ": numeric" },
-        { "K", ": symbols" }
+        CharPainter::paintAt(g, toDraw, xPos + xPadding, yPos + yPadding,
+                charWidth, rowHeight);
     };
-    for (const auto& keyPair : modMap)
+
+    // Draw chord key guides:
+    for(int keyIdx = 0; keyIdx < numChordKeys; keyIdx++)
     {
-        g.setColour(Colours::black);
-        using juce::KeyPress;
-        KeyPress modKey = KeyPress::createFromDescription(keyPair.first);
-        if (modKey.isCurrentlyDown())
+        yPos += paddedRowHeight;
+        const uint8 keyMask = 1 << keyIdx;
+        juce::Colour chordColour = findColour(chord1Selected + keyIdx, true);
+        g.setColour(chordColour);
+        if ((keyMask & lastHeldKeys) == keyMask)
         {
-            g.fillRoundedRectangle(keyBounds, cornerSize);
-            g.setColour(Colours::white);
+            drawChar(CharPainter::fillChar);
+            g.setColour(chordColour.contrasting());
         }
         else
         {
-            g.drawRoundedRectangle(keyBounds, cornerSize, line);
+            drawChar(CharPainter::outlineChar);
         }
-        g.drawText(keyPair.first, keyBounds, juce::Justification::centred);
-        g.setColour(Colours::black);
-        g.drawFittedText(keyPair.second, textBounds.toNearestInt(),
-                juce::Justification::left, 1);
-        keyBounds.setX(textBounds.getRight() + padding);
-        textBounds.setX(keyBounds.getRight() + padding);
+
+        drawChar(chordChars[keyIdx]);
     }
-    keyBounds.setWidth(keyBounds.getWidth() * 2);
-    g.drawText("<-", keyBounds, juce::Justification::centred);
-    g.drawRoundedRectangle(keyBounds, cornerSize, line);
-    textBounds.setLeft(keyBounds.getRight() + padding);
-    g.drawFittedText(": backspace", textBounds.toNearestInt(),
-            juce::Justification::left, 1);
 
     // Label and draw chords for each possible character:
-    yPos = getY();
+    xPos = getX();
     for (int i = 0; i < charCount; i++)
     {
-        const char indexChar = alphabet.getIndex(i);
-        const uint8 indexChord = alphabet.getChord(indexChar);
-        const bool selected = (indexChord == selection);
-        const bool partialChord = ((indexChord | heldChord) == indexChord);
-        const Rectangle<float> charBox(xPos + padding, yPos + padding,
-                paddedCharWidth, paddedRowHeight);
+        xPos += paddedCharWidth;
+        yPos = getY();
+        // Current alphabet character:
+        const char indexChar = currentAlphabet->getCharAtIndex(i);
+        // Binary mask for the chord used to type the character:
+        const uint8 characterChord = currentAlphabet->getChord(indexChar);
+        // Whether this character is currently selected:
+        const bool charSelected = (characterChord == lastHeldKeys);
+        // Whether no chord keys are held that aren't in this character's chord:
+        const bool charOpen
+                = ((characterChord | lastHeldKeys) == characterChord);
 
-        g.setColour(partialChord ? Colours::black : Colours::dimgrey);
-        if (selected)
+        g.setColour(findColour(charOpen ? text : inactiveText, true));
+        if (charSelected)
         {
-            g.drawRoundedRectangle(charBox, cornerSize, line);
+            drawChar(CharPainter::outlineChar);
         }
-        g.drawText(juce::String::charToString(indexChar), charBox,
-                juce::Justification::centred);
-        xPos += charWidth;
-        for(int keyIdx = 0; keyIdx < chordTracker.getNumChordKeys(); keyIdx++)
+        drawChar(indexChar);
+
+        // Draw each chord key under the character:
+        for(int keyIdx = 0; keyIdx < numChordKeys; keyIdx++)
         {
+            yPos += paddedRowHeight;
             const uint8 keyMask = 1 << keyIdx;
-            bool isCharKey = ((keyMask & indexChord) == keyMask);
-            if (partialChord)
+            // Check if this chord key is currently held down:
+            const bool keyIsHeld = ((keyMask & lastHeldKeys) == keyMask);
+            // Check if this chord key is used for this character:
+            const bool charUsesKey = ((keyMask & characterChord) == keyMask);
+
+            // Select the color used to draw the character:
+            int colourID;
+            // If key is used for this character, check if selected, active,
+            // open, or blocked:
+            if (charSelected)
             {
-                g.setColour(colourMap[keyIdx].darker(selected ? 0.0 : 0.8));
+                colourID = chord1Selected;
+            }
+            else if (! charOpen)
+            {
+                colourID = chord1Blocked;
+            }
+            else if (keyIsHeld)
+            {
+                colourID = chord1Active;
             }
             else
             {
-                g.setColour(Colours::dimgrey);
+                colourID = chord1Open;
             }
-            juce::Rectangle<float> keyBox = charBox.withY(yPos 
-                    + (1 + keyIdx) * rowHeight);
-            if (isCharKey)
+            if (charUsesKey)
             {
-                g.fillRoundedRectangle(keyBox, cornerSize);
+                colourID += keyIdx;
             }
             else
             {
-                g.drawRoundedRectangle(keyBox, cornerSize, line);
+                colourID += (emptySelected - chord1Selected);
+            }
+            g.setColour(findColour(colourID, true));
+            if (charUsesKey)
+            {
+                drawChar(CharPainter::fillChar);
+            }
+            else
+            {
+                drawChar(CharPainter::outlineChar);
             }
         }
     }
-    g.setColour(Colours::black);
-    yPos = rowHeight * 7;
+
+    // Draw all buffered input text:
+    g.setColour(findColour(text, true));
+    yPos = paddedRowHeight * 6 + yPadding;
     g.fillRect(0, yPos, getWidth(), 1);
     const Rectangle<int> inputBounds 
-            = getLocalBounds().withY(yPos).reduced(padding, padding);
-    g.drawFittedText(input, inputBounds, juce::Justification::topLeft, 5);
+            = getLocalBounds().withY(yPos).reduced(xPadding, yPadding);
+    g.drawFittedText(bufferedInput, inputBounds, juce::Justification::topLeft,
+            5);
 }
-
-
-// Notifies the Listener that the set of keys held down has changed.
-void ChordComponent::heldKeysChanged(const juce::uint8 heldKeys)
-{
-    repaint();
-}
-
-// Notifies the Listener that a character was selected.
-void ChordComponent::chordEntered(const juce::uint8 selected)
-{
-    input += juce::String::charToString(chordTracker.getAlphabet()
-            .getCharacter(selected));
-    DBG("Input=" << input);
-    repaint();
-}
-
-// Notifies the listener that the active alphabet has changed.
-void ChordComponent::alphabetChanged(const Alphabet& alphabet)
-{
-    repaint();
-}
-
-// Notifies the listener that the backspace or delete key was pressed.
-void ChordComponent::deleteWasPressed()
-{
-    input = input.substring(0, input.length() - 1);
-    repaint();
-}
-

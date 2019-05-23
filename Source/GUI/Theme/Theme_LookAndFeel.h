@@ -29,6 +29,19 @@ public:
     virtual ~LookAndFeel() { }
 
     /**
+     * @brief  Does nothing, to ensure the title bar isn't drawn.
+     */
+    void drawDocumentWindowTitleBar(
+            juce::DocumentWindow& window,
+            juce::Graphics& g,
+            int w,
+            int h,
+            int titleSpaceX,
+            int titleSpaceW,
+            const juce::Image* icon,
+            bool drawTitleTextOnLeft) override;
+
+    /**
      * @brief  Get the appropriate typeface for the given Font.
      *
      * @return  seguibl, no other typeface is used.

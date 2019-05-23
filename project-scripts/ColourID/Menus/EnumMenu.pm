@@ -127,6 +127,7 @@ sub loadEnums
                             $namespace = $overrideName;
                         }
                         my $addedElement = new Element($namespace, $name, $id);
+                        $cache->addElement($addedElement);
                     }
                 }
                 else

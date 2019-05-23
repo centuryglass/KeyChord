@@ -40,10 +40,16 @@ static juce::StringArray testCategories;
 // Performs all required initialization when the application is first launched.
 void HomeApplication::initialise(const juce::String &commandLine)
 {
+    // Save the window that will receive input:
+    Windows::XInterface xWindows;
+    Window targetWindow = xWindows.getActiveWindow();
+
+    // Extract and process arguments:
     using juce::StringArray;
     StringArray args;
     args.addTokens(commandLine, true);
 
+    // If help text is requested, print it and immediately quit:
     if (args.contains("--help"))
     {
         using std::cerr;
@@ -58,9 +64,7 @@ void HomeApplication::initialise(const juce::String &commandLine)
         return;
     }
 
-    lookAndFeel.reset(new Theme::LookAndFeel);
-    juce::LookAndFeel::setDefaultLookAndFeel(lookAndFeel.get());
-
+    // Skip normal init and run tests if they're enabled and requested:
     #ifdef INCLUDE_TESTING
     runTests = args.contains("--test");
     if (runTests)
@@ -83,15 +87,27 @@ void HomeApplication::initialise(const juce::String &commandLine)
         homeWindow->setResizable(true, false);
         homeWindow->setVisible(true);
         homeWindow->addToDesktop();
+        return;
     }
-    else
-    {
-        homeWindow.reset(new HomeWindow(getApplicationName()));
-    }
-    #else
-    homeWindow.reset(new HomeWindow(getApplicationName()));
     #endif
 
+    // Create the UI appearance management object and initialize the window
+    // normally:
+    lookAndFeel.reset(new Theme::LookAndFeel);
+    juce::LookAndFeel::setDefaultLookAndFeel(lookAndFeel.get());
+    homeWindow.reset(new HomeWindow(getApplicationName()));
+    homeWindow->setLookAndFeel(lookAndFeel.get());
+
+    // Initialize and apply the chord component and input handler:
+    chordComponent.reset(new ChordComponent);
+    homeWindow->setContentNonOwned(chordComponent.get(), false);
+    homeWindow->setVisible(true);
+    homeWindow->addToDesktop();
+    chordComponent->setBounds(homeWindow->getLocalBounds());
+    inputHandler.reset(new InputHandler(chordComponent.get(),
+                targetWindow, xWindows.getMainAppWindow()));
+
+    // Ensure the application window is active and has keyboard focus:
     focusChecker.setCheckInterval(focusWaitMs, focusWaitMultiplier);
     const auto onFocus = [this]()
     {
@@ -145,10 +161,14 @@ void HomeApplication::shutdown()
     Util::ShutdownBroadcaster::broadcastShutdown();
     homeWindow.reset(nullptr);
     juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
+    inputHandler.reset(nullptr);
+    chordComponent.reset(nullptr);
     lookAndFeel.reset(nullptr);
     #ifdef INCLUDE_TESTING
     Debug::ScopeTimerRecords::printRecords();
     #endif
+    DBG(dbgPrefix << __func__ << ": Ending process.");
+
 }
 
 

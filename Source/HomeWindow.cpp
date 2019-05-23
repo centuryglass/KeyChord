@@ -1,5 +1,4 @@
 #include "HomeWindow.h"
-#include "Hardware_Display.h"
 
 #ifdef JUCE_DEBUG
 // Print the full class name before all debug output:
@@ -14,18 +13,22 @@ HomeWindow::HomeWindow(juce::String windowName) :
 Windows::MainWindow(windowName, juce::Colours::darkgrey,
         juce::DocumentWindow::allButtons)
 {
-    juce::Rectangle<int> screenSize = Hardware::Display::getSize();
+    juce::Rectangle<int> screenSize = juce::Desktop::getInstance()
+            .getDisplays().getMainDisplay().userArea;
     setBounds(0, screenSize.getHeight() / 2, screenSize.getWidth(),
             screenSize.getHeight() / 2);
+    /*
+    setBounds(screenSize.getWidth() / 2 -160,
+            screenSize.getHeight() / 2, 320, 120);
+    */
     setUsingNativeTitleBar(true);
-    setResizable(true, false);
+    setResizable(false, false);
     setLookAndFeel(&juce::LookAndFeel::getDefaultLookAndFeel());
     setVisible(true);
     setWantsKeyboardFocus(false);
-
-    setContentNonOwned(&pageStack, true);
-    pageStack.setRootPage((Page::Interface::Component*)
-            pageFactory.createHomePage());
+    setColour(juce::DocumentWindow::backgroundColourId,
+            juce::LookAndFeel::getDefaultLookAndFeel()
+            .findColour(backgroundColourId));
 }
 
 
@@ -49,6 +52,19 @@ void HomeWindow::closeButtonPressed()
 void HomeWindow::resized()
 {
     const juce::Rectangle<int> bounds = getLocalBounds();
-    pageStack.setBounds(bounds);
+    for (juce::Component* contentComponent : getChildren())
+    {
+        if (contentComponent != nullptr)
+        {
+            contentComponent->setBounds(bounds);
+        }
+    }
 }
 
+/*
+void HomeWindow::paint(juce::Graphics& g)
+{
+    g.setColour(juce::Colour(0xffffffff));
+    g.fillRect(getLocalBounds());
+}
+*/

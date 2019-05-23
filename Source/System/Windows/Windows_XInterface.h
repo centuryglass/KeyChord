@@ -42,13 +42,21 @@ public:
     virtual ~XInterface();
 
     /**
-     * @brief  Gets the XLib window object that represents this application's
-     *         main window.
+     * @brief  Gets the XLib window ID that represents this application's main
+     *         window.
      *
      * @return  The XLib Window identifier representing this application's main
      *          window.
      */
     Window getMainAppWindow() const;
+
+    /**
+     * @brief  Gets the XLib window ID that represents the active window.
+     *
+     * @return  An XLib Window identifier representing whatever window is
+     *          currently focused, or BadWindow if no window is focused.
+     */
+    Window getActiveWindow() const;
 
     /**
      * @brief  Gets the title of a window.

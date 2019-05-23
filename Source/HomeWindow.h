@@ -6,8 +6,6 @@
  */
 
 #include "Windows_MainWindow.h"
-#include "Page_Factory.h"
-#include "Page_StackComponent.h"
 
 /**
  * @brief  The sole application window object and the root component in the
@@ -44,10 +42,7 @@ private:
      */
     virtual void resized() override;
 
-    // Creates all pages on the page stack:
-    Page::Factory pageFactory;
-    // Holds all page components besides the login page:
-    Page::StackComponent pageStack;
+    //void paint(juce::Graphics& g) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HomeWindow)
 };

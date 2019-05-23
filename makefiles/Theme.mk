@@ -13,20 +13,10 @@ OBJECTS_THEME_COLOUR := \
   $(THEME_COLOUR_OBJ)JSONKeys.o \
   $(THEME_COLOUR_OBJ)JSONResource.o \
   $(THEME_COLOUR_OBJ)ConfigFile.o \
-  $(THEME_COLOUR_OBJ)ConfigListener.o \
-  $(THEME_COLOUR_OBJ)ConfigPage.o
-
-THEME_IMAGE_PREFIX := $(THEME_PREFIX)Image_
-THEME_IMAGE_OBJ    := $(THEME_OBJ)Image_
-OBJECTS_THEME_IMAGE := \
-  $(THEME_IMAGE_OBJ)AssetList.o \
-  $(THEME_IMAGE_OBJ)JSONResource.o \
-  $(THEME_IMAGE_OBJ)ConfigFile.o \
-  $(THEME_IMAGE_OBJ)ConfigListener.o
+  $(THEME_COLOUR_OBJ)ConfigListener.o
 
 OBJECTS_THEME := \
   $(OBJECTS_THEME_COLOUR) \
-  $(OBJECTS_THEME_IMAGE) \
   $(THEME_OBJ)LookAndFeel.o
 
 OBJECTS_THEME_TEST :=
@@ -52,17 +42,6 @@ $(THEME_COLOUR_OBJ)ConfigFile.o : \
     $(THEME_COLOUR_DIR)/$(THEME_COLOUR_PREFIX)ConfigFile.cpp
 $(THEME_COLOUR_OBJ)ConfigListener.o : \
     $(THEME_COLOUR_DIR)/$(THEME_COLOUR_PREFIX)ConfigListener.cpp
-$(THEME_COLOUR_OBJ)ConfigPage.o : \
-    $(THEME_COLOUR_DIR)/$(THEME_COLOUR_PREFIX)ConfigPage.cpp
-
-$(THEME_IMAGE_OBJ)AssetList.o : \
-    $(THEME_IMAGE_DIR)/$(THEME_IMAGE_PREFIX)AssetList.cpp
-$(THEME_IMAGE_OBJ)JSONResource.o : \
-    $(THEME_IMAGE_DIR)/$(THEME_IMAGE_PREFIX)JSONResource.cpp
-$(THEME_IMAGE_OBJ)ConfigFile.o : \
-    $(THEME_IMAGE_DIR)/$(THEME_IMAGE_PREFIX)ConfigFile.cpp
-$(THEME_IMAGE_OBJ)ConfigListener.o : \
-    $(THEME_IMAGE_DIR)/$(THEME_IMAGE_PREFIX)ConfigListener.cpp
 
 $(THEME_OBJ)LookAndFeel.o : \
     $(THEME_DIR)/Theme_LookAndFeel.cpp

@@ -216,104 +216,73 @@ namespace KeyMappingEditor
     static const Element text(
             0x100ad01, UICategory::text);
 }
-namespace Image
-{
-    static const Element image0(
-            0x1900000, UICategory::none);
-    static const Element image1(
-            0x1900001, UICategory::none);
-    static const Element image2(
-            0x1900002, UICategory::none);
-    static const Element image3(
-            0x1900003, UICategory::none);
-    static const Element image4(
-            0x1900004, UICategory::none);
-}
-namespace ListEditor
-{
-    static const Element background(
-            0x1900100, UICategory::menuBackground);
-    static const Element listItem(
-            0x1900101, UICategory::textField);
-    static const Element selectedListItem(
-            0x1900102, UICategory::highlightedTextField);
-    static const Element text(
-            0x1900103, UICategory::text);
-}
-namespace AppMenuButton
+namespace ChordComponent
 {
     static const Element text(
-            0x1900200, UICategory::text);
-    static const Element selectedText(
-            0x1900201, UICategory::text);
-    static const Element textBackground(
-            0x1900202, UICategory::widgetBackground);
-    static const Element selectedTextBG(
-            0x1900203, UICategory::widgetBackground);
-    static const Element background(
-            0x1900204, UICategory::widgetBackground);
-    static const Element selectedBG(
-            0x1900205, UICategory::widgetBackground);
-    static const Element border(
-            0x1900206, UICategory::outline);
-    static const Element selectedBorder(
-            0x1900207, UICategory::focusedOutline);
+            0x1900100, UICategory::text);
+    static const Element inactiveText(
+            0x1900101, UICategory::text);
+    static const Element chord1Selected(
+            0x1900102, UICategory::none);
+    static const Element chord2Selected(
+            0x1900103, UICategory::none);
+    static const Element chord3Selected(
+            0x1900104, UICategory::none);
+    static const Element chord4Selected(
+            0x1900105, UICategory::none);
+    static const Element chord5Selected(
+            0x1900106, UICategory::none);
+    static const Element emptySelected(
+            0x1900107, UICategory::none);
+    static const Element chord1Active(
+            0x1900108, UICategory::none);
+    static const Element chord2Active(
+            0x1900109, UICategory::none);
+    static const Element chord3Active(
+            0x190010a, UICategory::none);
+    static const Element chord4Active(
+            0x190010b, UICategory::none);
+    static const Element chord5Active(
+            0x190010c, UICategory::none);
+    static const Element emptyActive(
+            0x190010d, UICategory::none);
+    static const Element chord1Open(
+            0x190010e, UICategory::none);
+    static const Element chord2Open(
+            0x190010f, UICategory::none);
+    static const Element chord3Open(
+            0x1900110, UICategory::none);
+    static const Element chord4Open(
+            0x1900111, UICategory::none);
+    static const Element chord5Open(
+            0x1900112, UICategory::none);
+    static const Element emptyOpen(
+            0x1900113, UICategory::none);
+    static const Element chord1Blocked(
+            0x1900114, UICategory::none);
+    static const Element chord2Blocked(
+            0x1900115, UICategory::none);
+    static const Element chord3Blocked(
+            0x1900116, UICategory::none);
+    static const Element chord4Blocked(
+            0x1900117, UICategory::none);
+    static const Element chord5Blocked(
+            0x1900118, UICategory::none);
+    static const Element emptyBlocked(
+            0x1900119, UICategory::none);
+    static const Element activeModText(
+            0x1900120, UICategory::none);
+    static const Element activeModFill(
+            0x1900121, UICategory::none);
+    static const Element activeModLine(
+            0x1900122, UICategory::none);
+    static const Element inactiveModText(
+            0x1900123, UICategory::none);
+    static const Element inactiveModFill(
+            0x1900124, UICategory::none);
+    static const Element inactiveModLine(
+            0x1900125, UICategory::none);
 }
-namespace FilePathEditor
-{
-    static const Element fileWindow(
-            0x1900300, UICategory::windowBackground);
-    static const Element text(
-            0x1900301, UICategory::text);
-}
-namespace OverlaySpinner
-{
-    static const Element background(
-            0x1900400, UICategory::widgetBackground);
-    static const Element text(
-            0x1900401, UICategory::text);
-}
-namespace LayoutContainer
-{
-    static const Element background(
-            0x1900499, UICategory::windowBackground);
-}
-namespace Page
-{
-    static const Element background(
-            0x1900500, UICategory::windowBackground);
-}
-namespace ColourPicker
-{
-    static const Element checkerboardLight(
-            0x1900600, UICategory::widgetOn);
-    static const Element checkerboardDark(
-            0x1900601, UICategory::widgetOff);
-    static const Element outline(
-            0x1900602, UICategory::outline);
-    static const Element focusedOutline(
-            0x1900603, UICategory::focusedOutline);
-}
-namespace Switch
-{
-    static const Element background(
-            0x1900700, UICategory::widgetBackground);
-    static const Element handle(
-            0x1900701, UICategory::widgetOn);
-    static const Element handleOff(
-            0x1900702, UICategory::widgetOff);
-}
-namespace HomePage
-{
-    static const Element text(
-            0x1900800, UICategory::text);
-}
-namespace PowerPage
-{
-    static const Element background(
-            0x1900900, UICategory::windowBackground);
-}
-
 
 // The list of all Colour Element objects, sorted by ID:
 const juce::Array<const Element*> allElements =
@@ -386,38 +355,38 @@ const juce::Array<const Element*> allElements =
     &ToggleButton::tickDisabled,
     &KeyMappingEditor::background,
     &KeyMappingEditor::text,
-    &Image::image0,
-    &Image::image1,
-    &Image::image2,
-    &Image::image3,
-    &Image::image4,
-    &ListEditor::background,
-    &ListEditor::listItem,
-    &ListEditor::selectedListItem,
-    &ListEditor::text,
-    &AppMenuButton::text,
-    &AppMenuButton::selectedText,
-    &AppMenuButton::textBackground,
-    &AppMenuButton::selectedTextBG,
-    &AppMenuButton::background,
-    &AppMenuButton::selectedBG,
-    &AppMenuButton::border,
-    &AppMenuButton::selectedBorder,
-    &FilePathEditor::fileWindow,
-    &FilePathEditor::text,
-    &OverlaySpinner::background,
-    &OverlaySpinner::text,
-    &LayoutContainer::background,
-    &Page::background,
-    &ColourPicker::checkerboardLight,
-    &ColourPicker::checkerboardDark,
-    &ColourPicker::outline,
-    &ColourPicker::focusedOutline,
-    &Switch::background,
-    &Switch::handle,
-    &Switch::handleOff,
-    &HomePage::text,
-    &PowerPage::background
+    &ChordComponent::text,
+    &ChordComponent::inactiveText,
+    &ChordComponent::chord1Selected,
+    &ChordComponent::chord2Selected,
+    &ChordComponent::chord3Selected,
+    &ChordComponent::chord4Selected,
+    &ChordComponent::chord5Selected,
+    &ChordComponent::emptySelected,
+    &ChordComponent::chord1Active,
+    &ChordComponent::chord2Active,
+    &ChordComponent::chord3Active,
+    &ChordComponent::chord4Active,
+    &ChordComponent::chord5Active,
+    &ChordComponent::emptyActive,
+    &ChordComponent::chord1Open,
+    &ChordComponent::chord2Open,
+    &ChordComponent::chord3Open,
+    &ChordComponent::chord4Open,
+    &ChordComponent::chord5Open,
+    &ChordComponent::emptyOpen,
+    &ChordComponent::chord1Blocked,
+    &ChordComponent::chord2Blocked,
+    &ChordComponent::chord3Blocked,
+    &ChordComponent::chord4Blocked,
+    &ChordComponent::chord5Blocked,
+    &ChordComponent::emptyBlocked,
+    &ChordComponent::activeModText,
+    &ChordComponent::activeModFill,
+    &ChordComponent::activeModLine,
+    &ChordComponent::inactiveModText,
+    &ChordComponent::inactiveModFill,
+    &ChordComponent::inactiveModLine
 };
 
 } } }

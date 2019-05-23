@@ -35,7 +35,16 @@ Config::FileResource::FileResource(
 SharedResource::Resource(resourceKey),
 filename(configFilename),
 configJson(getFullConfigPath(configFilename)),
-defaultJson(defaultAssetPath + filename) { }
+defaultJson(defaultAssetPath + filename) 
+{
+#ifdef JUCE_DEBUG
+    if (!defaultJson.isValidFile())
+    {
+        DBG(dbgPrefix << __func__ << ": Couldn't find default JSON file at "
+                << defaultAssetPath << filename);
+    }
+#endif
+}
 
 
 // Writes any pending changes to the file before destruction.

@@ -170,6 +170,20 @@ Window Windows::XInterface::getMainAppWindow() const
 }
 
 
+// Gets the XLib window ID that represents the active window.
+Window Windows::XInterface::getActiveWindow() const
+{
+    const Atom request = XInternAtom(display, activeWindowProperty, false);
+    const Window root = XDefaultRootWindow(display);
+    WindowProperty windowProp = getWindowProperty(root, request);
+    if (windowProp.numItems == 0)
+    {
+        return BadWindow;
+    }
+    return windowProp.getDataValue<Window>();
+}
+
+
 // Gets the title of a window.
 juce::String Windows::XInterface::getWindowName(const Window window) const
 {

@@ -19,7 +19,7 @@ Alphabet::Alphabet(const ChordedChar* chordSet, const uint8 length) :
     }
 }
 
-char Alphabet::getIndex(const uint8 index) const
+char Alphabet::getCharAtIndex(const uint8 index) const
 {
     if (index >= size)
     {

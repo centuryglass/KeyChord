@@ -9,8 +9,10 @@
 #include "Theme_LookAndFeel.h"
 #include "Layout_Component_ConfigFile.h"
 #include "Theme_Colour_ConfigFile.h"
-#include "Theme_Image_ConfigFile.h"
 #include "Util_ConditionChecker.h"
+#include "ChordComponent.h"
+#include "InputHandler.h"
+
 
 /**
  * @brief  Controls how the JUCE library initializes and shuts down the
@@ -90,14 +92,6 @@ private:
     // and running tests(if applicable):
     Util::ConditionChecker focusChecker;
 
-    // Application resource objects:
-    // These objects remain allocated as long as one instance of them exists
-    // somewhere. Declaring them here ensures that they will remain allocated
-    // as long as the application is running.
-
-    // Holds UI component layout data:
-    Layout::Component::ConfigFile layoutConfig;
-
     // Holds UI colour settings:
     Theme::Colour::ConfigFile colourConfig;
 
@@ -107,6 +101,12 @@ private:
     // The program appearance manager:
     std::unique_ptr<Theme::LookAndFeel> lookAndFeel = nullptr;
 
-    // The single program window:
+    // The single application window:
     std::unique_ptr<juce::DocumentWindow> homeWindow = nullptr;
+
+    // The main content component:
+    std::unique_ptr<ChordComponent> chordComponent = nullptr;
+
+    // The user input handler:
+    std::unique_ptr<InputHandler> inputHandler = nullptr;
 };

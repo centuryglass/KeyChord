@@ -2,7 +2,7 @@
 /**
  * @file  ChordTracker.h
  *
- * @brief  Tracks chorded keyboard input.
+ * @brief  Converts raw keyboard input events to chord input events.
  */
 
 #include "JuceHeader.h"
@@ -43,7 +43,7 @@ public:
      * @return  The active Alphabet setting the character set used, its order, 
      *          and its chord values.
      */
-    const Alphabet& getAlphabet() const;
+    const Alphabet* getAlphabet() const;
 
     /**
      * @brief  Gets the number of chord keys used:
@@ -87,13 +87,15 @@ public:
          *
          * @param alphabet  The new active character set.
          */
-        virtual void alphabetChanged(const Alphabet& alphabet) = 0;
+        virtual void alphabetChanged(const Alphabet* alphabet) = 0;
 
         /**
-         * @brief  Notifies the listener that the backspace or delete key was
-         *         pressed.
+         * @brief  Directly passes all key events unrelated to chord state on
+         *         to the listener.
+         *
+         * @param key  The registered key description for the key press event.
          */
-        virtual void deleteWasPressed() = 0;
+        virtual void keyPressed(const juce::String key) = 0;
     };
 
     /**
@@ -111,6 +113,11 @@ public:
     void removeListener(Listener* listener);
 
 private:
+    /**
+     * @brief  Passes the current selected chord to all registered listeners.
+     */
+    void sendSelectionUpdate();
+
     /**
      * @brief  Registers relevant key presses, and prevents KeyPress events from
      *         being passed to other components.
@@ -158,12 +165,35 @@ private:
     // The current active alphabet:
     AlphabetType activeAlphabet = AlphabetType::lowerCase;
 
-    // Tracks the time of the last key event:
-    juce::uint32 lastUpdate = 0;
-
-    // Tracks whether the last key event was a key press or a key release:
-    bool keyPressedLast = true;
-
     // All registered listeners:
     juce::Array<Listener*> listeners;
+
+    /**
+     * @brief  Passes on key release events as selection changes, after waiting
+     *         a brief period to make sure the user isn't releasing keys to
+     *         enter a chord.
+     */
+    class ReleaseTimer : public juce::Timer
+    {
+    public:
+        /**
+         * @brief  Connects the timer to its chordTracker on construction.
+         *
+         * @param chordTracker  The chordTracker using this timer.
+         */
+        ReleaseTimer(ChordTracker& chordTracker);
+
+        virtual ~ReleaseTimer() {}
+
+    private:
+        /**
+         * @brief  Updates the ChordTracker's selected chord and passes the
+         *         update on to all listeners if the delay period finishes
+         *         without the user releasing all keys to enter the chord.
+         */
+        void timerCallback() override;
+
+        ChordTracker& chordTracker;
+    };
+    ReleaseTimer releaseTimer;
 };

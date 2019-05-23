@@ -5,46 +5,58 @@
 // The number of keys that may be held down to make a chord:
 static const constexpr int numChordKeys = 5;
 
-
 // The list of chord keys, in order:
 static const juce::String chordKeys [] = {"A", "S", "D", "F", "G"};
 
 
 // Standard lowercase alphabet:
 static const Alphabet lowerCase = AlphabetFactory::createLowerCase();
+static const juce::String lowerMod = "H";
 
 // Uppercase alphabet:
 static const Alphabet upperCase = AlphabetFactory::createUpperCase();
-static const juce::String upperMod = "H";
+static const juce::String upperMod = "J";
 
 // Numeric alphabet:
 static const Alphabet numeric = AlphabetFactory::createNumeric();
-static const juce::String numberMod = "J";
+static const juce::String numberMod = "K";
 
 // Symbolic alphabet:
 static const Alphabet symbolic = AlphabetFactory::createSymbolic();
-static const juce::String symbolMod = "K";
+static const juce::String symbolMod = "L";
 
-static void printMask(juce::uint8 bitmask)
+// Milliseconds to wait between key releases before assuming the user isn't 
+// releasing keys to enter a chord value, and is instead changing the selected
+// chord:
+static const constexpr int keyReleaseChordUpdateDelay = 100;
+
+/**
+ * @brief  Gets a text representation of a chord bitmap.
+ *
+ * @param bitmap  A byte where the rightmost five bits store whether the
+ *                 corresponding chord key is held down.
+ */
+static juce::String chordString(const juce::uint8 bitmap)
 {
     juce::String binaryStr = "";
-    for (int i = 4; i >= 0; i--)
+    for (int i = 0; i < numChordKeys; i++)
     {
-        if (((1 << i) & bitmask) != 0)
+        const juce::uint8 keymap = 1 << (numChordKeys - i - 1);
+        if ((keymap & bitmap) != 0)
         {
-            binaryStr += '1';
+            binaryStr = chordKeys[i] + binaryStr;
         }
         else
         {
-            binaryStr += '0';
+            binaryStr = "_" + binaryStr;
         }
     }
-    DBG("Mask=" << binaryStr);
+    return binaryStr;
 }
 
 // Create the ChordTracker, assigning it to listen to key events from a
 // component.
-ChordTracker::ChordTracker(juce::Component* keyComponent)
+ChordTracker::ChordTracker(juce::Component* keyComponent) : releaseTimer(*this)
 {
     keyComponent->addKeyListener(this);
 }
@@ -65,22 +77,22 @@ juce::uint8 ChordTracker::getSelectedKey() const
 
 
 // Gets the current active alphabet.
-const Alphabet& ChordTracker::getAlphabet() const
+const Alphabet* ChordTracker::getAlphabet() const
 {
     switch (activeAlphabet)
     {
         case AlphabetType::lowerCase:
-            return lowerCase;
+            return &lowerCase;
         case AlphabetType::upperCase:
-            return upperCase;
+            return &upperCase;
         case AlphabetType::numeric:
-            return numeric;
+            return &numeric;
         case AlphabetType::symbolic:
-            return symbolic;
+            return &symbolic;
     }
     DBG("Invalid alphabet type " << (int) activeAlphabet);
     jassertfalse;
-    return lowerCase;
+    return &lowerCase;
 }
 
 
@@ -105,49 +117,55 @@ void ChordTracker::removeListener(Listener* listener)
 }
 
 
+// Passes the current selected chord to all registered listeners.
+void ChordTracker::sendSelectionUpdate()
+{
+    for(Listener* listener : listeners)
+    {
+        listener->heldKeysChanged(selectedKey);
+    }
+}
+
+
 // Registers relevant key presses, and prevents KeyPress events from being
 // passed to other components.
 bool ChordTracker::keyPressed
 (const juce::KeyPress& key, juce::Component* source)
 {
     using juce::juce_wchar;
-    keyPressedLast = true;
     juce::String keyText = key.getTextDescription();
-    if (keyText == "backspace" || keyText == "delete")
-    {
-        for (Listener* listener : listeners)
-        {
-            listener->deleteWasPressed();
-        }
-        return true;
-    }
 
     // Check for alphabet change modifiers:
-    if (activeAlphabet == AlphabetType::lowerCase)
+    AlphabetType newAlphabet = activeAlphabet;
+    if (keyText == lowerMod)
     {
-        AlphabetType newAlphabet = activeAlphabet;
-        if (keyText == upperMod)
-        {
-            newAlphabet = AlphabetType::upperCase;
-        }
-        else if (keyText == numberMod)
-        {
-            newAlphabet = AlphabetType::numeric;
-        }
-        else if (keyText == symbolMod)
-        {
-            newAlphabet = AlphabetType::symbolic;
-        }
+        DBG("Switching to lowerCase alphabet");
+        newAlphabet = AlphabetType::lowerCase;
+    }
+    else if (keyText == upperMod)
+    {
+        DBG("Switching to upperCase alphabet");
+        newAlphabet = AlphabetType::upperCase;
+    }
+    else if (keyText == numberMod)
+    {
+        DBG("Switching to numeric alphabet");
+        newAlphabet = AlphabetType::numeric;
+    }
+    else if (keyText == symbolMod)
+    {
+        DBG("Switching to symbolic alphabet");
+        newAlphabet = AlphabetType::symbolic;
+    }
 
-        if (newAlphabet != activeAlphabet)
+    if (newAlphabet != activeAlphabet)
+    {
+        activeAlphabet = newAlphabet;
+        for (Listener* listener : listeners)
         {
-            activeAlphabet = newAlphabet;
-            for (Listener* listener : listeners)
-            {
-                listener->alphabetChanged(getAlphabet());
-            }
-            return true;
+            listener->alphabetChanged(getAlphabet());
         }
+        return true;
     }
 
     // Check for new chord key presses:
@@ -159,13 +177,15 @@ bool ChordTracker::keyPressed
             juce::uint8 keyMask = 1 << i;
             heldKeys = heldKeys | keyMask;
             selectedKey = selectedKey | keyMask;
-            for (Listener* listener : listeners)
-            {
-                listener->heldKeysChanged(heldKeys);
-            }
-            // printMask(heldKeys);
+            sendSelectionUpdate();
             return true;
         }
+    }
+
+    // Pass any unprocessed key events on to listeners:
+    for (Listener* listener : listeners)
+    {
+        listener->keyPressed(key.getTextDescription());
     }
 
     return true;
@@ -188,28 +208,7 @@ bool ChordTracker::keyStateChanged(bool isKeyDown, juce::Component* source)
         return false;
     }
 
-    // Check for alphabet modifier key releases:
-    static const std::map<AlphabetType, juce::KeyPress> modMap =
-    {
-        { AlphabetType::upperCase, getKey(upperMod) },
-        { AlphabetType::numeric,   getKey(numberMod) },
-        { AlphabetType::symbolic,  getKey(symbolMod) }
-    };
-    if (activeAlphabet != AlphabetType::lowerCase)
-    {
-        if (! modMap.at(activeAlphabet).isCurrentlyDown())
-        {
-            DBG("Released mod key " 
-                    << modMap.at(activeAlphabet).getTextDescription());
-            activeAlphabet = AlphabetType::lowerCase;
-            for (Listener* listener : listeners)
-            {
-                listener->alphabetChanged(getAlphabet());
-            }
-        }
-    }
-
-    // Check for released modifiers:
+    // Check for released chord keys:
     juce::uint8 updatedMask = heldKeys;
     for (int i = 0; i < numChordKeys; i++)
     {
@@ -220,40 +219,56 @@ bool ChordTracker::keyStateChanged(bool isKeyDown, juce::Component* source)
             if ((keyMask & updatedMask) == keyMask
                     && ! heldKey.isCurrentlyDown())
             {
-                // DBG("updatedMask & ~keyMask for " 
-                //          << heldKey.getTextDescription());
-                // printMask(updatedMask);
-                // printMask(~keyMask);
                 updatedMask = updatedMask & (~keyMask);
             }
         }
     }
+
+    // Save updates to chord keys, only updating the selection if a reasonable
+    // amount of time passes between key release events:
     if (updatedMask != heldKeys)
     {
-        heldKeys = updatedMask;
-        if (keyPressedLast)
-        {
-            lastUpdate = juce::Time::getMillisecondCounter();
-        }
-        else if (juce::Time::getMillisecondCounter() - lastUpdate > 100)
-        {
-            selectedKey = updatedMask;
-        }
-        keyPressedLast = false;
+        // Stop the release timer if it was previously running:
+        releaseTimer.stopTimer();
 
-        for (Listener* listener : listeners)
+        heldKeys = updatedMask;
+        // If all keys are released, send the selected chord to registered
+        // listeners and reset the selection:
+        if (heldKeys == 0)
         {
-            listener->heldKeysChanged(heldKeys);
-            if (heldKeys == 0)
+            DBG("Entered chord " << chordString(selectedKey) << ", with char "
+                    << getAlphabet()->getCharacter(selectedKey));
+            for (Listener* listener : listeners)
             {
                 listener->chordEntered(selectedKey);
             }
+            selectedKey = heldKeys;
         }
-        printMask(heldKeys);
-        if (heldKeys == 0)
+        // Otherwise, start the timer and let it update the selection.
+        else
         {
-            selectedKey = 0;
+            releaseTimer.startTimer(keyReleaseChordUpdateDelay);
         }
     }
     return true;
+}
+
+
+// Connects the timer to its chordTracker on construction.
+ChordTracker::ReleaseTimer::ReleaseTimer(ChordTracker& chordTracker) :
+        chordTracker(chordTracker) { }
+
+
+// Updates the ChordTracker's selected chord and passes the update on to all
+// listeners if the delay period finishes without the user releasing all keys to
+// enter the chord.
+void ChordTracker::ReleaseTimer::timerCallback()
+{
+    const juce::MessageManagerLock mmLock;
+    if (chordTracker.heldKeys != chordTracker.selectedKey)
+    {
+        chordTracker.selectedKey = chordTracker.heldKeys;
+        chordTracker.sendSelectionUpdate();
+    }
+    stopTimer();
 }

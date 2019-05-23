@@ -18,46 +18,51 @@ Each UI component colour is categorized using one of eleven different general UI
  "Text field"             | Contains colour values for text within an editable text field.
  "Highlighted text field" | Contains colour values for highlighted text within an editable text field.
 
-## Image Colour Values
-Image0, Image1, Image2, Image3, and Image4 define default colour values to replace in images with configurable colours. When a list of custom colours is applied to an image, the first custom colour replaces all pixels in the source image set to the colour value defined by Image0, the second custom colour replaces all pixels set to the colour value defined by Image1, and so on. Changing these values will prevent custom colours from being applied properly to default image assets, so in most circumstances they shouldn't be altered.
-
 ## Other Colour Values
-Colour Value Key                          | Colour Category        | Description
------------------------------------------ | ---------------------- | ---
-"Text button(off) background"             | Widget background      | The background colour of deactivated text buttons.
-"Text button background"                  | Widget                 | The background colour of normal text buttons.
-"Label background"                        | Window background      | The fill colour used behind text label components.
-"Label text"                              | Text                   | The colour used to draw label text.
-"Label outline"                           | Outline                | The colour of rectangular outline to draw around text labels.
-"Combo box text"                          | Text                   | The colour to draw text that's labeling a combo box.
-"Combo box background"                    | Menu background        | The colour filled in behind combo box components.
-"Combo box outline"                       | Outline                | The colour of outline to draw around a combo box.
-"Combo box arrow"                         | Text                   | The colour to draw the arrow on the right side of the combo box.
-"Combo box focused outline"               | Focused outline        | The colour of outline to draw around the combo box while it is focused.
-"Slider background"                       | Widget background      | The colour of the background drawn behind sliders.
-"Slider thumb"                            | Widget                 | The colour of the oval or circle on the slider that is dragged to change the slider's position or value.
-"Slider track"                            | Widget (off)           | The colour of the track representing the full range of a slider component.
-"Alert window background"                 | Window background      | The background colour used by popup alert windows.
-"Alert window text"                       | Text                   | The text colour used to draw popup alert window text.
-"Alert window outline"                    | Focused outline        | The colour of the outline drawn around popup alert windows.
-"Image0"                                  | none                   | First image colour to replace with a custom colour.
-"Image1"                                  | none                   | Second image colour to replace with a custom colour.
-"Image2"                                  | none                   | Third image colour to replace with a custom colour.
-"Image3"                                  | none                   | Fourth image colour to replace with a custom colour.
-"Image4"                                  | none                   | Fifth image colour to replace with a custom colour.
-"List editor background"                  | Menu background        | The background colour filled in behind the list editor component.
-"List editor item"                        | Text field             | The background fill colour for individual unselected items in the list editor.
-"List editor selected item"               | Highlighted text field | The background fill colour for the selected item in the list editor.
-"List editor text"                        | Text                   | The colour used to draw list editor text.
-"File selection window"                   | Window background      | The background colour used by the file selection window.
-"File selection text"                     | Text                   | The colour used to draw the text on the file selection window.
-"Overlay spinner background"              | Widget background      | The background colour filled in behind the full-screen loading spinner overlay.
-"Overlay spinner text"                    | Text                   | The colour used to draw the loading text on the loading spinner overlay.
-"Page background"                         | Window background      | The colour drawn behind application pages.
-"Colour picker checkerboard(light)"       | Widget                 | The light colour used in the checkerboard pattern drawn behind colour picker colours.
-"Colour picker checkerboard(dark)"        | Widget (off)           | The dark colour used in the checkerboard pattern drawn behind colour picker colours.
-"Colour picker colour outline"            | Outline                | The colour used to draw outlines around colour picker buttons.
-"Colour picker focused colour outline"    | Focused outline        | The colour used to draw outlines around focused colour picker buttons.
-"Switch background"                       | Widget background      | The fill colour used by the oval background of the switch component.
-"Switch handle"                           | Widget                 | The fill colour used for the handle on the switch component when the switch is on.
-"Switch handle(off)"                      | Widget (off)           | The fill colour used for the handle on the switch component when the switch is off.
+Colour Value Key         | Colour Category   | Description
+------------------------ | ----------------- | ---
+"WindowBackground"       | Window background | The application window background colour.
+"Chord Text"             | Text              | Default text color for UI labels.
+"Inactive Chord Text"    | Text              | Text color for keys that conflict with the current held chord.
+"Chord1 (Selected)"      | none              | 
+"Chord2 (Selected)"      | none              | 
+"Chord3 (Selected)"      | none              | 
+"Chord4 (Selected)"      | none              | 
+"Chord5 (Selected)"      | none              | 
+"Chord1 (Active)"        | none              | 
+"Chord2 (Active)"        | none              | 
+"Chord3 (Active)"        | none              | 
+"Chord4 (Active)"        | none              | 
+"Chord5 (Active)"        | none              | 
+"Chord1 (Open)"          | none              | 
+"Chord2 (Open)"          | none              | 
+"Chord3 (Open)"          | none              | 
+"Chord4 (Open)"          | none              | 
+"Chord5 (Open)"          | none              | 
+"Chord1 (Blocked)"       | none              | 
+"Chord2 (Blocked)"       | none              | 
+"Chord3 (Blocked)"       | none              | 
+"Chord4 (Blocked)"       | none              | 
+"Chord5 (Blocked)"       | none              | 
+"Empty Chord"            | none              | 
+"Active Modifier Text"   | none              | 
+"Active Modifier Fill"   | none              | 
+"Active Modifier Line"   | none              | 
+"Inactive Modifier Text" | none              | 
+"Inactive Modifier Fill" | none              | 
+"Inactive Modifier Line" | none              | 
+REMOVED:REMOVED:REMOVED:"Chord1(Active)"      | none              | First chord button, selected.
+REMOVED:REMOVED:REMOVED:"Chord2(Active)"      | none              | Second chord button, selected.
+REMOVED:REMOVED:REMOVED:"Chord3(Active)"      | none              | Third chord button, selected.
+REMOVED:REMOVED:REMOVED:"Chord4(Active)"      | none              | Fourth chord button, selected.
+REMOVED:REMOVED:REMOVED:"Chord5(Active)"      | none              | Fifth chord button, selected.
+REMOVED:REMOVED:REMOVED:"Chord1(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:"Chord2(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:"Chord3(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:"Chord4(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:"Chord5(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:"Chord1(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:"Chord2(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:"Chord3(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:"Chord4(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:"Chord5(Blocked)"     | none              | 

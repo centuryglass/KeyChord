@@ -1,12 +1,6 @@
 #include "Theme_LookAndFeel.h"
 #include "Theme_Colour_JSONKeys.h"
 #include "Layout_Component_ConfigFile.h"
-#include "Widgets_Switch.h"
-#include "Widgets_BoundedLabel.h"
-#include "Widgets_DrawableImage.h"
-#include "Widgets_ListEditor.h"
-#include "Widgets_FilePathEditor.h"
-#include "Widgets_OverlaySpinner.h"
 
 // TODO: Get rid of all the inline magic numbers used for calculating sizes,
 //       make them into proper constexpr values defined up here.
@@ -34,6 +28,20 @@ seguibl(juce::Typeface::createSystemTypefaceFor(BinaryData::LatoRegular_ttf,
     loadAllConfigProperties();
 }
 
+
+// Does nothing, to ensure the title bar isn't drawn.
+void Theme::LookAndFeel::drawDocumentWindowTitleBar(
+        juce::DocumentWindow& window,
+        juce::Graphics& g,
+        int w,
+        int h,
+        int titleSpaceX,
+        int titleSpaceW,
+        const juce::Image* icon,
+        bool drawTitleTextOnLeft) 
+{
+    //DBG("Drawing title bar");
+}
 
 // Get the appropriate typeface for the given font.
 juce::Typeface::Ptr Theme::LookAndFeel::getTypefaceForFont
@@ -247,13 +255,6 @@ juce::Font Theme::LookAndFeel::getComboBoxFont(juce::ComboBox& comboBox)
 // Gets the default font to use for Label components.
 juce::Font Theme::LookAndFeel::getLabelFont(juce::Label& label)
 {
-    // Let bounded labels set their own font
-    Widgets::BoundedLabel* testBounded = dynamic_cast<Widgets::BoundedLabel*>
-            (&label);
-    if (testBounded != nullptr)
-    {
-        return label.getFont();
-    }
     Layout::Component::ConfigFile config;
     using TextSize = Layout::Component::TextSize;
     int height = std::min(config.getFontHeight(TextSize::smallText),

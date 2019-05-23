@@ -6,57 +6,99 @@
  */
 
 #include "JuceHeader.h"
-#include "ChordTracker.h"
+#include "Alphabet.h"
 
-class ChordComponent : public juce::Component, public ChordTracker::Listener
+class ChordComponent : public juce::Component
 {
 public:
+    enum ColourIds
+    {
+        // Color used to draw text:
+        text = 0x1900100,
+        // Color used to draw text for characters that conflict with the current
+        // selection:
+        inactiveText = 0x1900101,
+        // Colors used to draw active chord keys on the selected character:
+        chord1Selected = 0x1900102,
+        chord2Selected = 0x1900103,
+        chord3Selected = 0x1900104,
+        chord4Selected = 0x1900105,
+        chord5Selected = 0x1900106,
+        emptySelected =  0x1900107, // Empty = key should not be held down.
+        // Colors used to draw active chord keys in chords that don't 
+        // conflict with the current selection:
+        chord1Active = 0x1900108,
+        chord2Active = 0x1900109,
+        chord3Active = 0x190010a,
+        chord4Active = 0x190010b,
+        chord5Active = 0x190010c,
+        emptyActive =  0x190010d,
+        // Colors used to draw active chord keys in chords that don't 
+        // conflict with the current selection:
+        chord1Open = 0x190010e,
+        chord2Open = 0x190010f,
+        chord3Open = 0x1900110,
+        chord4Open = 0x1900111,
+        chord5Open = 0x1900112,
+        emptyOpen =  0x1900113,
+        // Colors used to draw inactive chord keys that conflict with the
+        // current selection:
+        chord1Blocked = 0x1900114,
+        chord2Blocked = 0x1900115,
+        chord3Blocked = 0x1900116,
+        chord4Blocked = 0x1900117,
+        chord5Blocked = 0x1900118,
+        emptyBlocked =  0x1900119,
+        // Colors used for active modifier keys:
+        activeModText = 0x1900120,
+        activeModFill = 0x1900121,
+        activeModLine = 0x1900122,
+        // Colors used for inactive modifier keys:
+        inactiveModText = 0x1900123,
+        inactiveModFill = 0x1900124,
+        inactiveModLine = 0x1900125,
+        // Color used to draw keys that should not be held down on chords that
+        // are currently
+    };
+
     /**
-     * @brief  Initializes the component and starts listening for key events.
+     * @brief  Requests keyboard focus on construction.
      */
     ChordComponent();
 
+    virtual ~ChordComponent() { }
+
+    /**
+     * @brief  Sets the current state of the chorded keyboard, immediately
+     *         redrawing the component if the state changes.
+     *
+     * @param activeAlphabet  The active alphabet mapping between characters and
+     *                        chords.
+     *                        
+     * @param heldKeys        The binary representation of which chord keys are
+     *                        held down.
+     *
+     * @param input           The current cached input string.
+     */
+    void updateChordState(const Alphabet* activeAlphabet, 
+            const juce::uint8 heldKeys, 
+            const juce::String input);
+
 private:
     /**
-     * @brief  Draws all pressed keys and the demo keyboard.
+     * @brief  Draws all chord mappings within the current alphabet, which chord
+     *         keys are currently held down, and the buffered input string 
+     *         waiting to be sent to the target window.
      *
      * @param g  The JUCE graphics context.
      */
     void paint(juce::Graphics& g) override;
 
-    /**
-     * @brief  Notifies the Listener that the set of keys held down has
-     *         changed.
-     *
-     * @param heldKeys  A bit mask representing the chord keys that are held
-     *                  down.
-     */
-    virtual void heldKeysChanged(const juce::uint8 heldKeys) override;
+    // The active character alphabet:
+    const Alphabet* currentAlphabet = nullptr;
+    // The bitmask storing which chord keys are held down:
+    juce::uint8 lastHeldKeys = 0;
+    // Buffered input waiting to be sent to the target window:
+    juce::String bufferedInput;
 
-    /**
-     * @brief  Notifies the Listener that a character was selected.
-     *
-     * @param selected  The selected character's index in the active
-     *                  alphabet.
-     */
-    virtual void chordEntered(const juce::uint8 selected) override;
-
-    /**
-     * @brief  Notifies the listener that the active alphabet has changed.
-     *
-     * @param alphabet  The new active character set.
-     */
-    virtual void alphabetChanged(const Alphabet& alphabet) override;
-
-    /**
-     * @brief  Notifies the listener that the backspace or delete key was
-     *         pressed.
-     */
-    virtual void deleteWasPressed() override;
-
-    // The text input field:
-    juce::String input;
-
-    // Listens for chord key events:
-    ChordTracker chordTracker;
 };

@@ -53,8 +53,8 @@ static const Alphabet::uint8 chordConvenienceOrder [] =
 // by scanning all code and documentation files within my workspace.
 static const constexpr char* lowerCase = " iegatbsnoclhrdyumwzvfpxkjq";
 static const constexpr char* upperCase = " IEGATBSNOCLHRDYUMWZVFPXKJQ";
-static const constexpr char* numeric   = "0.213594,6870-=)(*+^%";
-static const constexpr char* symbolic  = "></;'\":?}{][#|~\\&!$@";
+static const constexpr char* numeric   = "0.213594,687-=)(*+^%";
+static const constexpr char* symbolic  = "\n\b\t></;'\":?}{][#|~\\&!$@";
 
 static Alphabet createAlphabet(const char* charSet)
 {
