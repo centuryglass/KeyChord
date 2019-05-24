@@ -1,7 +1,6 @@
 #include "Layout_Component_ConfigFile.h"
 #include "Layout_Component_JSONKeys.h"
 #include "Layout_Component_JSONResource.h"
-#include "Layout_Component_ConfigLayout.h"
 #include "Windows_Info.h"
 
 #ifdef JUCE_DEBUG
@@ -12,16 +11,6 @@ static const constexpr char* dbgPrefix = "Layout::Component::ConfigFile::";
 namespace ComponentLayout = Layout::Component;
 
 ComponentLayout::ConfigFile::ConfigFile() { }
-
-
-// Gets configured component layouts from shared JSON file data.
-ComponentLayout::ConfigLayout ComponentLayout::ConfigFile::getLayout
-(const juce::Identifier& componentKey)
-{
-    SharedResource::LockedPtr<const JSONResource> config
-            = getReadLockedResource();
-    return config->getLayout(componentKey);
-}
 
 
 // Return the most appropriate font size for drawing text

@@ -11,7 +11,6 @@
 
 namespace Layout { namespace Component { class ConfigFile; } }
 namespace Layout { namespace Component { class JSONResource; } }
-namespace Layout { namespace Component { class ConfigLayout; } }
 
 /**
  * @brief  Reads and writes settings defined in
@@ -26,15 +25,6 @@ public:
     ConfigFile();
 
     virtual ~ConfigFile() { }
-
-    /**
-     * @brief  Gets configured component layouts from shared JSON file data.
-     *
-     * @param componentKey  A configurable UI component's key string.
-     *
-     * @return              The layout defined for that component.
-     */
-    ConfigLayout getLayout(const juce::Identifier& componentKey);
 
     /**
      * @brief  Returns the most appropriate font size for drawing text.

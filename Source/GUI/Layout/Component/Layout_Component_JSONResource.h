@@ -6,14 +6,9 @@
  */
 
 #include "Config_FileResource.h"
-#include "Layout_Component_ConfigLayout.h"
 
 namespace Layout { namespace Component { class JSONResource; } }
 
-/**
- * @brief  A SharedResource class that loads and shares Component layouts loaded
- *         from the component layout configuration file.
- */
 class Layout::Component::JSONResource : public Config::FileResource
 {
 public:
@@ -24,21 +19,7 @@ public:
 
     virtual ~JSONResource() { }
 
-    /**
-     * @brief  Gets the configured layout for a particular component.
-     *
-     * @param componentKey  A configurable UI component's key string.
-     *
-     * @return              The layout defined for that component.
-     */
-    ConfigLayout getLayout(const juce::Identifier& componentKey) const;
-
 private:
-    /**
-     * @brief  Copies all ComponentSettings data back to the JSON file.
-     */
-    virtual void writeDataToJSON() final override;
-
     /**
      * @brief  Gets the key string and data type for each basic value stored
      *         in layout.json.
@@ -48,7 +29,4 @@ private:
      */
     virtual const std::vector<Config::DataKey>& getConfigKeys()
         const final override;
-
-    // Stores all component layouts loaded from the layout config file
-    std::map<juce::Identifier, ConfigLayout> componentLayouts;
 };

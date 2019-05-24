@@ -6,7 +6,6 @@ UTIL_PREFIX = Util_
 UTIL_OBJ := $(JUCE_OBJDIR)/$(UTIL_PREFIX)
 
 OBJECTS_UTIL := \
-  $(UTIL_OBJ)Commands.o \
   $(UTIL_OBJ)TempTimer.o \
   $(UTIL_OBJ)ShutdownListener.o \
   $(UTIL_OBJ)ConditionChecker.o
@@ -28,8 +27,6 @@ OBJECTS_APP := $(OBJECTS_APP) $(OBJECTS_UTIL)
 util : $(OBJECTS_UTIL)
 	@echo "    Built Utility module"
 
-$(UTIL_OBJ)Commands.o : \
-    $(UTIL_DIR)/$(UTIL_PREFIX)Commands.cpp
 $(UTIL_OBJ)TempTimer.o : \
     $(UTIL_DIR)/$(UTIL_PREFIX)TempTimer.cpp
 $(UTIL_OBJ)ShutdownListener.o : \
