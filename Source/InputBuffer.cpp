@@ -49,6 +49,7 @@ void InputBuffer::sendAndClearInput()
     String commandString(focusCommand + String(targetWindow) + typeCommand
             + "'" + inputText + "' && " 
             + focusCommand + String(keyChordWindow));
+    DBG(commandString);
     system(commandString.toRawUTF8());
     clearInput();
 }

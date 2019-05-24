@@ -43,6 +43,8 @@ void HomeApplication::initialise(const juce::String &commandLine)
     // Save the window that will receive input:
     Windows::XInterface xWindows;
     Window targetWindow = xWindows.getActiveWindow();
+    DBG("Saving target window " << (int) targetWindow << " with name "
+            << xWindows.getWindowName(targetWindow));
 
     // Extract and process arguments:
     using juce::StringArray;
