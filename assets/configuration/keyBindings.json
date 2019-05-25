@@ -29,23 +29,29 @@
         "name"     : "LK4",
         "charName" : "5"
     },
-    "Select lower case" :
+    "Select letter keys" :
     {
-        "key"      : "U",
-        "name"     : "X",
-        "charName" : "x"
+        "key"      : "",
+        "name"     : "",
+        "charName" : ""
     },
-    "Select upper case" :
+    "Select number keys" :
     {
-        "key"      : "Y",
-        "name"     : "Shift + X",
-        "charName" : "X"
+        "key"      : "",
+        "name"     : "",
+        "charName" : ""
     },
-    "Select numeric keys" :
+    "Select symbol keys" :
     {
-        "key"      : "I",
-        "name"     : "U",
-        "charName" : "y"
+        "key"      : "",
+        "name"     : "",
+        "charName" : ""
+    },
+    "Select control keys" :
+    {
+        "key"      : "",
+        "name"     : "",
+        "charName" : ""
     },
     "Backspace" :
     {
@@ -59,13 +65,13 @@
         "name"     : "Shift + Select",
         "charName" : "x"
     },
-    "Send Text" :
+    "Send text" :
     {
         "key"      : "+",
         "name"     : "+",
         "charName" : "+"
     },
-    "CloseAndSend" :
+    "Close and send" :
     {
         "key"      : "enter",
         "name"     : "Start",
@@ -77,7 +83,7 @@
         "name"     : "Menu",
         "charName" : "M"
     },
-    "Toggle Immediate mode" :
+    "Toggle immediate mode" :
     {
         "key"      : "+",
         "name"     : "+",
@@ -88,5 +94,17 @@
         "key"      : "home",
         "name"     : "Shift + L1",
         "charName" : "1"
+    },
+    "Toggle window edge" :
+    {
+        "key"      : "",
+        "name"     : "",
+        "charName" : ""
+    },
+    "Toggle minimize" :
+    {
+        "key"      : "",
+        "name"     : "",
+        "charName" : ""
     }
 }
