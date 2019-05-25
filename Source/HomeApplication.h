@@ -7,7 +7,6 @@
 
 #include "JuceHeader.h"
 #include "Theme_LookAndFeel.h"
-#include "Layout_Component_ConfigFile.h"
 #include "Theme_Colour_ConfigFile.h"
 #include "Util_ConditionChecker.h"
 #include "ChordComponent.h"

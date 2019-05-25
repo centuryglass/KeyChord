@@ -16,16 +16,16 @@
 #include "BinaryData.h"
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
- // If your code uses a lot of JUCE classes, then this will obviously save you
- // a lot of typing, but can be disabled by setting
- // DONT_SET_USING_JUCE_NAMESPACE.
+ // Currently disabled by setting DONT_SET_USING_JUCE_NAMESPACE in build.
+ // Otherwise juce::Window conflicts with X11 Window values. Besides, explicit
+ // namespaces
  using namespace juce;
 #endif
 
 #if ! JUCE_DONT_DECLARE_PROJECTINFO
 namespace ProjectInfo
 {
-    const char* const  projectName    = "KeyChord Demo";
+    const char* const  projectName    = "KeyChord";
     const char* const  versionString  = "0.0.1";
     const int          versionNumber  = 0x1;
 }

@@ -1,6 +1,5 @@
 #include "Theme_LookAndFeel.h"
 #include "Theme_Colour_JSONKeys.h"
-#include "Layout_Component_ConfigFile.h"
 
 // TODO: Get rid of all the inline magic numbers used for calculating sizes,
 //       make them into proper constexpr values defined up here.
@@ -180,12 +179,6 @@ void Theme::LookAndFeel::drawButtonText(
     font.setExtraKerningFactor(0.06f);
     textBounds.setWidth(width);
     textBounds.setHeight(height);
-
-    using TextSize = Layout::Component::TextSize;
-    Layout::Component::ConfigFile layoutConfig;
-    int fontHeight = layoutConfig.getFontHeight
-            (textBounds, button.getButtonText());
-    font.setHeight(fontHeight);
     g.setFont(font);
 
     juce::Colour buttonColour = button.findColour(button.getToggleState() ?
@@ -234,50 +227,35 @@ void Theme::LookAndFeel::drawButtonBackground(
 // Gets the default font to use for popup menu text.
 juce::Font Theme::LookAndFeel::getPopupMenuFont()
 {
-    using TextSize = Layout::Component::TextSize;
-    Layout::Component::ConfigFile config;
-    return juce::Font(config.getFontHeight(TextSize::mediumText));
+    return juce::Font();
 }
 
 
 // Gets the default font to use for combo box text.
 juce::Font Theme::LookAndFeel::getComboBoxFont(juce::ComboBox& comboBox)
 {
-    using TextSize = Layout::Component::TextSize;
-    Layout::Component::ConfigFile config;
-    int height = config.getFontHeight(comboBox.getLocalBounds(),
-            comboBox.getText());
-    height = std::min( config.getFontHeight(TextSize::mediumText), height);
-    return juce::Font(height);
+    return juce::Font();
 }
 
 
 // Gets the default font to use for Label components.
 juce::Font Theme::LookAndFeel::getLabelFont(juce::Label& label)
 {
-    Layout::Component::ConfigFile config;
-    using TextSize = Layout::Component::TextSize;
-    int height = std::min(config.getFontHeight(TextSize::smallText),
-            config.getFontHeight(label.getLocalBounds(), label.getText()));
-    return juce::Font(height);
+    return juce::Font();
 }
 
 
 // Gets the default font to use for alert window title text.
 juce::Font Theme::LookAndFeel::getAlertWindowTitleFont()
 {
-    Layout::Component::ConfigFile config;
-    using TextSize = Layout::Component::TextSize;
-    return juce::Font(config.getFontHeight(TextSize::largeText));
+    return juce::Font();
 }
 
 
 // Gets the default font to use for alert window message text.
 juce::Font Theme::LookAndFeel::getAlertWindowMessageFont()
 {
-    Layout::Component::ConfigFile config;
-    using TextSize = Layout::Component::TextSize;
-    return juce::Font(config.getFontHeight(TextSize::mediumText));
+    return juce::Font();
 }
 
 
