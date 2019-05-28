@@ -9,8 +9,8 @@
 #include "Theme_LookAndFeel.h"
 #include "Theme_Colour_ConfigFile.h"
 #include "Util_ConditionChecker.h"
-#include "ChordComponent.h"
-#include "InputHandler.h"
+#include "Component_ChordPreview.h"
+#include "Input_Controller.h"
 
 
 /**
@@ -104,8 +104,8 @@ private:
     std::unique_ptr<juce::DocumentWindow> homeWindow = nullptr;
 
     // The main content component:
-    std::unique_ptr<ChordComponent> chordComponent = nullptr;
+    std::unique_ptr<Component::ChordPreview> chordPreview = nullptr;
 
     // The user input handler:
-    std::unique_ptr<InputHandler> inputHandler = nullptr;
+    std::unique_ptr<Input::Controller> inputController = nullptr;
 };

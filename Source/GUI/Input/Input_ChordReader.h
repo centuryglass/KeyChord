@@ -1,41 +1,50 @@
 #pragma once
 /**
- * @file  ChordTracker.h
+ * @file  Input_ChordReader.h
  *
  * @brief  Converts raw keyboard input events to chord input events.
  */
 
 #include "JuceHeader.h"
-#include "Alphabet.h"
+#include "Chord.h"
+#include "Input_Key_Alphabet.h"
 
-class ChordTracker : public juce::KeyListener
+namespace Input { class ChordReader; }
+
+class Input::ChordReader : public juce::KeyListener
 {
 public:
     /**
-     * @brief  Create the ChordTracker, assigning it to listen to key events
+     * @brief  Create the ChordReader, assigning it to listen to key events
      *         from a component.
      *
-     * @param keyComponent  The Component that will provide the ChordTracker
+     * @param keyComponent  The Component that will provide the ChordReader
      *                      with keyboard events.
      */
-    ChordTracker(juce::Component* keyComponent);
+    ChordReader(juce::Component* keyComponent);
 
-    virtual ~ChordTracker() { }
+    virtual ~ChordReader() { }
 
     /**
-     * @brief  Gets the set of keys that are currently held down.
+     * @brief  Gets the chord value that's currently held.
      *
-     * @return   A bit mask representing the chord keys that are held down.
+     * @return   The chord object selected by the current set of held keys.
      */
-    juce::uint8 getHeldKeys() const;
+    Chord getHeldChord() const;
     
     /**
-     * @brief  Gets the current key selection that will be used if all keys are
+     * @brief  Gets the current Chord that will be used if all keys are
      *         released.
      *
-     * @return  The selected key, or 0 if no key is selected.
+     *  This will return a different value than getHeldChord() only when the 
+     * user has released keys very recently, in order to ensure chord input
+     * isn't changed if the user releases one key a tiny fraction of a second
+     * late.
+     *
+     * @return  The selected chord, or an invalid chord if no chord keys are
+     *          held.
      */
-    juce::uint8 getSelectedKey() const;
+    Chord getSelectedChord() const;
 
     /**
      * @brief  Gets the current active alphabet.
@@ -43,17 +52,10 @@ public:
      * @return  The active Alphabet setting the character set used, its order, 
      *          and its chord values.
      */
-    const Alphabet* getAlphabet() const;
+    const Key::Alphabet* getAlphabet() const;
 
     /**
-     * @brief  Gets the number of chord keys used:
-     *
-     * @return  The chord key count.
-     */
-    const int getNumChordKeys() const;
-
-    /**
-     * @brief  Receives notifications when the keyboard chord state changes.
+     * @brief  Receives notifications when the selected chord state changes.
      */
     class Listener
     {
@@ -62,32 +64,31 @@ public:
 
         virtual ~Listener() { }
 
-        friend class ChordTracker;
+        friend class ChordReader;
 
     private:
         /**
-         * @brief  Notifies the Listener that the set of keys held down has
+         * @brief  Notifies the Listener that the currently selected chord has
          *         changed.
          *
-         * @param heldKeys  A bit mask representing the chord keys that are held
-         *                  down.
+         * @param heldChord  An object representing the chord keys that are held
+         *                   down.
          */
-        virtual void heldKeysChanged(const juce::uint8 heldKeys) = 0;
+        virtual void selectedChordChanged(const Chord selectedChord) = 0;
 
         /**
-         * @brief  Notifies the Listener that a character was selected.
+         * @brief  Notifies the Listener that a chord was entered
          *
-         * @param selected  The selected character's index in the active
-         *                  alphabet.
+         * @param selected  The entered chord value.
          */
-        virtual void chordEntered(const juce::uint8 selected) = 0;
+        virtual void chordEntered(const Chord selected) = 0;
 
         /**
          * @brief  Notifies the listener that the active alphabet has changed.
          *
          * @param alphabet  The new active character set.
          */
-        virtual void alphabetChanged(const Alphabet* alphabet) = 0;
+        virtual void alphabetChanged(const Key::Alphabet* alphabet) = 0;
 
         /**
          * @brief  Directly passes all key events unrelated to chord state on
@@ -128,7 +129,7 @@ private:
      *                pressed.
      *
      * @return        True, in order to notify the JUCE library that the
-     *                ChordTracker is consuming the key event.
+     *                ChordReader is consuming the key event.
      */
     bool keyPressed(const juce::KeyPress& key, juce::Component* source)
             override;
@@ -138,19 +139,19 @@ private:
      *
      * @param isKeyDown  Whether a key was just pressed, or just released.
 
-     * @param source     The component tracked by this ChordTracker.
+     * @param source     The component tracked by this ChordReader.
      *
      * @return           True whenever the key was released. This notifies the
-     *                   JUCE library that the ChordTracker is consuming the key
+     *                   JUCE library that the ChordReader is consuming the key
      *                   event.
      */
     bool keyStateChanged(bool isKeyDown, juce::Component* source) override;
 
-    // Bitmap tracking which keys are held down:
-    juce::uint8 heldKeys = 0;
+    // Object tracking which keys are held down:
+    Chord heldChord = 0;
 
-    // Bitmap tracking the active key selection:
-    juce::uint8 selectedKey = 0;
+    // Object tracking the active key selection:
+    Chord selectedChord = 0;
     
     /**
      * @brief  All alphabets that may be selected.
@@ -177,23 +178,23 @@ private:
     {
     public:
         /**
-         * @brief  Connects the timer to its chordTracker on construction.
+         * @brief  Connects the timer to its chordReader on construction.
          *
-         * @param chordTracker  The chordTracker using this timer.
+         * @param chordReader  The chordReader using this timer.
          */
-        ReleaseTimer(ChordTracker& chordTracker);
+        ReleaseTimer(ChordReader& chordReader);
 
         virtual ~ReleaseTimer() {}
 
     private:
         /**
-         * @brief  Updates the ChordTracker's selected chord and passes the
+         * @brief  Updates the ChordReader's selected chord and passes the
          *         update on to all listeners if the delay period finishes
          *         without the user releasing all keys to enter the chord.
          */
         void timerCallback() override;
 
-        ChordTracker& chordTracker;
+        ChordReader& chordReader;
     };
     ReleaseTimer releaseTimer;
 };

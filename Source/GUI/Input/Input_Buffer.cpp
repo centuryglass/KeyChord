@@ -1,4 +1,5 @@
-#include "InputBuffer.h"
+#include "Input_Buffer.h"
+#include "Util_ConditionChecker.h"
 
 // Command prefix used to focus the target window:
 static const juce::String focusCommand("xdotool windowfocus ");
@@ -7,20 +8,20 @@ static const juce::String focusCommand("xdotool windowfocus ");
 static const juce::String typeCommand(" && xdotool type ");
 
 // Saves all necessary window IDs on construction.
-InputBuffer::InputBuffer(const Window targetWindow, const Window keyChordWindow) :
+Input::Buffer::Buffer(const Window targetWindow, const Window keyChordWindow) :
     targetWindow(targetWindow), keyChordWindow(keyChordWindow) { }
 
 
 // If the input string isn't empty, send it to the target window before
 // destruction.
-InputBuffer::~InputBuffer()
+Input::Buffer::~Buffer()
 {
     sendAndClearInput();
 }
 
 
 // Gets the cached input string.
-juce::String InputBuffer::getInputText() const
+juce::String Input::Buffer::getInputText() const
 {
     return inputText;
 }
@@ -28,7 +29,7 @@ juce::String InputBuffer::getInputText() const
 
 // Sends all cached input to the target window, and clears the saved input
 // string.
-void InputBuffer::sendAndClearInput()
+void Input::Buffer::sendAndClearInput()
 {
     if (inputText.isEmpty())
     {
@@ -56,26 +57,26 @@ void InputBuffer::sendAndClearInput()
 
 
 // Adds a character to the end of the cached input string.
-void InputBuffer::appendCharacter(const char inputChar)
+void Input::Buffer::appendCharacter(const char inputChar)
 {
     inputText += juce::String::charToString(inputChar);
 }
 
 
 // Removes the last character from the end of the input string.
-void InputBuffer::deleteLastChar()
+void Input::Buffer::deleteLastChar()
 {
     inputText = inputText.substring(0, inputText.length() - 1);
 }
 
 // Removes all saved input.
-void InputBuffer::clearInput()
+void Input::Buffer::clearInput()
 {
     inputText.clear();
 }
     
 // Checks if the input buffer currently contains any input.
-bool InputBuffer::isEmpty() const
+bool Input::Buffer::isEmpty() const
 {
     return inputText.isEmpty();
 }

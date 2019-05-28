@@ -4,10 +4,6 @@
 #include "Util_ShutdownListener.h"
 #include "Util_TempTimer.h"
 
-#ifdef CHIP_FEATURES
-#include "Hardware_Audio.h"
-#endif
-
 #ifdef INCLUDE_TESTING
 #include "Debug_ScopeTimerRecords.h"
 #endif
@@ -101,12 +97,12 @@ void HomeApplication::initialise(const juce::String &commandLine)
     homeWindow->setLookAndFeel(lookAndFeel.get());
 
     // Initialize and apply the chord component and input handler:
-    chordComponent.reset(new ChordComponent);
-    homeWindow->setContentNonOwned(chordComponent.get(), false);
+    chordPreview.reset(new Component::ChordPreview);
+    homeWindow->setContentNonOwned(chordPreview.get(), false);
     homeWindow->setVisible(true);
     homeWindow->addToDesktop();
-    chordComponent->setBounds(homeWindow->getLocalBounds());
-    inputHandler.reset(new InputHandler(chordComponent.get(),
+    chordPreview->setBounds(homeWindow->getLocalBounds());
+    inputController.reset(new Input::Controller(chordPreview.get(),
                 targetWindow, xWindows.getMainAppWindow()));
 
     // Ensure the application window is active and has keyboard focus:
@@ -163,8 +159,8 @@ void HomeApplication::shutdown()
     Util::ShutdownBroadcaster::broadcastShutdown();
     homeWindow.reset(nullptr);
     juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
-    inputHandler.reset(nullptr);
-    chordComponent.reset(nullptr);
+    inputController.reset(nullptr);
+    chordPreview.reset(nullptr);
     lookAndFeel.reset(nullptr);
     #ifdef INCLUDE_TESTING
     Debug::ScopeTimerRecords::printRecords();

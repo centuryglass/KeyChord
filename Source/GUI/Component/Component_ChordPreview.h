@@ -1,14 +1,17 @@
 #pragma once
 /**
- * @file  ChordComponent.h
+ * @file  Component_ChordPreview.h
  *
  * @brief  Displays a preview of a potential chorded keyboard.
  */
 
+#include "Input_Key_Alphabet.h"
+#include "Chord.h"
 #include "JuceHeader.h"
-#include "Alphabet.h"
 
-class ChordComponent : public juce::Component
+namespace Component { class ChordPreview; }
+
+class Component::ChordPreview : public juce::Component
 {
 public:
     enum ColourIds
@@ -64,9 +67,9 @@ public:
     /**
      * @brief  Requests keyboard focus on construction.
      */
-    ChordComponent();
+    ChordPreview();
 
-    virtual ~ChordComponent() { }
+    virtual ~ChordPreview() { }
 
     /**
      * @brief  Sets the current state of the chorded keyboard, immediately
@@ -75,13 +78,12 @@ public:
      * @param activeAlphabet  The active alphabet mapping between characters and
      *                        chords.
      *                        
-     * @param heldKeys        The binary representation of which chord keys are
-     *                        held down.
+     * @param heldChord       The current held Chord value.
      *
      * @param input           The current cached input string.
      */
-    void updateChordState(const Alphabet* activeAlphabet, 
-            const juce::uint8 heldKeys, 
+    void updateChordState(const Input::Key::Alphabet* activeAlphabet, 
+            const Chord heldChord, 
             const juce::String input);
 
 private:
@@ -95,10 +97,9 @@ private:
     void paint(juce::Graphics& g) override;
 
     // The active character alphabet:
-    const Alphabet* currentAlphabet = nullptr;
-    // The bitmask storing which chord keys are held down:
-    juce::uint8 lastHeldKeys = 0;
+    const Input::Key::Alphabet* currentAlphabet = nullptr;
+    // The current chord input held:
+    Chord lastHeldChord;
     // Buffered input waiting to be sent to the target window:
     juce::String bufferedInput;
-
 };

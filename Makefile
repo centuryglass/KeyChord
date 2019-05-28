@@ -220,16 +220,10 @@ include $(shell pwd)/makefiles/*.mk
 
 
 OBJECTS_MAIN := \
-  $(JUCE_OBJDIR)/ChordTracker.o \
-  $(JUCE_OBJDIR)/InputHandler.o \
   $(JUCE_OBJDIR)/Main.o \
   $(JUCE_OBJDIR)/HomeApplication.o \
   $(JUCE_OBJDIR)/HomeWindow.o \
-  $(JUCE_OBJDIR)/ChordComponent.o \
-  $(JUCE_OBJDIR)/CharPainter.o \
-  $(JUCE_OBJDIR)/Alphabet.o \
-  $(JUCE_OBJDIR)/AlphabetFactory.o \
-  $(JUCE_OBJDIR)/InputBuffer.o \
+  $(JUCE_OBJDIR)/Chord.o
 
 
 OBJECTS_MAIN_TEST :=
@@ -326,17 +320,5 @@ $(JUCE_OBJDIR)/HomeApplication.o: \
 	Source/HomeApplication.cpp
 $(JUCE_OBJDIR)/HomeWindow.o: \
 	Source/HomeWindow.cpp
-$(JUCE_OBJDIR)/ChordComponent.o: \
-	Source/ChordComponent.cpp
-$(JUCE_OBJDIR)/ChordTracker.o: \
-	Source/ChordTracker.cpp
-$(JUCE_OBJDIR)/Alphabet.o: \
-	Source/Alphabet.cpp
-$(JUCE_OBJDIR)/AlphabetFactory.o: \
-	Source/AlphabetFactory.cpp
-$(JUCE_OBJDIR)/CharPainter.o: \
-	Source/CharPainter.cpp
-$(JUCE_OBJDIR)/InputBuffer.o: \
-	Source/InputBuffer.cpp
-$(JUCE_OBJDIR)/InputHandler.o: \
-	Source/InputHandler.cpp
+$(JUCE_OBJDIR)/Chord.o: \
+	Source/Chord.cpp

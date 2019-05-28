@@ -1,12 +1,16 @@
 #pragma once
 /**
- * @file  Alphabet.h
+ * @file  Input_Key_Alphabet.h
  *
  * @brief  Represents a character set where each character has a corresponding
  *         chord value.
  */
 
-class Alphabet
+#include "Chord.h"
+
+namespace Input { namespace Key { class Alphabet; } }
+
+class Input::Key::Alphabet
 {
 public:
     typedef unsigned char uint8;
@@ -20,9 +24,8 @@ public:
         char character;
         // A bitmask representing the set of chord keys used to type the
         // character.
-        uint8 chord;
+        Chord chord;
     };
-
 
     /**
      * @brief  Saves all character to chord mappings in the alphabet on
@@ -52,7 +55,7 @@ public:
      * @return       The character that chord should create, or 0 if the
      *               alphabet does not use that chord.
      */
-    char getCharacter(const uint8 chord) const;
+    char getChordCharacter(const Chord chord) const;
 
     /**
      * @brief  Finds the chord used to type a particular character.
@@ -62,7 +65,7 @@ public:
      * @return           The chord bitmask used to create that character, or 0
      *                   if that character is not in the alphabet.
      */
-    uint8 getChord(const char character) const;
+    Chord getChord(const char character) const;
 
     /**
      * @brief  Gets the number of characters in the alphabet.
@@ -84,7 +87,5 @@ private:
     // chordToChar[chord - 1] = character
     char chordToChar [maxChord] = { 0 };
     // charToChord[character - 1] = chord
-    uint8 charToChord[maxAscii] = { 0 };
+    Chord charToChord[maxAscii] = { 0 };
 };
-
-

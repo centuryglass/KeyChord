@@ -1,11 +1,14 @@
-#include "Alphabet.h"
-#include "AlphabetFactory.h"
+#include "Input_Key_Alphabet.h"
+#include "Input_Key_AlphabetFactory.h"
 #include <vector>
 #include <algorithm>
 
+namespace InKey = Input::Key;
+namespace KeyFactory = Input::Key::AlphabetFactory;
+
 // Chords arranged in order by how easy they are to type. Use this to pick
 // reasonable chord maps.
-static const Alphabet::uint8 chordConvenienceOrder [] =
+static const InKey::Alphabet::uint8 chordConvenienceOrder [] =
 {
     // Single key:
     0b00001,
@@ -56,13 +59,18 @@ static const constexpr char* upperCase = " IEGATBSNOCLHRDYUMWZVFPXKJQ";
 static const constexpr char* numeric   = "0.213594,687-=)(*+^%";
 static const constexpr char* symbolic  = "\n\b\t></;'\":?}{][#|~\\&!$@";
 
-static Alphabet createAlphabet(const char* charSet)
+namespace Input { namespace Key
+{
+    static Alphabet createAlphabet(const char* charSet);
+} }
+
+InKey::Alphabet InKey::createAlphabet(const char* charSet)
 {
     typedef Alphabet::ChordedChar ChordedChar;
     std::vector<ChordedChar> charMap;
     for (int i = 0; charSet[i] != 0; i++)
     {
-        charMap.push_back({ charSet[i], chordConvenienceOrder[i] });
+        charMap.push_back({ charSet[i], Chord(chordConvenienceOrder[i]) });
     }
     std::sort(charMap.begin(), charMap.end(),
             [](ChordedChar first, ChordedChar second)
@@ -72,22 +80,22 @@ static Alphabet createAlphabet(const char* charSet)
     return Alphabet(charMap.data(), charMap.size());
 }
 
-Alphabet AlphabetFactory::createLowerCase()
+InKey::Alphabet KeyFactory::createLowerCase()
 {
     return createAlphabet(lowerCase);
 }
 
-Alphabet AlphabetFactory::createUpperCase()
+InKey::Alphabet KeyFactory::createUpperCase()
 {
     return createAlphabet(upperCase);
 }
 
-Alphabet AlphabetFactory::createNumeric()
+InKey::Alphabet KeyFactory::createNumeric()
 {
     return createAlphabet(numeric);
 }
 
-Alphabet AlphabetFactory::createSymbolic()
+InKey::Alphabet KeyFactory::createSymbolic()
 {
     return createAlphabet(symbolic);
 }

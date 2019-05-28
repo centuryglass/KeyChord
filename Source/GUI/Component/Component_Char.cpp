@@ -1,4 +1,4 @@
-#include "CharPainter.h"
+#include "Component_Char.h"
 #include <map>
 
 std::map<char, std::pair<juce::uint64, juce::uint64>> charMap = 
@@ -217,8 +217,8 @@ std::map<char, std::pair<juce::uint64, juce::uint64>> charMap =
 static const constexpr int maxPixel = 3;
 
 
-void CharPainter::paintAt(juce::Graphics& g, const char toPrint, const int x,
-        const int y, const int width, const int height)
+void Component::Char::paintAt(juce::Graphics& g, const char toPrint,
+        const int x, const int y, const int width, const int height)
 {
     const int pixelWidth = std::max(1, width / 10);
     const int pixelHeight = std::max(1, height / 10);

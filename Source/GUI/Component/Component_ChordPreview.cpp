@@ -1,5 +1,5 @@
-#include "ChordComponent.h"
-#include "CharPainter.h"
+#include "Component_ChordPreview.h"
+#include "Component_Char.h"
 #include <map>
 #include <vector>
 
@@ -9,7 +9,7 @@ static const constexpr int numChordKeys = 5;
 
 
 //  Requests keyboard focus on construction.
-ChordComponent::ChordComponent()
+Component::ChordPreview::ChordPreview()
 {
     setWantsKeyboardFocus(true);
 }
@@ -17,8 +17,10 @@ ChordComponent::ChordComponent()
 
 // Sets the current state of the chorded keyboard, immediately redrawing the
 // component if the state changes.
-void ChordComponent::updateChordState(const Alphabet* activeAlphabet, 
-        const juce::uint8 heldKeys, const juce::String input)
+void Component::ChordPreview::updateChordState(
+        const Input::Key::Alphabet* activeAlphabet, 
+        const Chord heldChord,
+        const juce::String input)
 {
     bool shouldRepaint = false;
     if (activeAlphabet != currentAlphabet)
@@ -26,9 +28,9 @@ void ChordComponent::updateChordState(const Alphabet* activeAlphabet,
         currentAlphabet = activeAlphabet;
         shouldRepaint = true;
     }
-    if (heldKeys != lastHeldKeys)
+    if (heldChord != lastHeldChord)
     {
-        lastHeldKeys = heldKeys;
+        lastHeldChord = heldChord;
         shouldRepaint = true;
     }
     if (input != bufferedInput)
@@ -46,7 +48,7 @@ void ChordComponent::updateChordState(const Alphabet* activeAlphabet,
 // Draws all chord mappings within the current alphabet, which chord keys are
 // currently held down, and the buffered input string waiting to be sent to the
 // target window.
-void ChordComponent::paint(juce::Graphics& g)
+void Component::ChordPreview::paint(juce::Graphics& g)
 {
     if (currentAlphabet == nullptr)
     {
@@ -79,7 +81,7 @@ void ChordComponent::paint(juce::Graphics& g)
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
         (const char toDraw)
     {
-        CharPainter::paintAt(g, toDraw, xPos + xPadding, yPos + yPadding,
+        Char::paintAt(g, toDraw, xPos + xPadding, yPos + yPadding,
                 charWidth, rowHeight);
     };
 
@@ -87,17 +89,16 @@ void ChordComponent::paint(juce::Graphics& g)
     for(int keyIdx = 0; keyIdx < numChordKeys; keyIdx++)
     {
         yPos += paddedRowHeight;
-        const uint8 keyMask = 1 << keyIdx;
         juce::Colour chordColour = findColour(chord1Selected + keyIdx, true);
         g.setColour(chordColour);
-        if ((keyMask & lastHeldKeys) == keyMask)
+        if (lastHeldChord.usesChordKey(keyIdx))
         {
-            drawChar(CharPainter::fillChar);
+            drawChar(Char::fillChar);
             g.setColour(chordColour.contrasting());
         }
         else
         {
-            drawChar(CharPainter::outlineChar);
+            drawChar(Char::outlineChar);
         }
 
         drawChar(chordChars[keyIdx]);
@@ -112,17 +113,16 @@ void ChordComponent::paint(juce::Graphics& g)
         // Current alphabet character:
         const char indexChar = currentAlphabet->getCharAtIndex(i);
         // Binary mask for the chord used to type the character:
-        const uint8 characterChord = currentAlphabet->getChord(indexChar);
+        const Chord characterChord = currentAlphabet->getChord(indexChar);
         // Whether this character is currently selected:
-        const bool charSelected = (characterChord == lastHeldKeys);
+        const bool charSelected = (characterChord == lastHeldChord);
         // Whether no chord keys are held that aren't in this character's chord:
-        const bool charOpen
-                = ((characterChord | lastHeldKeys) == characterChord);
+        const bool charOpen = (characterChord <= lastHeldChord);
 
         g.setColour(findColour(charOpen ? text : inactiveText, true));
         if (charSelected)
         {
-            drawChar(CharPainter::outlineChar);
+            drawChar(Char::outlineChar);
         }
         drawChar(indexChar);
 
@@ -130,11 +130,10 @@ void ChordComponent::paint(juce::Graphics& g)
         for(int keyIdx = 0; keyIdx < numChordKeys; keyIdx++)
         {
             yPos += paddedRowHeight;
-            const uint8 keyMask = 1 << keyIdx;
             // Check if this chord key is currently held down:
-            const bool keyIsHeld = ((keyMask & lastHeldKeys) == keyMask);
+            const bool keyIsHeld = lastHeldChord.usesChordKey(keyIdx);
             // Check if this chord key is used for this character:
-            const bool charUsesKey = ((keyMask & characterChord) == keyMask);
+            const bool charUsesKey = characterChord.usesChordKey(keyIdx);
 
             // Select the color used to draw the character:
             int colourID;
@@ -167,11 +166,11 @@ void ChordComponent::paint(juce::Graphics& g)
             g.setColour(findColour(colourID, true));
             if (charUsesKey)
             {
-                drawChar(CharPainter::fillChar);
+                drawChar(Char::fillChar);
             }
             else
             {
-                drawChar(CharPainter::outlineChar);
+                drawChar(Char::outlineChar);
             }
         }
     }

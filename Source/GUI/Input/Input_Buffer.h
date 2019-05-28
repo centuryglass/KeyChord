@@ -1,6 +1,6 @@
 #pragma once
 /**
- * @file  InputBuffer.h
+ * @file  Input_Buffer.h
  *
  * @brief  Stores chorded keyboard input and sends it to the target
  *         application.
@@ -9,7 +9,9 @@
 #include "JuceHeader.h"
 #include <X11/Xlib.h>
 
-class InputBuffer
+namespace Input { class Buffer; }
+
+class Input::Buffer
 {
 public:
     /**
@@ -19,13 +21,13 @@ public:
      *
      * @param keyChordWindow  The ID of this application's single window.
      */
-    InputBuffer(const Window targetWindow, const Window keyChordWindow);
+    Buffer(const Window targetWindow, const Window keyChordWindow);
 
     /**
      * @brief  If the input string isn't empty, send it to the target window
      *         before destruction.
      */
-    virtual ~InputBuffer();
+    virtual ~Buffer();
 
     /**
      * @brief  Gets the cached input string.
