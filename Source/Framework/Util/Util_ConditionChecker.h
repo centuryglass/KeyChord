@@ -57,6 +57,13 @@ public:
     bool isChecking() const;
 
     /**
+     * @brief  If currently checking and called on the message thread, run the
+     *         JUCE message thread event loop on the calling thread until the
+     *         condition is met or the tests time out.
+     */
+    void waitForUpdate();
+
+    /**
      * @brief  Sets how frequently the object should check for its condition to
      *         be met.
      *

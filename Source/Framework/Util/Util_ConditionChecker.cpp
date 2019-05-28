@@ -58,6 +58,24 @@ bool Util::ConditionChecker::isChecking() const
 }
 
 
+// If currently checking and called on the message thread, run the JUCE message
+// thread event loop on the calling thread until the condition is met or the
+// tests time out.
+void Util::ConditionChecker::waitForUpdate()
+{
+    if (! juce::MessageManager::existsAndIsCurrentThread())
+    {
+        return;
+    }
+
+    while (isChecking())
+    {
+        juce::MessageManager::getInstance()->runDispatchLoopUntil(
+                checkInterval);
+        return;
+    }
+}
+
 // Sets how frequently the object should check for its condition to be met.
 void Util::ConditionChecker::setCheckInterval
 (const int interval, const float multiplier)

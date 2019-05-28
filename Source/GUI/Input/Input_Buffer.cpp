@@ -1,11 +1,12 @@
 #include "Input_Buffer.h"
 #include "Util_ConditionChecker.h"
+#include "Windows_XInterface.h"
 
-// Command prefix used to focus the target window:
-static const juce::String focusCommand("xdotool windowfocus ");
+// Commmand prefix used to transmit text to the focused window.
+static const juce::String typeCommand("xdotool type ");
 
-// Commmand postfix used to transmit text to the focused window.
-static const juce::String typeCommand(" && xdotool type ");
+// Maximum time in milliseconds to wait for the target window to focus:
+static const constexpr int focusTimeout = 1000;
 
 // Saves all necessary window IDs on construction.
 Input::Buffer::Buffer(const Window targetWindow, const Window keyChordWindow) :
@@ -37,6 +38,7 @@ void Input::Buffer::sendAndClearInput()
     }
     using juce::String;
     using juce::juce_wchar;
+    // Ensure single quotes are properly escaped:
     for (int cIndex = 0; cIndex < inputText.length(); cIndex++)
     {
         juce_wchar testChar = inputText[cIndex];
@@ -47,12 +49,29 @@ void Input::Buffer::sendAndClearInput()
             cIndex += 3;
         }
     }
-    String commandString(focusCommand + String(targetWindow) + typeCommand
-            + "'" + inputText + "' && " 
-            + focusCommand + String(keyChordWindow));
-    DBG(commandString);
-    system(commandString.toRawUTF8());
-    clearInput();
+
+    Windows::XInterface xInterface;
+    Util::ConditionChecker focusChecker;
+    xInterface.activateWindow(targetWindow);
+    focusChecker.setCheckInterval(50, 1.2f);
+    focusChecker.startCheck([&xInterface, this]()
+    {
+        return xInterface.isActiveWindow(targetWindow);
+    },
+    [&xInterface, this]()
+    {
+        String commandString(typeCommand + "'" + inputText + "'");
+        DBG("running input command: " << commandString);
+        system(commandString.toRawUTF8());
+        clearInput();
+        xInterface.activateWindow(keyChordWindow);
+    },
+    focusTimeout,
+    []()
+    {
+        DBG("Failed to get window focus before timeout!");
+    });
+    focusChecker.waitForUpdate();
 }
 
 
