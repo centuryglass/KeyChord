@@ -1,12 +1,8 @@
 #include "Component_ChordPreview.h"
 #include "Component_Char.h"
+#include "Input_Key_JSONKeys.h"
 #include <map>
 #include <vector>
-
-// Characters drawn to represent the five chord buttons:
-static const char chordChars [] = { 'A', 'S', 'D', 'F', 'G' };
-static const constexpr int numChordKeys = 5;
-
 
 //  Requests keyboard focus on construction.
 Component::ChordPreview::ChordPreview()
@@ -86,7 +82,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     };
 
     // Draw chord key guides:
-    for(int keyIdx = 0; keyIdx < numChordKeys; keyIdx++)
+    for(int keyIdx = 0; keyIdx < Chord::numChordKeys(); keyIdx++)
     {
         yPos += paddedRowHeight;
         juce::Colour chordColour = findColour(chord1Selected + keyIdx, true);
@@ -101,7 +97,9 @@ void Component::ChordPreview::paint(juce::Graphics& g)
             drawChar(Char::outlineChar);
         }
 
-        drawChar(chordChars[keyIdx]);
+        const juce::Identifier* chordKeyID 
+                = Input::Key::JSONKeys::chordKeys[keyIdx];
+        drawChar((char) keyConfig.getKeyChar(*chordKeyID));
     }
 
     // Label and draw chords for each possible character:
@@ -127,7 +125,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         drawChar(indexChar);
 
         // Draw each chord key under the character:
-        for(int keyIdx = 0; keyIdx < numChordKeys; keyIdx++)
+        for(int keyIdx = 0; keyIdx < Chord::numChordKeys(); keyIdx++)
         {
             yPos += paddedRowHeight;
             // Check if this chord key is currently held down:

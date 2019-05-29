@@ -7,6 +7,7 @@
 
 #include "JuceHeader.h"
 #include "Chord.h"
+#include "Input_Key_ConfigFile.h"
 #include "Input_Key_Alphabet.h"
 
 namespace Input { class ChordReader; }
@@ -152,6 +153,9 @@ private:
 
     // Object tracking the active key selection:
     Chord selectedChord = 0;
+
+    // The list of chord Keys, in order:
+    juce::Array<juce::KeyPress> chordKeys;
     
     /**
      * @brief  All alphabets that may be selected.
@@ -159,15 +163,21 @@ private:
     enum class AlphabetType
     {
         lowerCase,
-        upperCase,
         numeric,
         symbolic
     };
     // The current active alphabet:
     AlphabetType activeAlphabet = AlphabetType::lowerCase;
 
+    // Keys used to select specific alphabets:
+    // Stored in the same order defined in the AlphabetType enum class.
+    juce::Array<juce::KeyPress> alphabetKeys;
+
     // All registered listeners:
     juce::Array<Listener*> listeners;
+
+    // Loads key binding data:
+    Input::Key::ConfigFile keyConfig;
 
     /**
      * @brief  Passes on key release events as selection changes, after waiting

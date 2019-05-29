@@ -9,6 +9,7 @@
 #include "Input_ChordReader.h"
 #include "Input_Buffer.h"
 #include "Input_Key_Alphabet.h"
+#include "Input_Key_ConfigFile.h"
 #include "Component_ChordPreview.h"
 #include "JuceHeader.h"
 
@@ -63,6 +64,9 @@ private:
      * @param key  The registered key description for the key press event.
      */
     void keyPressed(const juce::String key) override;
+
+    // Loads key bindings:
+    Input::Key::ConfigFile keyConfig;
 
     // Captures keyboard input and draws the chord entry state:
     Component::ChordPreview* chordPreview;

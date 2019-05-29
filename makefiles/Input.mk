@@ -11,7 +11,10 @@ INPUT_KEY_PREFIX := $(INPUT_PREFIX)Key_
 INPUT_KEY_OBJ := $(INPUT_OBJ)Key_
 OBJECTS_INPUT_KEY := \
   $(INPUT_KEY_OBJ)Alphabet.o \
-  $(INPUT_KEY_OBJ)AlphabetFactory.o
+  $(INPUT_KEY_OBJ)AlphabetFactory.o \
+  $(INPUT_KEY_OBJ)Binding.o \
+  $(INPUT_KEY_OBJ)JSONResource.o \
+  $(INPUT_KEY_OBJ)ConfigFile.o
 
 OBJECTS_INPUT := \
   $(INPUT_OBJ)ChordReader.o \
@@ -38,6 +41,12 @@ $(INPUT_KEY_OBJ)Alphabet.o: \
 	$(INPUT_KEY_DIR)/$(INPUT_KEY_PREFIX)Alphabet.cpp
 $(INPUT_KEY_OBJ)AlphabetFactory.o: \
 	$(INPUT_KEY_DIR)/$(INPUT_KEY_PREFIX)AlphabetFactory.cpp
+$(INPUT_KEY_OBJ)Binding.o: \
+	$(INPUT_KEY_DIR)/$(INPUT_KEY_PREFIX)Binding.cpp
+$(INPUT_KEY_OBJ)JSONResource.o: \
+	$(INPUT_KEY_DIR)/$(INPUT_KEY_PREFIX)JSONResource.cpp
+$(INPUT_KEY_OBJ)ConfigFile.o: \
+	$(INPUT_KEY_DIR)/$(INPUT_KEY_PREFIX)ConfigFile.cpp
 
 $(INPUT_OBJ)Buffer.o: \
 	$(INPUT_DIR)/$(INPUT_PREFIX)Buffer.cpp

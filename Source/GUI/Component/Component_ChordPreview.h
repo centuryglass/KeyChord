@@ -6,6 +6,7 @@
  */
 
 #include "Input_Key_Alphabet.h"
+#include "Input_Key_ConfigFile.h"
 #include "Chord.h"
 #include "JuceHeader.h"
 
@@ -102,4 +103,6 @@ private:
     Chord lastHeldChord;
     // Buffered input waiting to be sent to the target window:
     juce::String bufferedInput;
+    // Loads chord key display characters:
+    Input::Key::ConfigFile keyConfig;
 };

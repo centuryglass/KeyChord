@@ -1,57 +1,57 @@
 {
     "Chord1" : 
     { 
-        "key"      : "H", 
-        "name"     : "LK1",
-        "charName" : "1"
+        "key"      : "A", 
+        "name"     : "A",
+        "charName" : "A"
     },
     "Chord2" : 
     { 
-        "key"      : "Y", 
-        "name"     : "LK2",
-        "charName" : "2"
+        "key"      : "S", 
+        "name"     : "S",
+        "charName" : "S"
     },
     "Chord3" : 
     { 
-        "key"      : "tab", 
-        "name"     : "LK3",
-        "charName" : "3"
+        "key"      : "D", 
+        "name"     : "D",
+        "charName" : "D"
     },
     "Chord4" : 
     { 
-        "key"      : "O", 
-        "name"     : "LK4",
-        "charName" : "4"
+        "key"      : "F", 
+        "name"     : "F",
+        "charName" : "F"
     },
     "Chord5" : 
     { 
-        "key"      : "L", 
-        "name"     : "LK4",
-        "charName" : "5"
+        "key"      : "G", 
+        "name"     : "G",
+        "charName" : "G"
     },
     "Select letter keys" :
     {
-        "key"      : "",
-        "name"     : "",
-        "charName" : ""
+        "key"      : "H",
+        "name"     : "H",
+        "charName" : "H"
     },
     "Select number keys" :
     {
-        "key"      : "",
-        "name"     : "",
-        "charName" : ""
+        "key"      : "J",
+        "name"     : "J",
+        "charName" : "J"
     },
     "Select symbol keys" :
     {
-        "key"      : "",
-        "name"     : "",
-        "charName" : ""
+        "key"      : "K",
+        "name"     : "K",
+        "charName" : "K"
     },
     "Select control keys" :
     {
-        "key"      : "",
-        "name"     : "",
-        "charName" : ""
+        "key"      : "L",
+        "name"     : "L",
+        "charName" : "L"
     },
     "Backspace" :
     {
@@ -85,26 +85,26 @@
     },
     "Toggle immediate mode" :
     {
-        "key"      : "+",
-        "name"     : "+",
-        "charName" : "+"
+        "key"      : "I",
+        "name"     : "I",
+        "charName" : "I"
     },
     "Show help" :
     {
         "key"      : "home",
-        "name"     : "Shift + L1",
-        "charName" : "1"
+        "name"     : "Home",
+        "charName" : "H"
     },
     "Toggle window edge" :
     {
-        "key"      : "",
-        "name"     : "",
-        "charName" : ""
+        "key"      : "W",
+        "name"     : "W",
+        "charName" : "W"
     },
     "Toggle minimize" :
     {
-        "key"      : "",
-        "name"     : "",
-        "charName" : ""
+        "key"      : "M",
+        "name"     : "M",
+        "charName" : "M"
     }
 }

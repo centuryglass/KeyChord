@@ -1,23 +1,13 @@
 #include "Input_Controller.h"
+#include "Input_Key_JSONKeys.h"
+#include "JuceHeader.h"
+#include <map>
 
-// Action key definitions:
-// TODO: define and load these using a configuration file.
-namespace ActionKey
-{
-    // Deletes the last character of buffered input:
-    static const constexpr char* backspace = "backspace";
-    // Clears all buffered input:
-    static const constexpr char* clearAll = "delete";
-    // Clears and sends buffered input:
-    static const constexpr char* send = "return";
-    // Closes the application, sending buffered input:
-    static const constexpr char* closeAndSend = "end";
-    // Closes the application, discarding buffered input:
-    static const constexpr char* closeWithoutSending = "escape";
-    // Toggles immediate entry mode, where all input is immediately forwarded
-    // to the target window without buffering:
-    static const constexpr char* toggleImmediateMode = "I";
-}
+#ifdef JUCE_DEBUG
+// Print the full class name before all debug output:
+static const constexpr char* dbgPrefix = "Input::Controller::";
+#endif
+
 
 // Sets up all keyboard input handling.
 Input::Controller::Controller(Component::ChordPreview* chordPreview,
@@ -65,46 +55,104 @@ void Input::Controller::alphabetChanged(const Input::Key::Alphabet* alphabet)
 // close the application.
 void Input::Controller::keyPressed(const juce::String key)
 {
+    using namespace Input::Key::JSONKeys;
+    if (key.isEmpty())
+    {
+        return;
+    }
     bool sendUpdate = false;
-    if (key == ActionKey::backspace)
+    const std::map<const juce::Identifier*, std::function<void()>> actionMap =
     {
-        inputBuffer.deleteLastChar();
-        sendUpdate = true;
-    }
-    else if (key == ActionKey::clearAll)
-    {
-        inputBuffer.clearInput();
-        sendUpdate = true;
-    }
-    else if (key == ActionKey::send)
-    {
-        inputBuffer.sendAndClearInput();
-        sendUpdate = true;
-    }
-    else if (key == ActionKey::closeAndSend)
-    {
-        // inputBuffer will send its text on destruction.
-        juce::JUCEApplication::getInstance()->quit();
-    }
-    else if (key == ActionKey::closeWithoutSending)
-    {
-        inputBuffer.clearInput();
-        juce::JUCEApplication::getInstance()->quit();
-    }
-    else if (key == ActionKey::toggleImmediateMode)
-    {
-        immediateMode = ! immediateMode;
-        if (immediateMode && ! inputBuffer.isEmpty())
         {
-            inputBuffer.sendAndClearInput();
-            sendUpdate = true;
+            &backspace,
+            [this, &sendUpdate]() 
+            {
+                inputBuffer.deleteLastChar();
+                sendUpdate = true;
+            }
+        },
+        {
+            &clearAll,
+            [this, &sendUpdate]() 
+            {
+                inputBuffer.clearInput();
+                sendUpdate = true;
+            } 
+        },
+        {
+            &sendText,
+            [this, &sendUpdate]() 
+            { 
+                inputBuffer.sendAndClearInput();
+                sendUpdate = true;
+            }
+        },
+        { 
+            &closeAndSend,
+            [this, &sendUpdate]() 
+            { 
+                // inputBuffer will send its text on destruction.
+                juce::JUCEApplication::getInstance()->quit();
+            }
+        },
+        { 
+            &close,
+            [this, &sendUpdate]() 
+            {
+                inputBuffer.clearInput();
+                juce::JUCEApplication::getInstance()->quit();
+            } 
+        },
+        {
+            &toggleImmediate,
+            [this, &sendUpdate]() 
+            {
+                immediateMode = ! immediateMode;
+                if (immediateMode && ! inputBuffer.isEmpty())
+                {
+                    inputBuffer.sendAndClearInput();
+                    sendUpdate = true;
+                }
+            } 
+        },
+        {
+            &showHelp,
+            [this, &sendUpdate]()
+            {
+                DBG(dbgPrefix << __func__ << ": help text not implemented.");
+            } 
+        },
+        {
+            &toggleWindowEdge,
+            [this, &sendUpdate]() 
+            { 
+                DBG(dbgPrefix << __func__ << ": window move not implemented.");
+            } 
+        },
+        {
+            &toggleMinimize,
+            [this, &sendUpdate]()
+            {
+                DBG(dbgPrefix << __func__ << ": minimize not implemented.");
+            } 
+        },
+    };
+    for (const juce::Identifier* binding : allKeys)
+    {
+        if (keyConfig.getBoundKey(*binding).getTextDescription()
+                == key)
+        {
+            if (actionMap.count(binding) > 0)
+            {
+                actionMap.at(binding)();
+            }
         }
     }
-
     if (sendUpdate)
     {
         chordPreview->updateChordState(chordReader.getAlphabet(),
                 chordReader.getSelectedChord(),
                 inputBuffer.getInputText());
+
     }
 }

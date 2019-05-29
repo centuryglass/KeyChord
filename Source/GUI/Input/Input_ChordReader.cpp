@@ -1,33 +1,22 @@
 #include "Input_ChordReader.h"
 #include "Input_Key_AlphabetFactory.h"
+#include "Input_Key_JSONKeys.h"
 #include <map>
 
 // The number of keys that may be held down to make a chord:
 static const constexpr int numChordKeys = 5;
 
-// The list of chord keys, in order:
-static const juce::String chordKeys [] = {"A", "S", "D", "F", "G"};
-
-
 // Standard lowercase alphabet:
 static const Input::Key::Alphabet lowerCase 
         = Input::Key::AlphabetFactory::createLowerCase();
-static const juce::String lowerMod = "H";
-
-// Uppercase alphabet:
-static const Input::Key::Alphabet upperCase
-        = Input::Key::AlphabetFactory::createUpperCase();
-static const juce::String upperMod = "J";
 
 // Numeric alphabet:
 static const Input::Key::Alphabet numeric
         = Input::Key::AlphabetFactory::createNumeric();
-static const juce::String numberMod = "K";
 
 // Symbolic alphabet:
 static const Input::Key::Alphabet symbolic
         = Input::Key::AlphabetFactory::createSymbolic();
-static const juce::String symbolMod = "L";
 
 // Milliseconds to wait between key releases before assuming the user isn't 
 // releasing keys to enter a chord value, and is instead changing the selected
@@ -40,6 +29,16 @@ static const constexpr int keyReleaseChordUpdateDelay = 100;
 Input::ChordReader::ChordReader(juce::Component* keyComponent) :
     releaseTimer(*this)
 {
+    for (const auto* chordKey : Key::JSONKeys::chordKeys)
+    {
+        chordKeys.add(keyConfig.getBoundKey(*chordKey));
+    }
+    alphabetKeys[(int) AlphabetType::lowerCase] 
+            = keyConfig.getBoundKey(Key::JSONKeys::letterAlphabet);
+    alphabetKeys[(int) AlphabetType::numeric] 
+            = keyConfig.getBoundKey(Key::JSONKeys::letterAlphabet);
+    alphabetKeys[(int) AlphabetType::symbolic] 
+            = keyConfig.getBoundKey(Key::JSONKeys::symbolAlphabet);
     keyComponent->addKeyListener(this);
 }
 
@@ -65,8 +64,6 @@ const Input::Key::Alphabet* Input::ChordReader::getAlphabet() const
     {
         case AlphabetType::lowerCase:
             return &lowerCase;
-        case AlphabetType::upperCase:
-            return &upperCase;
         case AlphabetType::numeric:
             return &numeric;
         case AlphabetType::symbolic:
@@ -112,22 +109,17 @@ bool Input::ChordReader::keyPressed
 
     // Check for alphabet change modifiers:
     AlphabetType newAlphabet = activeAlphabet;
-    if (keyText == lowerMod)
+    if (key == alphabetKeys[(int) AlphabetType::lowerCase])
     {
         DBG("Switching to lowerCase alphabet");
         newAlphabet = AlphabetType::lowerCase;
     }
-    else if (keyText == upperMod)
-    {
-        DBG("Switching to upperCase alphabet");
-        newAlphabet = AlphabetType::upperCase;
-    }
-    else if (keyText == numberMod)
+    else if (key == alphabetKeys[(int) AlphabetType::numeric])
     {
         DBG("Switching to numeric alphabet");
         newAlphabet = AlphabetType::numeric;
     }
-    else if (keyText == symbolMod)
+    else if (key == alphabetKeys[(int) AlphabetType::symbolic])
     {
         DBG("Switching to symbolic alphabet");
         newAlphabet = AlphabetType::symbolic;
@@ -146,7 +138,7 @@ bool Input::ChordReader::keyPressed
     // Check for new chord key presses:
     for (int i = 0; i < numChordKeys; i++)
     {
-        if (chordKeys[i] == keyText)
+        if (chordKeys[i] == key)
         {
             heldChord = heldChord.withKeyHeld(i);
             if (heldChord != selectedChord)
@@ -190,7 +182,7 @@ bool Input::ChordReader::keyStateChanged
     {
         if (heldChord.usesChordKey(i))
         {
-            const juce::KeyPress heldKey = getKey(String(chordKeys[i]));
+            const juce::KeyPress& heldKey = chordKeys[i];
             if (! heldKey.isCurrentlyDown())
             {
                 updatedChord = updatedChord.withKeyReleased(i);
