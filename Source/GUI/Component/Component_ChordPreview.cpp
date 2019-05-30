@@ -1,6 +1,7 @@
 #include "Component_ChordPreview.h"
 #include "Component_Char.h"
 #include "Input_Key_JSONKeys.h"
+#include "Text_BinaryFont.h"
 #include <map>
 #include <vector>
 

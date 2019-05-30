@@ -6,9 +6,9 @@ namespace Component
     namespace Char
     {
         // Represents a rounded rectangle outline in the character map:
-        static const constexpr char outlineChar = -1;
+        static const constexpr char outlineChar = 1;
         // Represents a rounded filled rectangle in the character map:
-        static const constexpr char fillChar = -2;
+        static const constexpr char fillChar = 2;
 
         void paintAt(juce::Graphics& g,
                 const char toPrint,
