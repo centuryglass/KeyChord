@@ -81,11 +81,11 @@ public:
      *                        
      * @param heldChord       The current held Chord value.
      *
-     * @param input           The current cached input string.
+     * @param input           The current cached character index list.
      */
     void updateChordState(const Text::CharSet::Cache* activeSet, 
             const Chord heldChord, 
-            const juce::String input);
+            const juce::Array<unsigned int> input);
 
 private:
     /**
@@ -102,7 +102,7 @@ private:
     // The current held input chord:
     Chord lastHeldChord;
     // Buffered input waiting to be sent to the target window:
-    juce::String bufferedInput;
+    juce::Array<unsigned int> bufferedInput;
     // Loads chord key display characters:
     Input::Key::ConfigFile keyConfig;
 };

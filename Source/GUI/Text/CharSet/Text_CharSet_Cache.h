@@ -73,6 +73,15 @@ public:
      */
     int getSize() const;
 
+    /**
+     * @brief  Gets how many characters in this set need twice as much width to
+     *         draw.
+     *
+     * @return  The number of characters that are twice as wide, as evaluated by
+     *          Text::CharSet::Values::isWideValue()
+     */
+    int wideDrawCharacterCount() const;
+
 private:
     // Stores a character with its shifted value:
     struct CharPair
@@ -87,4 +96,6 @@ private:
     std::map<unsigned int, Chord> chordMap;
     // Map of each chord to its character set:
     std::map<Chord, CharPair> charPairMap;
+    // Number of wide-draw characters:
+    int wideDrawCharacters = 0;
 };

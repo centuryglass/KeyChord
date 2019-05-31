@@ -72,16 +72,25 @@ void Text::Painter::paintString(juce::Graphics& g,
     const float widthOverlapAdjustment = 0.8;
     // Check if text will fit without any obnoxious layout adjustment:
     const int strLength = charIndices.size();
+    int wideChars = 0;
+    for (const unsigned int& charIndex : charIndices)
+    {
+        if (CharSet::Values::isWideValue(charIndex))
+        {
+            ++wideChars;
+        }
+    }
+    const int adjustedLength = strLength + wideChars;
     int charSize = std::min(height, maxCharSize);
 
     int rowCount = 1;
     int skippedChars = 0;
 
-    while (charSize * ((strLength / rowCount) + (strLength % rowCount))
-            * widthOverlapAdjustment > width)
+    while (charSize * ((adjustedLength / rowCount) 
+            + (adjustedLength % rowCount)) * widthOverlapAdjustment > width)
     {
         // Try increasing padding:
-        float paddingNeeded = width * strLength * widthOverlapAdjustment
+        float paddingNeeded = width * adjustedLength * widthOverlapAdjustment
                 / height / rowCount;
         if (paddingNeeded <= (maxRowPadding))
         {
@@ -102,7 +111,7 @@ void Text::Painter::paintString(juce::Graphics& g,
         // No way to make it fit, cut characters:
         else
         {
-            const int widthNeeded = charSize * strLength 
+            const int widthNeeded = charSize * adjustedLength 
                     * widthOverlapAdjustment;
             const int overflow = widthNeeded - width * rowCount;
             skippedChars = overflow / charSize / widthOverlapAdjustment + 1;
@@ -115,21 +124,24 @@ void Text::Painter::paintString(juce::Graphics& g,
     int rowIndex = 0;
     int xPos = x;
     int yPos = y;
+    /*
     DBG("X=" << xPos << ", Y=" << yPos << ", size=" << charSize << ", padding="
             << paddingSize << ", rows=" << rowCount << ", skippedChars="
             << skippedChars);
+    */
     for (int i = skippedChars; i < strLength; i++)
     {
-        if ((xPos + charSize) > (x + width))
+        bool isWideDrawChar = CharSet::Values::isWideValue(charIndices[i]);
+        const int charWidth = isWideDrawChar ? charSize * 2 : charSize;
+        if ((xPos + charWidth) > (x + width))
         {
             rowIndex++;
             jassert(rowIndex < maxRowCount);
             xPos = x;
             yPos += (height / rowCount);
         }
-        //g.drawRect(xPos, yPos, charSize, charSize, paddingSize);
-        paintChar(g, charIndices[i], xPos, yPos, charSize, charSize);
-        xPos += charXOffset;
+        paintChar(g, charIndices[i], xPos, yPos, charWidth, charSize);
+        xPos += (isWideDrawChar ? charXOffset * 2 : charXOffset);
     }
 
 

@@ -188,8 +188,6 @@ static RowType getVariableRow(const unsigned int character, const int row,
         return 0;
     }
     const uint8 charIndex = (uint8) character;
-    const uint8 outputSize = sizeof(RowType) * 8;
-    jassert (outputSize >= rowSize);
     const uint8 charColumnIndex = charIndex % charRowWidth;
     const uint8 charRowIndex    = charIndex / charRowWidth;
 
@@ -200,12 +198,14 @@ static RowType getVariableRow(const unsigned int character, const int row,
     const uint32 arrayIndex = bitIndex / (uint32) arrayValSize;
     const int indexBitOffset = bitIndex % arrayValSize;
     const int overflow = (indexBitOffset + rowSize) - arrayValSize;
+    
     /*
     DBG("Character value: " << (unsigned char ) character 
             << ", arrayIndex: " 
             << (int) arrayIndex << " bitX:" << (int) bitX << ", bitY:" 
             << (int) bitY << " bitIndex:" << (int) bitIndex);
     */
+   
 
     if (overflow > 0)
     {
@@ -218,7 +218,7 @@ static RowType getVariableRow(const unsigned int character, const int row,
         rowValue += (fontMap[arrayIndex + 1] >> (arrayValSize - overflow));
         return rowValue;
     }
-    const int rightShift = arrayValSize - (indexBitOffset + charSize);
+    const int rightShift = arrayValSize - (indexBitOffset + rowSize);
     return fontMap[arrayIndex] >> rightShift;
 }
 

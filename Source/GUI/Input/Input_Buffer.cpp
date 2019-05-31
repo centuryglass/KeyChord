@@ -1,9 +1,15 @@
 #include "Input_Buffer.h"
 #include "Util_ConditionChecker.h"
 #include "Windows_XInterface.h"
+#include "Text_CharSet_Values.h"
+
+#ifdef JUCE_DEBUG
+// Print the full class name before all debug output:
+static const constexpr char* dbgPrefix = "Input::Buffer::";
+#endif
 
 // Commmand prefix used to transmit text to the focused window.
-static const juce::String typeCommand("xdotool type ");
+static const juce::String typeCommand("xdotool key ");
 
 // Maximum time in milliseconds to wait for the target window to focus:
 static const constexpr int focusTimeout = 1000;
@@ -22,7 +28,7 @@ Input::Buffer::~Buffer()
 
 
 // Gets the cached input string.
-juce::String Input::Buffer::getInputText() const
+juce::Array<unsigned int> Input::Buffer::getInputText() const
 {
     return inputText;
 }
@@ -34,20 +40,11 @@ void Input::Buffer::sendAndClearInput()
 {
     if (inputText.isEmpty())
     {
+        DBG(dbgPrefix << __func__ << ": No text to send, aborting");
         return;
     }
-    using juce::String;
-    // Ensure single quotes are properly escaped:
-    for (int cIndex = 0; cIndex < inputText.length(); cIndex++)
-    {
-        unsigned int testChar = inputText[cIndex];
-        if (testChar == '\'')
-        {
-            inputText = inputText.substring(0, cIndex) + "'\\''"
-                    + inputText.substring(cIndex + 1);
-            cIndex += 3;
-        }
-    }
+    DBG(dbgPrefix << __func__ << ": Forwarding " << inputText.size()
+            << " characters to target window.");
 
     Windows::XInterface xInterface;
     Util::ConditionChecker focusChecker;
@@ -59,32 +56,48 @@ void Input::Buffer::sendAndClearInput()
     },
     [&xInterface, this]()
     {
-        String commandString(typeCommand + "'" + inputText + "'");
-        DBG("running input command: " << commandString);
-        system(commandString.toRawUTF8());
+        for (int cIndex = 0; cIndex < inputText.size(); cIndex++)
+        {
+            juce::String charString = Text::CharSet::Values::getCharString(
+                    inputText[cIndex]);
+            if (charString.isEmpty())
+            {
+                DBG(dbgPrefix << "sendAndClearInput: No string conversion for "
+                        << (int) inputText[cIndex] << " at index " << cIndex);
+                continue;
+            }
+            juce::String commandString(typeCommand + "'" + 
+                    ((charString == "'") ? "\'" : charString) + "'");
+            DBG("running input command: " << commandString);
+            system(commandString.toRawUTF8());
+        }
         clearInput();
-        xInterface.activateWindow(keyChordWindow);
+        if(juce::Desktop::getInstance().getComponent(0) != nullptr)
+        {
+            xInterface.activateWindow(keyChordWindow);
+        }
     },
     focusTimeout,
     []()
     {
-        DBG("Failed to get window focus before timeout!");
+        DBG(dbgPrefix << "sendAndClearInput: "
+                << "Failed to get window focus before timeout!");
     });
     focusChecker.waitForUpdate();
 }
 
 
 // Adds a character to the end of the cached input string.
-void Input::Buffer::appendCharacter(const char inputChar)
+void Input::Buffer::appendCharacter(const unsigned int inputChar)
 {
-    inputText += juce::String::charToString(inputChar);
+    inputText.add(inputChar);
 }
 
 
 // Removes the last character from the end of the input string.
 void Input::Buffer::deleteLastChar()
 {
-    inputText = inputText.substring(0, inputText.length() - 1);
+    inputText.removeLast();
 }
 
 // Removes all saved input.

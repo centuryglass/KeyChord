@@ -179,6 +179,12 @@ Text::CharSet::Cache::Cache(const juce::var setData)
                         << "\" has a non-integer priority value.");
             }
         }
+        // Check if the wide character count needs updating:
+        if (Values::isWideValue(newPair.charPair.charValue)
+                || Values::isWideValue(newPair.charPair.shiftedValue))
+        {
+            wideDrawCharacters++;
+        }
         chordOrderedSet.add(newPair);
         charSet.add(newPair.charPair);
     }
@@ -247,4 +253,10 @@ Chord Text::CharSet::Cache::getCharacterChord
 int Text::CharSet::Cache::getSize() const
 {
     return charSet.size();
+}
+
+// Gets how many characters in this set need twice as much width to draw.
+int Text::CharSet::Cache::wideDrawCharacterCount() const
+{
+    return wideDrawCharacters;
 }

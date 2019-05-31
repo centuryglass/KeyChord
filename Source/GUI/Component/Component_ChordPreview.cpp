@@ -18,7 +18,7 @@ Component::ChordPreview::ChordPreview()
 void Component::ChordPreview::updateChordState(
         const Text::CharSet::Cache* activeSet, 
         const Chord heldChord,
-        const juce::String input)
+        const juce::Array<unsigned int> input)
 {
     bool shouldRepaint = false;
     if (activeSet != charSet)
@@ -57,9 +57,11 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     using juce::Colour;
     using juce::Colours;
     using juce::Rectangle;
+    using namespace Text::CharSet;
 
     // Save the character set size:
-    const uint8 charCount = charSet->getSize();
+    const uint8 charCount = charSet->getSize() 
+            + charSet->wideDrawCharacterCount();
 
     // Calculate layout values:
     const int paddedRowHeight = getHeight() / 8;
@@ -79,8 +81,9 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
         (const unsigned int toDraw)
     {
+        bool wideDrawChar = Values::isWideValue(toDraw);
         Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
-                charWidth, rowHeight);
+                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight);
     };
 
     // Draw chord key guides:
@@ -91,12 +94,12 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         g.setColour(chordColour);
         if (lastHeldChord.usesChordKey(keyIdx))
         {
-            drawChar(Text::CharSet::Values::fill);
+            drawChar(Values::fill);
             g.setColour(chordColour.contrasting());
         }
         else
         {
-            drawChar(Text::CharSet::Values::outline);
+            drawChar(Values::outline);
         }
 
         const juce::Identifier* chordKeyID 
@@ -106,12 +109,14 @@ void Component::ChordPreview::paint(juce::Graphics& g)
 
     // Label and draw chords for each possible character:
     xPos = getX();
-    for (int i = 0; i < charCount; i++)
+    for (int i = 0; i < charSet->getSize(); i++)
     {
         xPos += paddedCharWidth;
         yPos = getY();
         // Current character set index:
         const unsigned int charIndex = charSet->getCharAtIndex(i, false);
+        // Whether the character needs double the normal width:
+        const bool wideDrawChar = Text::CharSet::Values::isWideValue(charIndex);
         // Binary mask for the chord used to type the character:
         const Chord characterChord = charSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
@@ -123,7 +128,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         g.setColour(findColour(charOpen ? text : inactiveText, true));
         if (charSelected)
         {
-            drawChar(Text::CharSet::Values::outline);
+            drawChar(wideDrawChar ? Values::wideOutline : Values::outline);
         }
         drawChar(charIndex);
 
@@ -167,12 +172,16 @@ void Component::ChordPreview::paint(juce::Graphics& g)
             g.setColour(findColour(colourID, true));
             if (charUsesKey)
             {
-                drawChar(Text::CharSet::Values::fill);
+                drawChar(wideDrawChar ? Values::wideFill : Values::fill);
             }
             else
             {
-                drawChar(Text::CharSet::Values::outline);
+                drawChar(wideDrawChar ? Values::shift : Values::outline);
             }
+        }
+        if (wideDrawChar)
+        {
+            xPos += paddedCharWidth;
         }
     }
 
@@ -180,16 +189,10 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     g.setColour(findColour(text, true));
     yPos = paddedRowHeight * 6 + yPadding;
     g.fillRect(0, yPos, getWidth(), 1);
-    DBG("Drew border line at " << yPos);
     const Rectangle<int> inputBounds 
             = getLocalBounds().withTop(yPos).reduced(xPadding, yPadding);
-    juce::Array<unsigned int> indexString;
-    for (int i = 0; i < bufferedInput.length(); i++)
-    {
-        indexString.add(bufferedInput[i]);
-    }
     g.setColour(findColour(text));
-    Text::Painter::paintString(g, indexString, inputBounds.getX(),
+    Text::Painter::paintString(g, bufferedInput, inputBounds.getX(),
             inputBounds.getY(), inputBounds.getWidth(), inputBounds.getHeight(),
             rowHeight, 2);
 }

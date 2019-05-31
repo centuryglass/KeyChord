@@ -33,7 +33,7 @@ public:
      *
      * @return  All text waiting to be sent to the target window.
      */
-    juce::String getInputText() const;
+    juce::Array<unsigned int> getInputText() const;
 
     /**
      * @brief  Sends all cached input to the target window and clears the cached
@@ -47,7 +47,7 @@ public:
      * @param inputChar  The character that should be added to the end of the
      *                   input string.
      */
-    void appendCharacter(const char inputChar);
+    void appendCharacter(const unsigned int inputChar);
 
     /**
      * @brief  Removes the last character from the end of the input string.
@@ -68,7 +68,7 @@ public:
 
 private:
     // Cached input text:
-    juce::String inputText;
+    juce::Array<unsigned int> inputText;
     // ID of the window where text will be sent:
     const int targetWindow;
     // This application's single window ID:

@@ -16,7 +16,7 @@ Input::Controller::Controller(Component::ChordPreview* chordPreview,
     chordPreview(chordPreview),
     inputBuffer(targetWindow, keyChordWindow)
 {
-    chordPreview->updateChordState(&charsetConfig.getActiveSet(), 0, "");
+    chordPreview->updateChordState(&charsetConfig.getActiveSet(), 0, {});
     chordReader.addListener(this);
 }
 
@@ -51,6 +51,7 @@ void Input::Controller::chordEntered(const Chord selected)
 // close the application.
 void Input::Controller::keyPressed(const juce::KeyPress key)
 {
+    DBG("Controller got " << key.getTextDescription());
     namespace Keys = Input::Key::JSONKeys;
     using Text::CharSet::Type;
     if (! key.isValid())
@@ -160,6 +161,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::sendText,
             [this, &sendUpdate]() 
             { 
+                DBG("Attempting to send text:");
                 inputBuffer.sendAndClearInput();
                 sendUpdate = true;
             }
