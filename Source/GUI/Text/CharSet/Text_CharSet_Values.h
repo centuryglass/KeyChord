@@ -86,6 +86,14 @@ namespace Text
             static const constexpr unsigned int del         = 0x1a;
             static const constexpr unsigned int wideFill    = 0x1c;
             static const constexpr unsigned int wideOutline = 0x1e;
+
+            // Bounds to use when recognizing normal ASCII printable characters:
+            static const constexpr unsigned int normalPrintMin = 0x21; 
+            static const constexpr unsigned int normalPrintMax = 0x7f; 
+
+            // Bounds to use when recognizing extended printable characters:
+            static const constexpr unsigned int extraPrintMin = 0xa1;
+            static const constexpr unsigned int extraPrintMax = 0xff;
         }
     }
 }

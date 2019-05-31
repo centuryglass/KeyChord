@@ -1,4 +1,4 @@
-#include "Component_ChordPreview.h"
+#include "Component_MainView.h"
 #include "Input_Key_JSONKeys.h"
 #include "Text_BinaryFont.h"
 #include "Text_Painter.h"
@@ -7,7 +7,7 @@
 #include <vector>
 
 //  Requests keyboard focus on construction.
-Component::ChordPreview::ChordPreview()
+Component::MainView::MainView()
 {
     setWantsKeyboardFocus(true);
 }
@@ -15,7 +15,7 @@ Component::ChordPreview::ChordPreview()
 
 // Sets the current state of the chorded keyboard, immediately redrawing the
 // component if the state changes.
-void Component::ChordPreview::updateChordState(
+void Component::MainView::updateChordState(
         const Text::CharSet::Cache* activeSet, 
         const Chord heldChord,
         const juce::Array<unsigned int> input)
@@ -46,7 +46,7 @@ void Component::ChordPreview::updateChordState(
 // Draws all chord mappings within the current alphabet, which chord keys are
 // currently held down, and the buffered input string waiting to be sent to the
 // target window.
-void Component::ChordPreview::paint(juce::Graphics& g)
+void Component::MainView::paint(juce::Graphics& g)
 {
     if (charSet == nullptr)
     {
@@ -176,12 +176,12 @@ void Component::ChordPreview::paint(juce::Graphics& g)
             }
             else
             {
-                drawChar(wideDrawChar ? Values::shift : Values::outline);
+                drawChar(wideDrawChar ? Values::wideOutline : Values::outline);
             }
         }
         if (wideDrawChar)
         {
-            xPos += paddedCharWidth;
+            xPos += paddedCharWidth - xPadding;
         }
     }
 

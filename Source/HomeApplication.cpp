@@ -97,12 +97,12 @@ void HomeApplication::initialise(const juce::String &commandLine)
     homeWindow->setLookAndFeel(lookAndFeel.get());
 
     // Initialize and apply the chord component and input handler:
-    chordPreview.reset(new Component::ChordPreview);
-    homeWindow->setContentNonOwned(chordPreview.get(), false);
+    mainView.reset(new Component::MainView);
+    homeWindow->setContentNonOwned(mainView.get(), false);
     homeWindow->setVisible(true);
     homeWindow->addToDesktop();
-    chordPreview->setBounds(homeWindow->getLocalBounds());
-    inputController.reset(new Input::Controller(chordPreview.get(),
+    mainView->setBounds(homeWindow->getLocalBounds());
+    inputController.reset(new Input::Controller(mainView.get(),
                 targetWindow, xWindows.getMainAppWindow()));
 
     // Ensure the application window is active and has keyboard focus:
@@ -160,7 +160,7 @@ void HomeApplication::shutdown()
     homeWindow.reset(nullptr);
     juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
     inputController.reset(nullptr);
-    chordPreview.reset(nullptr);
+    mainView.reset(nullptr);
     lookAndFeel.reset(nullptr);
     #ifdef INCLUDE_TESTING
     Debug::ScopeTimerRecords::printRecords();

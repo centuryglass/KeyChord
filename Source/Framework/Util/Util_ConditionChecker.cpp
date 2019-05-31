@@ -58,10 +58,9 @@ bool Util::ConditionChecker::isChecking() const
 }
 
 
-// If currently checking and called on the message thread, run the JUCE message
-// thread event loop on the calling thread until the condition is met or the
-// tests time out.
-void Util::ConditionChecker::waitForUpdate()
+// If currently checking and called on the message thread, wait until the
+// condition is met or the tests time out.
+void Util::ConditionChecker::waitForUpdate(const bool runEventLoop)
 {
     if (! juce::MessageManager::existsAndIsCurrentThread())
     {
@@ -70,8 +69,15 @@ void Util::ConditionChecker::waitForUpdate()
 
     while (isChecking())
     {
-        juce::MessageManager::getInstance()->runDispatchLoopUntil(
-                checkInterval);
+        if (runEventLoop)
+        {
+            juce::MessageManager::getInstance()->runDispatchLoopUntil(
+                    checkInterval);
+        }
+        else
+        {
+            juce::Thread::sleep(checkInterval);
+        }
         return;
     }
 }

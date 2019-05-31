@@ -57,11 +57,14 @@ public:
     bool isChecking() const;
 
     /**
-     * @brief  If currently checking and called on the message thread, run the
-     *         JUCE message thread event loop on the calling thread until the
-     *         condition is met or the tests time out.
+     * @brief  If currently checking and called on the message thread, wait
+     *         until the condition is met or the tests time out.
+     *
+     * @param runEventLoop  If true, the thread will continue running the JUCE
+     *                      event loop as it waits.  Otherwise, the thread will
+     *                      sleep.
      */
-    void waitForUpdate();
+    void waitForUpdate(const bool runEventLoop = true);
 
     /**
      * @brief  Sets how frequently the object should check for its condition to

@@ -8,11 +8,14 @@
 static const constexpr char* dbgPrefix = "Input::Buffer::";
 #endif
 
-// Commmand prefix used to transmit text to the focused window.
-static const juce::String typeCommand("xdotool key ");
+// Commmand prefix used to transmit key presses to the focused window.
+static const juce::String keyCommand("xdotool key ");
+
+// Commmand prefix used to transmit text strings to the focused window.
+static const juce::String typeCommand("xdotool type ");
 
 // Maximum time in milliseconds to wait for the target window to focus:
-static const constexpr int focusTimeout = 1000;
+static const constexpr int focusTimeout = 5000;
 
 // Saves all necessary window IDs on construction.
 Input::Buffer::Buffer(const int targetWindow, const int keyChordWindow) :
@@ -63,11 +66,22 @@ void Input::Buffer::sendAndClearInput()
             if (charString.isEmpty())
             {
                 DBG(dbgPrefix << "sendAndClearInput: No string conversion for "
-                        << (int) inputText[cIndex] << " at index " << cIndex);
+                        <<  juce::String((int) inputText[cIndex]) << " at index " 
+                        << cIndex);
                 continue;
             }
-            juce::String commandString(typeCommand + "'" + 
-                    ((charString == "'") ? "\'" : charString) + "'");
+            juce::String commandString;
+            if (inputText[cIndex] >= Text::CharSet::Values::extraPrintMin)
+            {
+                // Extended characters need to be sent as text, not key events.
+                commandString = typeCommand;
+            }
+            else
+            {
+                commandString = keyCommand;
+            }
+            commandString += "'" + ((charString == "'") ? "\'" : charString) 
+                    + "'";
             DBG("running input command: " << commandString);
             system(commandString.toRawUTF8());
         }
@@ -84,6 +98,28 @@ void Input::Buffer::sendAndClearInput()
                 << "Failed to get window focus before timeout!");
     });
     focusChecker.waitForUpdate();
+
+    if(juce::Desktop::getInstance().getComponent(0) != nullptr)
+    {
+        // Refocus the window:
+        xInterface.activateWindow(keyChordWindow);
+        focusChecker.startCheck([&xInterface, this]()
+        {
+            return xInterface.isActiveWindow(keyChordWindow);
+        },
+        [&xInterface, this]()
+        {
+            DBG(dbgPrefix << "sendAndClearInput: restored focus.");
+        },
+        focusTimeout,
+        []()
+        {
+            DBG(dbgPrefix << "sendAndClearInput: "
+                    << "Failed to get window focus before timeout!");
+            juce::JUCEApplication::getInstance()->quit();
+        });
+        focusChecker.waitForUpdate();
+    }
 }
 
 

@@ -1,8 +1,8 @@
 #pragma once
 /**
- * @file  Component_ChordPreview.h
+ * @file  Component_MainView.h
  *
- * @brief  Displays a preview of a potential chorded keyboard.
+ * @brief  Displays all application contents.
  */
 
 #include "Text_CharSet_Cache.h"
@@ -10,9 +10,9 @@
 #include "Chord.h"
 #include "JuceHeader.h"
 
-namespace Component { class ChordPreview; }
+namespace Component { class MainView; }
 
-class Component::ChordPreview : public juce::Component
+class Component::MainView : public juce::Component
 {
 public:
     enum ColourIds
@@ -68,9 +68,9 @@ public:
     /**
      * @brief  Requests keyboard focus on construction.
      */
-    ChordPreview();
+    MainView();
 
-    virtual ~ChordPreview() { }
+    virtual ~MainView() { }
 
     /**
      * @brief  Sets the current state of the chorded keyboard, immediately

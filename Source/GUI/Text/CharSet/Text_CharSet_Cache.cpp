@@ -127,11 +127,17 @@ Text::CharSet::Cache::Cache(const juce::var setData)
             unsigned int charIndex = 0;
             if (varChar.isInt())
             {
-                charIndex = (unsigned int) varChar.operator int();
+                int index = varChar.operator int();
+                charIndex = index;
             }
             else
             {
-                charIndex = Values::getCharValue(varChar.operator juce::String());
+                charIndex = Values::getCharValue(
+                        varChar.operator juce::String());
+            }
+            if (charIndex > 128)
+            {
+                DBG("BIG_CHAR: " << (int) charIndex);
             }
             return charIndex;
         };
