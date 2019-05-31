@@ -10,7 +10,7 @@
 #include "Input_Buffer.h"
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_ConfigFile.h"
-#include "Component_ChordPreview.h"
+#include "Component_MainView.h"
 #include "JuceHeader.h"
 
 namespace Input { class Controller; }
@@ -22,7 +22,7 @@ public:
     /**
      * @brief  Sets up all keyboard input handling.
      *
-     * @param chordPreview  The component used to listen for keyboard events
+     * @param mainView  The component used to listen for keyboard events
      *                        and draw the chord state.
      *
      * @param targetWindow    The ID of the window where chord input text should
@@ -30,14 +30,14 @@ public:
      *
      * @param keyChordWindow  The ID of this application's single window.
      */
-    Controller(Component::ChordPreview* chordPreview, const int targetWindow,
+    Controller(Component::MainView* mainView, const int targetWindow,
             const int keyChordWindow);
 
     virtual ~Controller() { }
 
 private:
     /**
-     * @brief  Updates the ChordPreview when the current held chord changes.
+     * @brief  Updates the MainView when the current held chord changes.
      *
      * @param selectedChord   An object representing the set of held chord keys.
      */
@@ -45,7 +45,7 @@ private:
 
     /**
      * @brief  Adds the new chord character to the input buffer and updates the
-     *         ChordPreview when a chord character is entered.
+     *         MainView when a chord character is entered.
      *
      * @param selected  The selected chord value.
      */
@@ -71,7 +71,7 @@ private:
     Text::CharSet::ConfigFile charsetConfig;
 
     // Captures keyboard input and draws the chord entry state:
-    Component::ChordPreview* chordPreview;
+    Component::MainView* mainView;
     // Converts generic keyboard events to chord input events:
     ChordReader chordReader;
     // Buffers text input and sends it out to the target window:

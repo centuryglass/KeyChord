@@ -1,5 +1,6 @@
 #include "Input_Controller.h"
 #include "Input_Key_JSONKeys.h"
+#include "HomeWindow.h"
 #include "JuceHeader.h"
 #include <map>
 
@@ -10,20 +11,20 @@ static const constexpr char* dbgPrefix = "Input::Controller::";
 
 
 // Sets up all keyboard input handling.
-Input::Controller::Controller(Component::ChordPreview* chordPreview,
+Input::Controller::Controller(Component::MainView* mainView,
         const int targetWindow, const int keyChordWindow) :
-    chordReader(chordPreview),
-    chordPreview(chordPreview),
+    chordReader(mainView),
+    mainView(mainView),
     inputBuffer(targetWindow, keyChordWindow)
 {
-    chordPreview->updateChordState(&charsetConfig.getActiveSet(), 0, {});
+    mainView->updateChordState(&charsetConfig.getActiveSet(), 0, {});
     chordReader.addListener(this);
 }
 
 // Updates the ChordComponent when the current held chord changes.
 void Input::Controller::selectedChordChanged(const Chord selectedChord)
 {
-    chordPreview->updateChordState(&charsetConfig.getActiveSet(), 
+    mainView->updateChordState(&charsetConfig.getActiveSet(), 
             selectedChord, inputBuffer.getInputText());
 }
 
@@ -36,13 +37,14 @@ void Input::Controller::chordEntered(const Chord selected)
             .getChordCharacter(selected, false);
     DBG(dbgPrefix << __func__ << ": Entered character "
             << (char) enteredChar << "(0x" 
-            << juce::String::toHexString((int) enteredChar) << ")");
-    inputBuffer.appendCharacter((char) enteredChar);
+            << juce::String::toHexString((int) enteredChar) << ", "
+            << (int) enteredChar << ")");
+    inputBuffer.appendCharacter(enteredChar);
     if (immediateMode)
     {
         inputBuffer.sendAndClearInput();
     }
-    chordPreview->updateChordState(&charsetConfig.getActiveSet(), 0,
+    mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
             inputBuffer.getInputText());
 }
 
@@ -203,9 +205,13 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
         },
         {
             &Keys::toggleWindowEdge,
-            [this, &sendUpdate]() 
+            []() 
             { 
-                DBG(dbgPrefix << __func__ << ": window move not implemented.");
+                HomeWindow* window = HomeWindow::getOpenWindow();
+                if (window != nullptr)
+                {
+                    window->toggleEdge();
+                }
             } 
         },
         {
@@ -228,7 +234,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
     }
     if (sendUpdate)
     {
-        chordPreview->updateChordState(&charsetConfig.getActiveSet(),
+        mainView->updateChordState(&charsetConfig.getActiveSet(),
                 chordReader.getSelectedChord(),
                 inputBuffer.getInputText());
 

@@ -31,6 +31,20 @@ public:
      */
     static HomeWindow* getOpenWindow();
 
+    /**
+     * @brief  Toggles window placement between the top and bottom of the
+     *         display.
+     */
+    void toggleEdge();
+
+    /**
+     * @brief  Updates the window's height, while keeping the window snapped
+     *         to the selected display edge.
+     *
+     * @param newHeight  Desired window height in pixels.
+     */
+    void setHeight(const int newHeight);
+
 private:
     /**
      * @brief  Closes the application normally when the window closes.
@@ -42,7 +56,9 @@ private:
      */
     virtual void resized() override;
 
-    //void paint(juce::Graphics& g) override;
+    // Tracks whether the window should snap to the top or the bottom of the
+    // display.
+    bool bottomEdge = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HomeWindow)
 };

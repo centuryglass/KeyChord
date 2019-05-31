@@ -15,12 +15,7 @@ Windows::MainWindow(windowName, juce::Colours::darkgrey,
 {
     juce::Rectangle<int> screenSize = juce::Desktop::getInstance()
             .getDisplays().getMainDisplay().userArea;
-    setBounds(0, screenSize.getHeight() / 2, screenSize.getWidth(),
-            screenSize.getHeight() / 2);
-    /*
-    setBounds(screenSize.getWidth() / 2 -160,
-            screenSize.getHeight() / 2, 320, 120);
-    */
+    setHeight(screenSize.getHeight() / 2);
     setUsingNativeTitleBar(true);
     setResizable(false, false);
     setLookAndFeel(&juce::LookAndFeel::getDefaultLookAndFeel());
@@ -40,6 +35,22 @@ HomeWindow* HomeWindow::getOpenWindow()
     return dynamic_cast<HomeWindow*>(rootComponent);
 }
 
+// Toggles window placement between the top and bottom of the display.
+void HomeWindow::toggleEdge()
+{
+    bottomEdge = ! bottomEdge;
+    setHeight(getHeight());
+}
+
+// Updates the window's height, while keeping the window snapped to the selected
+// display edge.
+void HomeWindow::setHeight(const int newHeight)
+{
+    juce::Rectangle<int> screenSize = juce::Desktop::getInstance()
+            .getDisplays().getMainDisplay().userArea;
+    int yPos = bottomEdge ? screenSize.getHeight() - newHeight : 0;
+    setBounds(0, yPos, screenSize.getWidth(), newHeight);
+}
 
 // Closes the application normally when the window closes.
 void HomeWindow::closeButtonPressed()
