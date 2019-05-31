@@ -65,7 +65,7 @@ public:
      *
      * @return           The key character defined in the configuration file.
      */
-    juce::juce_wchar getKeyChar(const juce::Identifier& bindingID) const;
+    unsigned int getKeyChar(const juce::Identifier& bindingID) const;
 
 private:
     /**

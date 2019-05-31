@@ -8,7 +8,8 @@
 #include "JuceHeader.h"
 #include "Chord.h"
 #include "Input_Key_ConfigFile.h"
-#include "Input_Key_Alphabet.h"
+#include "Text_CharSet_Cache.h"
+#include "Text_CharSet_ConfigFile.h"
 
 namespace Input { class ChordReader; }
 
@@ -27,18 +28,11 @@ public:
     virtual ~ChordReader() { }
 
     /**
-     * @brief  Gets the chord value that's currently held.
-     *
-     * @return   The chord object selected by the current set of held keys.
-     */
-    Chord getHeldChord() const;
-    
-    /**
      * @brief  Gets the current Chord that will be used if all keys are
      *         released.
      *
-     *  This will return a different value than getHeldChord() only when the 
-     * user has released keys very recently, in order to ensure chord input
+     *  This will return a different value than the current held chord only when
+     * the user has released keys very recently, in order to ensure chord input
      * isn't changed if the user releases one key a tiny fraction of a second
      * late.
      *
@@ -46,14 +40,6 @@ public:
      *          held.
      */
     Chord getSelectedChord() const;
-
-    /**
-     * @brief  Gets the current active alphabet.
-     *
-     * @return  The active Alphabet setting the character set used, its order, 
-     *          and its chord values.
-     */
-    const Key::Alphabet* getAlphabet() const;
 
     /**
      * @brief  Receives notifications when the selected chord state changes.
@@ -85,19 +71,18 @@ public:
         virtual void chordEntered(const Chord selected) = 0;
 
         /**
-         * @brief  Notifies the listener that the active alphabet has changed.
-         *
-         * @param alphabet  The new active character set.
-         */
-        virtual void alphabetChanged(const Key::Alphabet* alphabet) = 0;
-
-        /**
          * @brief  Directly passes all key events unrelated to chord state on
          *         to the listener.
          *
          * @param key  The registered key description for the key press event.
          */
-        virtual void keyPressed(const juce::String key) = 0;
+        virtual void keyPressed(const juce::KeyPress key) = 0;
+
+        /**
+         * @brief  Directly passes all key release events unrelated to chord
+         *         state on to all listeners.
+         */
+        virtual void keyReleased() = 0;
     };
 
     /**
@@ -156,28 +141,14 @@ private:
 
     // The list of chord Keys, in order:
     juce::Array<juce::KeyPress> chordKeys;
-    
-    /**
-     * @brief  All alphabets that may be selected.
-     */
-    enum class AlphabetType
-    {
-        lowerCase,
-        numeric,
-        symbolic
-    };
-    // The current active alphabet:
-    AlphabetType activeAlphabet = AlphabetType::lowerCase;
-
-    // Keys used to select specific alphabets:
-    // Stored in the same order defined in the AlphabetType enum class.
-    juce::Array<juce::KeyPress> alphabetKeys;
-
     // All registered listeners:
     juce::Array<Listener*> listeners;
 
     // Loads key binding data:
     Input::Key::ConfigFile keyConfig;
+
+    // Loads configurable character maps:
+    Text::CharSet::ConfigFile charsetConfig;
 
     /**
      * @brief  Passes on key release events as selection changes, after waiting

@@ -1,7 +1,8 @@
 #include "Component_ChordPreview.h"
-#include "Component_Char.h"
 #include "Input_Key_JSONKeys.h"
 #include "Text_BinaryFont.h"
+#include "Text_Painter.h"
+#include "Text_CharSet_Values.h"
 #include <map>
 #include <vector>
 
@@ -15,14 +16,14 @@ Component::ChordPreview::ChordPreview()
 // Sets the current state of the chorded keyboard, immediately redrawing the
 // component if the state changes.
 void Component::ChordPreview::updateChordState(
-        const Input::Key::Alphabet* activeAlphabet, 
+        const Text::CharSet::Cache* activeSet, 
         const Chord heldChord,
         const juce::String input)
 {
     bool shouldRepaint = false;
-    if (activeAlphabet != currentAlphabet)
+    if (activeSet != charSet)
     {
-        currentAlphabet = activeAlphabet;
+        charSet = activeSet;
         shouldRepaint = true;
     }
     if (heldChord != lastHeldChord)
@@ -47,7 +48,7 @@ void Component::ChordPreview::updateChordState(
 // target window.
 void Component::ChordPreview::paint(juce::Graphics& g)
 {
-    if (currentAlphabet == nullptr)
+    if (charSet == nullptr)
     {
         return;
     }
@@ -58,7 +59,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     using juce::Rectangle;
 
     // Save the character set size:
-    const uint8 charCount = currentAlphabet->getSize();
+    const uint8 charCount = charSet->getSize();
 
     // Calculate layout values:
     const int paddedRowHeight = getHeight() / 8;
@@ -76,9 +77,9 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     // operations:
     const auto drawChar = 
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
-        (const char toDraw)
+        (const unsigned int toDraw)
     {
-        Char::paintAt(g, toDraw, xPos + xPadding, yPos + yPadding,
+        Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
                 charWidth, rowHeight);
     };
 
@@ -90,12 +91,12 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         g.setColour(chordColour);
         if (lastHeldChord.usesChordKey(keyIdx))
         {
-            drawChar(Char::fillChar);
+            drawChar(Text::CharSet::Values::fill);
             g.setColour(chordColour.contrasting());
         }
         else
         {
-            drawChar(Char::outlineChar);
+            drawChar(Text::CharSet::Values::outline);
         }
 
         const juce::Identifier* chordKeyID 
@@ -109,21 +110,22 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     {
         xPos += paddedCharWidth;
         yPos = getY();
-        // Current alphabet character:
-        const char indexChar = currentAlphabet->getCharAtIndex(i);
+        // Current character set index:
+        const unsigned int charIndex = charSet->getCharAtIndex(i, false);
         // Binary mask for the chord used to type the character:
-        const Chord characterChord = currentAlphabet->getChord(indexChar);
+        const Chord characterChord = charSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
         const bool charSelected = (characterChord == lastHeldChord);
         // Whether no chord keys are held that aren't in this character's chord:
-        const bool charOpen = (characterChord <= lastHeldChord);
+        const bool charOpen = charSelected || lastHeldChord.isSubchordOf(
+                characterChord);
 
         g.setColour(findColour(charOpen ? text : inactiveText, true));
         if (charSelected)
         {
-            drawChar(Char::outlineChar);
+            drawChar(Text::CharSet::Values::outline);
         }
-        drawChar(indexChar);
+        drawChar(charIndex);
 
         // Draw each chord key under the character:
         for(int keyIdx = 0; keyIdx < Chord::numChordKeys(); keyIdx++)
@@ -165,11 +167,11 @@ void Component::ChordPreview::paint(juce::Graphics& g)
             g.setColour(findColour(colourID, true));
             if (charUsesKey)
             {
-                drawChar(Char::fillChar);
+                drawChar(Text::CharSet::Values::fill);
             }
             else
             {
-                drawChar(Char::outlineChar);
+                drawChar(Text::CharSet::Values::outline);
             }
         }
     }
@@ -178,8 +180,16 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     g.setColour(findColour(text, true));
     yPos = paddedRowHeight * 6 + yPadding;
     g.fillRect(0, yPos, getWidth(), 1);
+    DBG("Drew border line at " << yPos);
     const Rectangle<int> inputBounds 
-            = getLocalBounds().withY(yPos).reduced(xPadding, yPadding);
-    g.drawFittedText(bufferedInput, inputBounds, juce::Justification::topLeft,
-            5);
+            = getLocalBounds().withTop(yPos).reduced(xPadding, yPadding);
+    juce::Array<unsigned int> indexString;
+    for (int i = 0; i < bufferedInput.length(); i++)
+    {
+        indexString.add(bufferedInput[i]);
+    }
+    g.setColour(findColour(text));
+    Text::Painter::paintString(g, indexString, inputBounds.getX(),
+            inputBounds.getY(), inputBounds.getWidth(), inputBounds.getHeight(),
+            rowHeight, 2);
 }

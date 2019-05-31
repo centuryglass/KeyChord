@@ -1,0 +1,269 @@
+{
+    "main character set name"      : "Letters",
+    "alternate character set name" : "Numbers",
+    "special character set name"   : "Special characters",
+    "main character set" :
+    [
+        {
+            "character"      : "a",
+            "shifted"        : "A",
+            "chord priority" :  6
+        },
+        {
+            "character"      : "b",
+            "shifted"        : "B",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "c",
+            "shifted"        : "C",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "d",
+            "shifted"        : "D",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "e",
+            "shifted"        : "E",
+            "chord priority" :  6
+        },
+        {
+            "character"      : "f",
+            "shifted"        : "F",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "g",
+            "shifted"        : "G",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "h",
+            "shifted"        : "H",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "i",
+            "shifted"        : "I",
+            "chord priority" :  6
+        },
+        {
+            "character"      : "j",
+            "shifted"        : "J",
+            "chord priority" :  1
+        },
+        {
+            "character"      : "k",
+            "shifted"        : "K",
+            "chord priority" :  1
+        },
+        {
+            "character"      : "l",
+            "shifted"        : "L",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "m",
+            "shifted"        : "M",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "n",
+            "shifted"        : "N",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "o",
+            "shifted"        : "O",
+            "chord priority" :  6
+        },
+        {
+            "character"      : "p",
+            "shifted"        : "P",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "q",
+            "shifted"        : "Q",
+            "chord priority" :  1
+        },
+        {
+            "character"      : "r",
+            "shifted"        : "R",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "s",
+            "shifted"        : "S",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "t",
+            "shifted"        : "T",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "u",
+            "shifted"        : "U",
+            "chord priority" :  6
+        },
+        {
+            "character"      : "v",
+            "shifted"        : "V",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "w",
+            "shifted"        : "W",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "x",
+            "shifted"        : "X",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "y",
+            "shifted"        : "Y",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "z",
+            "shifted"        : "Z",
+            "chord priority" :  2
+        },
+        {
+            "character"      : " ",
+            "chord priority" :  5
+        }
+    ],
+    "alternate character set" :
+    [
+        {
+            "character"      : "1",
+            "shifted"        : "!",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "2",
+            "shifted"        : "@",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "3",
+            "shifted"        : "#",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "4",
+            "shifted"        : "$",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "5",
+            "shifted"        : "%",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "6",
+            "shifted"        : "^",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "7",
+            "shifted"        : "&",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "8",
+            "shifted"        : "*",
+            "chord priority" :  4
+        },
+        {
+            "character"      : "9",
+            "shifted"        : "(",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "0",
+            "shifted"        : ")",
+            "chord priority" :  5
+        },
+        {
+            "character"      : "-",
+            "shifted"        : "_",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "=",
+            "shifted"        : "+",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "[",
+            "shifted"        : "{",
+            "chord priority" :  1
+        },
+        {
+            "character"      : "]",
+            "shifted"        : "}",
+            "chord priority" :  1
+        },
+        {
+            "character"      : "\\",
+            "shifted"        : "|",
+            "chord priority" :  2
+        },
+        {
+            "character"      : ";",
+            "shifted"        : ":",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "'",
+            "shifted"        : "\"",
+            "chord priority" :  3
+        },
+        {
+            "character"      : ",",
+            "shifted"        : "<",
+            "chord priority" :  3
+        },
+        {
+            "character"      : ".",
+            "shifted"        : ">",
+            "chord priority" :  3
+        },
+        {
+            "character"      : "/",
+            "shifted"        : "?",
+            "chord priority" :  2
+        },
+        {
+            "character"      : "`",
+            "shifted"        : "~",
+            "chord priority" :  1
+        }
+    ],
+    "special character set" :
+    [
+        { "character"      : "Enter"     },
+        { "character"      : "Backspace" },
+        { "character"      : "Escape"    },
+        { "character"      : "Tab"       },
+        { "character"      : "F1"        },
+        { "character"      : "F2"        },
+        { "character"      : "F3"        },
+        { "character"      : "F4"        },
+        { "character"      : "F5"        },
+        { "character"      : "F6"        },
+        { "character"      : "F7"        },
+        { "character"      : "F8"        },
+        { "character"      : "F9"        },
+        { "character"      : "F10"       },
+        { "character"      : "F11"       },
+        { "character"      : "F12"       }
+    ]
+}

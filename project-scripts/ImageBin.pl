@@ -22,7 +22,7 @@ if (! defined($outPath))
 my $image = new Image::Magick;
 $image->Read($path);
 
-my $output = "juce::uint32 fontMap [".( IMG_WIDTH * IMG_HEIGHT)
+my $output = "juce::uint32 fontMap [".( (IMG_WIDTH / 32) * IMG_HEIGHT)
         ."] = \n{";
 
 my ($width, $height) = $image->Get('width', 'height');

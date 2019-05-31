@@ -54,6 +54,8 @@ set formatoptions+=r
 
 " Code readability
 syntax on
+set number
+set colorcolumn=81
 
 " read custom .vimrc from any folder
 set exrc
@@ -80,4 +82,8 @@ xnoremap <leader>j :m'>+<cr>gv=gv
 "F1: open cheat sheets
 map <F1> <leader>?<cr>
 noremap <F2> :NERDTreeToggle<cr> 
+noremap <F3> :YcmCompleter GoTo<cr>
+noremap <F4> :make<cr>
+noremap <F7> :Dox<cr>
+noremap <F8> :tabnew<cr>
 map <F11> :set invnumber<cr>

@@ -9,7 +9,7 @@ Input::Key::Binding::Binding(
         const juce::Identifier& jsonKey,
         const juce::String keyDescription,
         const juce::String keyName,
-        const juce::juce_wchar charName) :
+        const unsigned int charName) :
     jsonKey(jsonKey),
     keyDescription(keyDescription),
     keyName(keyName),
@@ -57,7 +57,7 @@ const juce::String& Input::Key::Binding::getKeyName() const
 
 
 // Gets a character used to represent this key.
-const juce::juce_wchar Input::Key::Binding::getCharName() const
+const unsigned int Input::Key::Binding::getCharName() const
 {
     return charName;
 }

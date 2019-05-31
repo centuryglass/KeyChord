@@ -22,7 +22,6 @@ Config::FileResource(resourceKey, configFilename)
     using juce::var;
     using juce::String;
     using juce::Identifier;
-    using juce::juce_wchar;
 
     // Load all bindings:
     for (const Identifier* key : JSONKeys::allKeys)
@@ -51,11 +50,12 @@ Config::FileResource(resourceKey, configFilename)
         const String description(bindingInfo[keyValue].operator String());
         const String displayName(bindingInfo.getProperty(keyName,
                 description).operator String());
-        const juce_wchar displayChar(bindingInfo.getProperty(charName,
+        const unsigned int displayChar(bindingInfo.getProperty(charName,
                 displayName).operator String()[0]);
         keyBindings.add(new Binding(*key, description, displayName,
                     displayChar));
     }
+    loadJSONData();
 }
 
 

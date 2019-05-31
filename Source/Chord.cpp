@@ -110,29 +110,15 @@ bool Chord::operator!=(const Chord& rhs) const
 }
 
 
-// Checks if this Chord is a subchord of another Chord.
+// Checks if this Chord comes after another chord.
 bool Chord::operator<(const Chord& rhs) const
 {
-    return bitMap != rhs.bitMap && (bitMap & rhs.bitMap) == rhs.bitMap;
+    return bitMap < rhs.bitMap;
 }
 
 
-// Checks if this Chord is a superchord of another Chord.
+// Checks if this Chord comes before another chord
 bool Chord::operator>(const Chord& rhs) const
 {
-    return bitMap != rhs.bitMap && (bitMap & rhs.bitMap) == bitMap;
-}
-
-
-// Checks if this Chord equals or is a subchord of another Chord.
-bool Chord::operator<=(const Chord& rhs) const
-{
-    return (bitMap & rhs.bitMap) == rhs.bitMap;
-}
-
-
-// Checks if this Chord equals or is a superchord of another Chord.
-bool Chord::operator>=(const Chord& rhs) const
-{
-    return (bitMap & rhs.bitMap) == bitMap;
+    return bitMap > rhs.bitMap;
 }

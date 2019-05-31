@@ -5,7 +5,7 @@
  * @brief  Displays a preview of a potential chorded keyboard.
  */
 
-#include "Input_Key_Alphabet.h"
+#include "Text_CharSet_Cache.h"
 #include "Input_Key_ConfigFile.h"
 #include "Chord.h"
 #include "JuceHeader.h"
@@ -76,21 +76,21 @@ public:
      * @brief  Sets the current state of the chorded keyboard, immediately
      *         redrawing the component if the state changes.
      *
-     * @param activeAlphabet  The active alphabet mapping between characters and
+     * @param activeSet       The character set mapping between characters and
      *                        chords.
      *                        
      * @param heldChord       The current held Chord value.
      *
      * @param input           The current cached input string.
      */
-    void updateChordState(const Input::Key::Alphabet* activeAlphabet, 
+    void updateChordState(const Text::CharSet::Cache* activeSet, 
             const Chord heldChord, 
             const juce::String input);
 
 private:
     /**
-     * @brief  Draws all chord mappings within the current alphabet, which chord
-     *         keys are currently held down, and the buffered input string 
+     * @brief  Draws all chord mappings within the current character set, which
+     *         chord keys are currently held down, and the buffered input string 
      *         waiting to be sent to the target window.
      *
      * @param g  The JUCE graphics context.
@@ -98,8 +98,8 @@ private:
     void paint(juce::Graphics& g) override;
 
     // The active character alphabet:
-    const Input::Key::Alphabet* currentAlphabet = nullptr;
-    // The current chord input held:
+    const Text::CharSet::Cache* charSet = nullptr;
+    // The current held input chord:
     Chord lastHeldChord;
     // Buffered input waiting to be sent to the target window:
     juce::String bufferedInput;

@@ -9,7 +9,7 @@ static const juce::String typeCommand("xdotool type ");
 static const constexpr int focusTimeout = 1000;
 
 // Saves all necessary window IDs on construction.
-Input::Buffer::Buffer(const Window targetWindow, const Window keyChordWindow) :
+Input::Buffer::Buffer(const int targetWindow, const int keyChordWindow) :
     targetWindow(targetWindow), keyChordWindow(keyChordWindow) { }
 
 
@@ -37,11 +37,10 @@ void Input::Buffer::sendAndClearInput()
         return;
     }
     using juce::String;
-    using juce::juce_wchar;
     // Ensure single quotes are properly escaped:
     for (int cIndex = 0; cIndex < inputText.length(); cIndex++)
     {
-        juce_wchar testChar = inputText[cIndex];
+        unsigned int testChar = inputText[cIndex];
         if (testChar == '\'')
         {
             inputText = inputText.substring(0, cIndex) + "'\\''"

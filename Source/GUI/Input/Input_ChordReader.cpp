@@ -1,22 +1,7 @@
 #include "Input_ChordReader.h"
-#include "Input_Key_AlphabetFactory.h"
 #include "Input_Key_JSONKeys.h"
 #include <map>
 
-// The number of keys that may be held down to make a chord:
-static const constexpr int numChordKeys = 5;
-
-// Standard lowercase alphabet:
-static const Input::Key::Alphabet lowerCase 
-        = Input::Key::AlphabetFactory::createLowerCase();
-
-// Numeric alphabet:
-static const Input::Key::Alphabet numeric
-        = Input::Key::AlphabetFactory::createNumeric();
-
-// Symbolic alphabet:
-static const Input::Key::Alphabet symbolic
-        = Input::Key::AlphabetFactory::createSymbolic();
 
 // Milliseconds to wait between key releases before assuming the user isn't 
 // releasing keys to enter a chord value, and is instead changing the selected
@@ -33,20 +18,7 @@ Input::ChordReader::ChordReader(juce::Component* keyComponent) :
     {
         chordKeys.add(keyConfig.getBoundKey(*chordKey));
     }
-    alphabetKeys[(int) AlphabetType::lowerCase] 
-            = keyConfig.getBoundKey(Key::JSONKeys::letterAlphabet);
-    alphabetKeys[(int) AlphabetType::numeric] 
-            = keyConfig.getBoundKey(Key::JSONKeys::letterAlphabet);
-    alphabetKeys[(int) AlphabetType::symbolic] 
-            = keyConfig.getBoundKey(Key::JSONKeys::symbolAlphabet);
     keyComponent->addKeyListener(this);
-}
-
-
-// Gets the chord value that's currently held.
-Chord Input::ChordReader::getHeldChord() const
-{
-    return heldChord;
 }
 
 
@@ -54,24 +26,6 @@ Chord Input::ChordReader::getHeldChord() const
 Chord Input::ChordReader::getSelectedChord() const
 {
     return selectedChord;
-}
-
-
-// Gets the current active alphabet.
-const Input::Key::Alphabet* Input::ChordReader::getAlphabet() const
-{
-    switch (activeAlphabet)
-    {
-        case AlphabetType::lowerCase:
-            return &lowerCase;
-        case AlphabetType::numeric:
-            return &numeric;
-        case AlphabetType::symbolic:
-            return &symbolic;
-    }
-    DBG("Invalid alphabet type " << (int) activeAlphabet);
-    jassertfalse;
-    return &lowerCase;
 }
 
 
@@ -104,39 +58,10 @@ void Input::ChordReader::sendSelectionUpdate()
 bool Input::ChordReader::keyPressed
 (const juce::KeyPress& key, juce::Component* source)
 {
-    using juce::juce_wchar;
     juce::String keyText = key.getTextDescription();
 
-    // Check for alphabet change modifiers:
-    AlphabetType newAlphabet = activeAlphabet;
-    if (key == alphabetKeys[(int) AlphabetType::lowerCase])
-    {
-        DBG("Switching to lowerCase alphabet");
-        newAlphabet = AlphabetType::lowerCase;
-    }
-    else if (key == alphabetKeys[(int) AlphabetType::numeric])
-    {
-        DBG("Switching to numeric alphabet");
-        newAlphabet = AlphabetType::numeric;
-    }
-    else if (key == alphabetKeys[(int) AlphabetType::symbolic])
-    {
-        DBG("Switching to symbolic alphabet");
-        newAlphabet = AlphabetType::symbolic;
-    }
-
-    if (newAlphabet != activeAlphabet)
-    {
-        activeAlphabet = newAlphabet;
-        for (Listener* listener : listeners)
-        {
-            listener->alphabetChanged(getAlphabet());
-        }
-        return true;
-    }
-
     // Check for new chord key presses:
-    for (int i = 0; i < numChordKeys; i++)
+    for (int i = 0; i < Chord::numChordKeys(); i++)
     {
         if (chordKeys[i] == key)
         {
@@ -153,7 +78,7 @@ bool Input::ChordReader::keyPressed
     // Pass any unprocessed key events on to listeners:
     for (Listener* listener : listeners)
     {
-        listener->keyPressed(keyText);
+        listener->keyPressed(key);
     }
     return true;
 }
@@ -178,7 +103,7 @@ bool Input::ChordReader::keyStateChanged
 
     // Check for released chord keys:
     Chord updatedChord = heldChord;
-    for (int i = 0; i < numChordKeys; i++)
+    for (int i = 0; i < Chord::numChordKeys(); i++)
     {
         if (heldChord.usesChordKey(i))
         {
@@ -202,8 +127,7 @@ bool Input::ChordReader::keyStateChanged
         // listeners and reset the selection:
         if (! heldChord.isValid())
         {
-            DBG("Entered chord " << selectedChord.toString() << ", with char '"
-                    << getAlphabet()->getChordCharacter(selectedChord) << "'");
+            DBG("Entered chord " << selectedChord.toString());
             for (Listener* listener : listeners)
             {
                 listener->chordEntered(selectedChord);
@@ -214,6 +138,13 @@ bool Input::ChordReader::keyStateChanged
         else
         {
             releaseTimer.startTimer(keyReleaseChordUpdateDelay);
+        }
+    }
+    else
+    {
+        for (Listener* listener : listeners)
+        {
+            listener->keyReleased();
         }
     }
     return true;

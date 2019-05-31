@@ -7,7 +7,6 @@
  */
 
 #include "JuceHeader.h"
-#include <X11/Xlib.h>
 
 namespace Input { class Buffer; }
 
@@ -21,7 +20,7 @@ public:
      *
      * @param keyChordWindow  The ID of this application's single window.
      */
-    Buffer(const Window targetWindow, const Window keyChordWindow);
+    Buffer(const int targetWindow, const int keyChordWindow);
 
     /**
      * @brief  If the input string isn't empty, send it to the target window
@@ -71,7 +70,7 @@ private:
     // Cached input text:
     juce::String inputText;
     // ID of the window where text will be sent:
-    const Window targetWindow;
+    const int targetWindow;
     // This application's single window ID:
-    const Window keyChordWindow;
+    const int keyChordWindow;
 };

@@ -1,58 +1,38 @@
 {
-    "Chord1" : 
-    { 
-        "key"      : "A", 
-        "name"     : "A",
-        "charName" : "A"
-    },
-    "Chord2" : 
-    { 
-        "key"      : "S", 
-        "name"     : "S",
-        "charName" : "S"
-    },
-    "Chord3" : 
-    { 
-        "key"      : "D", 
-        "name"     : "D",
-        "charName" : "D"
-    },
-    "Chord4" : 
-    { 
-        "key"      : "F", 
-        "name"     : "F",
-        "charName" : "F"
-    },
-    "Chord5" : 
-    { 
-        "key"      : "G", 
-        "name"     : "G",
-        "charName" : "G"
-    },
-    "Select letter keys" :
-    {
-        "key"      : "H",
-        "name"     : "H",
-        "charName" : "H"
-    },
-    "Select number keys" :
+    "Chord1" : { "key" : "A", "name" : "A", "charName" : "A" },
+    "Chord2" : { "key" : "S", "name" : "S", "charName" : "S" },
+    "Chord3" : { "key" : "D", "name" : "D", "charName" : "D" },
+    "Chord4" : { "key" : "F", "name" : "F", "charName" : "F" },
+    "Chord5" : { "key" : "G", "name" : "G", "charName" : "G" },
+    "Select main character set" :
     {
         "key"      : "J",
         "name"     : "J",
         "charName" : "J"
     },
-    "Select symbol keys" :
+    "Select alternate character set" :
     {
         "key"      : "K",
         "name"     : "K",
         "charName" : "K"
     },
-    "Select control keys" :
+    "Select special character set" :
     {
         "key"      : "L",
         "name"     : "L",
         "charName" : "L"
     },
+    "Select next character set" :
+    {
+        "key"      : "H",
+        "name"     : "H",
+        "charName" : "H"
+    },
+    "Show modifier selector" : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle shift modifier"  : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle ctrl modifier"   : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle alt modifier"    : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle cmd modifier"    : { "key" : "", "name" : "", "charName" : "" },
     "Backspace" :
     {
         "key"      : "backspace",

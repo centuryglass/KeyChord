@@ -128,42 +128,22 @@ public:
     bool operator!=(const Chord& rhs) const;
 
     /**
-     * @brief  Checks if this Chord is a subchord of another Chord.
+     * @brief  Checks if this Chord comes after another Chord.
      *
      * @param rhs  The comparison chord.
      *
-     * @return     Whether this Chord doesn't equal rhs, and only uses keys that
-     *             rhs uses.
+     * @return     Whether this Chord is sorted after rhs. 
      */
     bool operator<(const Chord& rhs) const;
 
     /**
-     * @brief  Checks if this Chord is a superchord of another Chord.
+     * @brief  Checks if this Chord comes before another Chord.
      *
      * @param rhs  The comparison chord.
      *
-     * @return     Whether this Chord doesn't equal rhs, and rhs only uses keys
-     *             that this Chord uses.
+     * @return     Whether this Chord is sorted before rhs.
      */
     bool operator>(const Chord& rhs) const;
-
-    /**
-     * @brief  Checks if this Chord equals or is a subchord of another Chord.
-     *
-     * @param rhs  The comparison chord.
-     *
-     * @return     Whether this Chord only uses keys that rhs uses.
-     */
-    bool operator<=(const Chord& rhs) const;
-
-    /**
-     * @brief  Checks if this Chord equals or is a superchord of another Chord.
-     *
-     * @param rhs  The comparison chord.
-     *
-     * @return     Whether rhs only uses keys that this Chord uses.
-     */
-    bool operator>=(const Chord& rhs) const;
 
 private:
     // Marks held key indices with individual bits:

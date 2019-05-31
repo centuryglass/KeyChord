@@ -8,12 +8,13 @@
 
 #include "Input_ChordReader.h"
 #include "Input_Buffer.h"
-#include "Input_Key_Alphabet.h"
 #include "Input_Key_ConfigFile.h"
+#include "Text_CharSet_ConfigFile.h"
 #include "Component_ChordPreview.h"
 #include "JuceHeader.h"
 
 namespace Input { class Controller; }
+namespace juce { class KeyPress; }
 
 class Input::Controller : public ChordReader::Listener
 {
@@ -29,8 +30,8 @@ public:
      *
      * @param keyChordWindow  The ID of this application's single window.
      */
-    Controller(Component::ChordPreview* chordPreview, const Window targetWindow,
-            const Window keyChordWindow);
+    Controller(Component::ChordPreview* chordPreview, const int targetWindow,
+            const int keyChordWindow);
 
     virtual ~Controller() { }
 
@@ -51,22 +52,23 @@ private:
     void chordEntered(const Chord selected) override;
 
     /**
-     * @brief  Updates the ChordPreview when the active alphabet changes.
-     *
-     * @param alphabet  The new active character set.
-     */
-    void alphabetChanged(const Input::Key::Alphabet* alphabet) override;
-
-    /**
      * @brief  Handles key commands used to send buffered text, delete buffered
      *         text, or close the application.
      *
      * @param key  The registered key description for the key press event.
      */
-    void keyPressed(const juce::String key) override;
+    void keyPressed(const juce::KeyPress key) override;
+
+    /**
+     * @brief  Currently does nothing, but may later be used to handle key
+     *         release events not caused by chord keys.
+     */
+    void keyReleased() override { }
 
     // Loads key bindings:
     Input::Key::ConfigFile keyConfig;
+    // Loads configurable character set:
+    Text::CharSet::ConfigFile charsetConfig;
 
     // Captures keyboard input and draws the chord entry state:
     Component::ChordPreview* chordPreview;

@@ -32,7 +32,7 @@ public:
     Binding(const juce::Identifier& jsonKey,
             const juce::String keyDescription,
             const juce::String keyName,
-            const juce::juce_wchar charName);
+            const unsigned int charName);
 
     /**
      * @brief  Constructs an invalid Binding with no stored data.
@@ -86,7 +86,7 @@ public:
      * @return  A single character, displayed when showing the user if the bound
      *          key is held down.
      */
-    const juce::juce_wchar getCharName() const;
+    const unsigned int getCharName() const;
 
 private:
     // keyBindings.json storage key. Identifies the action bound to this key:
@@ -96,5 +96,5 @@ private:
     // A name used to represent this key within the user interface:
     const juce::String keyName;
     // An optional single character used to represent this key:
-    const juce::juce_wchar charName;
+    const unsigned int charName;
 };
