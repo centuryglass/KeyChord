@@ -34,7 +34,8 @@ void Input::Controller::selectedChordChanged(const Chord selectedChord)
 void Input::Controller::chordEntered(const Chord selected)
 {
     unsigned int enteredChar = charsetConfig.getActiveSet()
-            .getChordCharacter(selected, false);
+            .getChordCharacter(selected,
+            modTracker.isKeyHeld(Text::ModTracker::ModKey::shift));
     DBG(dbgPrefix << __func__ << ": Entered character "
             << (char) enteredChar << "(0x" 
             << juce::String::toHexString((int) enteredChar) << ", "
@@ -119,28 +120,29 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::toggleShift,
             [this, &sendUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": modifiers not implemented.");
+                modTracker.toggleKey(Text::ModTracker::ModKey::shift);
+                mainView->repaint();
             } 
         },
         {
             &Keys::toggleCtrl,
             [this, &sendUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": modifiers not implemented.");
+                modTracker.toggleKey(Text::ModTracker::ModKey::control);
             } 
         },
         {
             &Keys::toggleAlt,
             [this, &sendUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": modifiers not implemented.");
+                modTracker.toggleKey(Text::ModTracker::ModKey::alt);
             } 
         },
         {
             &Keys::toggleCmd,
             [this, &sendUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": modifiers not implemented.");
+                modTracker.toggleKey(Text::ModTracker::ModKey::command);
             } 
         },
         {

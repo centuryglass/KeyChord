@@ -19,6 +19,7 @@ OBJECTS_TEXT_CHARSET := \
 OBJECTS_TEXT := \
   $(TEXT_OBJ)BinaryFont.o \
   $(TEXT_OBJ)Painter.o \
+  $(TEXT_OBJ)ModTracker.o \
   $(OBJECTS_TEXT_CHARSET)
 
 TEXT_TEST_PREFIX := $(TEXT_PREFIX)Test_
@@ -49,3 +50,5 @@ $(TEXT_OBJ)BinaryFont.o: \
 	$(TEXT_DIR)/$(TEXT_PREFIX)BinaryFont.cpp
 $(TEXT_OBJ)Painter.o: \
 	$(TEXT_DIR)/$(TEXT_PREFIX)Painter.cpp
+$(TEXT_OBJ)ModTracker.o: \
+	$(TEXT_DIR)/$(TEXT_PREFIX)ModTracker.cpp

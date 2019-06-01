@@ -7,6 +7,7 @@
 
 #include "Text_CharSet_Cache.h"
 #include "Input_Key_ConfigFile.h"
+#include "Component_ChordKeyDisplay.h"
 #include "Chord.h"
 #include "JuceHeader.h"
 
@@ -89,6 +90,38 @@ public:
 
 private:
     /**
+     * @brief  Gets the ideal character width, given the current character set,
+     *         bounds, and settings.
+     *
+     * @return  The padded character width in pixels.
+     */
+    int getPaddedCharWidth() const;
+
+    /**
+     * @brief  Gets the ideal character row height, given the current bounds and
+     *         settings.
+     *
+     * @return  The padded character row height in pixels.
+     */
+    int getPaddedRowHeight() const;
+
+    /**
+     * @brief  Gets the amount of space to leave around characters, given the
+     *         current character set and bounds.
+     *
+     * @return  The amount of horizontal padding space, in pixels.
+     */
+    int getXPadding() const;
+
+    /**
+     * @brief  Gets the amount of space to leave around character rows given the
+     *         current bounds.
+     *
+     * @return  The amount of vertical padding space, in pixels.
+     */
+    int getYPadding() const;
+
+    /**
      * @brief  Draws all chord mappings within the current character set, which
      *         chord keys are currently held down, and the buffered input string 
      *         waiting to be sent to the target window.
@@ -96,6 +129,11 @@ private:
      * @param g  The JUCE graphics context.
      */
     void paint(juce::Graphics& g) override;
+
+    /**
+     * @brief  Update child component bounds if the component changes size.
+     */
+    void resized() override;
 
     // The active character alphabet:
     const Text::CharSet::Cache* charSet = nullptr;
@@ -105,4 +143,7 @@ private:
     juce::Array<unsigned int> bufferedInput;
     // Loads chord key display characters:
     Input::Key::ConfigFile keyConfig;
+
+    // Displays the chord key preview:
+    ChordKeyDisplay chordKeyDisplay;
 };

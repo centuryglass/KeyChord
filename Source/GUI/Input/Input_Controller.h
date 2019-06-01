@@ -10,6 +10,7 @@
 #include "Input_Buffer.h"
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_ConfigFile.h"
+#include "Text_ModTracker.h"
 #include "Component_MainView.h"
 #include "JuceHeader.h"
 
@@ -22,7 +23,7 @@ public:
     /**
      * @brief  Sets up all keyboard input handling.
      *
-     * @param mainView  The component used to listen for keyboard events
+     * @param mainView        The component used to listen for keyboard events
      *                        and draw the chord state.
      *
      * @param targetWindow    The ID of the window where chord input text should
@@ -80,4 +81,8 @@ private:
     // When immediate mode is active, input is immediately forwarded to the 
     // target window without buffering.
     bool immediateMode = false;
+
+    // Tracks held modifiers, and ensures modifier state is preserved and
+    // shared:
+    Text::ModTracker modTracker;
 };

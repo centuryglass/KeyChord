@@ -2,6 +2,7 @@
 #include "Input_Key_JSONKeys.h"
 #include "Text_BinaryFont.h"
 #include "Text_Painter.h"
+#include "Text_ModTracker.h"
 #include "Text_CharSet_Values.h"
 #include <map>
 #include <vector>
@@ -10,6 +11,7 @@
 Component::MainView::MainView()
 {
     setWantsKeyboardFocus(true);
+    addAndMakeVisible(chordKeyDisplay);
 }
 
 
@@ -24,11 +26,13 @@ void Component::MainView::updateChordState(
     if (activeSet != charSet)
     {
         charSet = activeSet;
+        resized();
         shouldRepaint = true;
     }
     if (heldChord != lastHeldChord)
     {
         lastHeldChord = heldChord;
+        chordKeyDisplay.updateChord(heldChord);
         shouldRepaint = true;
     }
     if (input != bufferedInput)
@@ -41,6 +45,43 @@ void Component::MainView::updateChordState(
     {
         repaint();
     }
+}
+
+
+// Gets the ideal character width, given the current character set, bounds, and
+// settings.
+int Component::MainView::getPaddedCharWidth() const
+{
+    if (charSet == nullptr)
+    {
+        return getWidth();
+    }
+    const int charCount = charSet->getSize() 
+            + charSet->wideDrawCharacterCount();
+    return getWidth() / (charCount + 1);
+}
+
+
+// Gets the ideal character row height, given the current bounds and settings.
+int Component::MainView::getPaddedRowHeight() const
+{
+    return getHeight() / 8;
+}
+
+
+// Gets the amount of space to leave around characters, given the current
+// character set and bounds.
+int Component::MainView::getXPadding() const
+{
+    return getPaddedCharWidth() * 0.1;
+}
+
+
+// Gets the amount of space to leave around character rows given the current
+// bounds.
+int Component::MainView::getYPadding() const
+{
+    return getHeight() / 8 * 0.1;
 }
 
 // Draws all chord mappings within the current alphabet, which chord keys are
@@ -60,22 +101,21 @@ void Component::MainView::paint(juce::Graphics& g)
     using namespace Text::CharSet;
 
     // Save the character set size:
-    const uint8 charCount = charSet->getSize() 
+    const int charCount = charSet->getSize() 
             + charSet->wideDrawCharacterCount();
 
     // Calculate layout values:
-    const int paddedRowHeight = getHeight() / 8;
-    const int paddedCharWidth = getWidth() / (charCount + 1);
-    const int yPadding = paddedRowHeight * 0.1;
-    const int xPadding = paddedCharWidth * 0.1;
-    const int rowHeight = paddedRowHeight - yPadding;
-    const int charWidth = paddedCharWidth - xPadding;
-    int yPos = getY();
-    int xPos = getX();
-    g.setFont(juce::Font(rowHeight * 0.9));
+    const int paddedCharWidth = getPaddedCharWidth();
+    const int paddedRowHeight = getPaddedRowHeight();
+    const int xPadding = getXPadding();
+    const int yPadding = getYPadding();
+    const int rowHeight = paddedRowHeight - yPadding * 2;
+    const int charWidth = paddedCharWidth - xPadding * 2;
+    int xPos = 0;
+    int yPos = 0;
+    Text::ModTracker modTracker;
 
-
-    // A convenience function to more easily request charadcter drawing 
+    // A convenience function to more easily request character drawing 
     // operations:
     const auto drawChar = 
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
@@ -86,27 +126,6 @@ void Component::MainView::paint(juce::Graphics& g)
                 (wideDrawChar ? charWidth * 2 : charWidth), rowHeight);
     };
 
-    // Draw chord key guides:
-    for(int keyIdx = 0; keyIdx < Chord::numChordKeys(); keyIdx++)
-    {
-        yPos += paddedRowHeight;
-        juce::Colour chordColour = findColour(chord1Selected + keyIdx, true);
-        g.setColour(chordColour);
-        if (lastHeldChord.usesChordKey(keyIdx))
-        {
-            drawChar(Values::fill);
-            g.setColour(chordColour.contrasting());
-        }
-        else
-        {
-            drawChar(Values::outline);
-        }
-
-        const juce::Identifier* chordKeyID 
-                = Input::Key::JSONKeys::chordKeys[keyIdx];
-        drawChar((char) keyConfig.getKeyChar(*chordKeyID));
-    }
-
     // Label and draw chords for each possible character:
     xPos = getX();
     for (int i = 0; i < charSet->getSize(); i++)
@@ -114,7 +133,8 @@ void Component::MainView::paint(juce::Graphics& g)
         xPos += paddedCharWidth;
         yPos = getY();
         // Current character set index:
-        const unsigned int charIndex = charSet->getCharAtIndex(i, false);
+        const unsigned int charIndex = charSet->getCharAtIndex(i, 
+                modTracker.isKeyHeld(Text::ModTracker::ModKey::shift));
         // Whether the character needs double the normal width:
         const bool wideDrawChar = Text::CharSet::Values::isWideValue(charIndex);
         // Binary mask for the chord used to type the character:
@@ -195,4 +215,14 @@ void Component::MainView::paint(juce::Graphics& g)
     Text::Painter::paintString(g, bufferedInput, inputBounds.getX(),
             inputBounds.getY(), inputBounds.getWidth(), inputBounds.getHeight(),
             rowHeight, 2);
+}
+
+
+// Update child component bounds if the component changes size.
+void Component::MainView::resized()
+{
+    const int charWidth = getPaddedCharWidth();
+    const int charHeight = getPaddedRowHeight();
+    chordKeyDisplay.setBounds(0, charHeight, charWidth,
+            charHeight * Chord::numChordKeys());
 }
