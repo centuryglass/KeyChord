@@ -53,7 +53,14 @@ public:
      *
      * @return  The character set currently being used.
      */
-    const Type getActiveType() const;
+    Type getActiveType() const;
+
+    /**
+     * @brief  Checks if shifted character sets are currently in use.
+     *
+     * @return   Whether shifted sets are currently enabled.
+     */
+    bool getShifted() const;
 
     /**
      * @brief  Updates the active character set type
@@ -62,6 +69,14 @@ public:
      *                       type.
      */
     void setActiveType(const Type newActiveType);
+
+    /**
+     * @brief  Sets whether the shifted versions of character sets will be used.
+     *
+     * @param shifted  True to use shifted versions, false to use the default
+     *                 versions.
+     */
+    void setShifted(const bool shifted);
 
 private:
     /**
@@ -86,4 +101,7 @@ private:
 
     // The active set type:
     Type activeType = Type::main;
+
+    // Whether shifted character sets are in use:
+    bool shifted = false;
 };

@@ -112,3 +112,11 @@ bool Text::CharSet::Values::isWideValue(const unsigned int& value)
 {
     return value >= ctrl && value <= wideOutline;
 }
+
+
+// Checks if a value represents a modifier, rather than a typical printed
+// character.
+bool Text::CharSet::Values::isModifier(const unsigned int& value)
+{
+    return value >= ctrl && value <= cmd;
+}

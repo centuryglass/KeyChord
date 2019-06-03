@@ -1,7 +1,8 @@
 #include "Input_Buffer.h"
 #include "Util_ConditionChecker.h"
-#include "Windows_XInterface.h"
+#include "Windows_FocusControl.h"
 #include "Text_CharSet_Values.h"
+#include "Text_ModTracker.h"
 
 #ifdef JUCE_DEBUG
 // Print the full class name before all debug output:
@@ -46,79 +47,72 @@ void Input::Buffer::sendAndClearInput()
         DBG(dbgPrefix << __func__ << ": No text to send, aborting");
         return;
     }
+    using juce::String;
+    using ModKey = Text::ModTracker::ModKey;
     DBG(dbgPrefix << __func__ << ": Forwarding " << inputText.size()
             << " characters to target window.");
 
-    Windows::XInterface xInterface;
-    Util::ConditionChecker focusChecker;
-    xInterface.activateWindow(targetWindow);
-    focusChecker.setCheckInterval(50, 1.2f);
-    focusChecker.startCheck([&xInterface, this]()
+    // Add modifiers to input:
+    const std::pair<ModKey, String> modInput [] =
     {
-        return xInterface.isActiveWindow(targetWindow);
-    },
-    [&xInterface, this]()
+        { ModKey::control, "control+" },
+        { ModKey::alt,     "alt+" },
+        { ModKey::shift,   "shift+" },
+        { ModKey::command, "super+" }
+    };
+    Text::ModTracker modTracker;
+    String modPrefix;
+    for (const auto& iter : modInput)
     {
-        for (int cIndex = 0; cIndex < inputText.size(); cIndex++)
+        if (modTracker.isKeyHeld(iter.first))
         {
-            juce::String charString = Text::CharSet::Values::getCharString(
-                    inputText[cIndex]);
-            if (charString.isEmpty())
-            {
-                DBG(dbgPrefix << "sendAndClearInput: No string conversion for "
-                        <<  juce::String((int) inputText[cIndex]) << " at index " 
-                        << cIndex);
-                continue;
-            }
-            juce::String commandString;
-            if (inputText[cIndex] >= Text::CharSet::Values::extraPrintMin)
-            {
-                // Extended characters need to be sent as text, not key events.
-                commandString = typeCommand;
-            }
-            else
-            {
-                commandString = keyCommand;
-            }
-            commandString += "'" + ((charString == "'") ? "\'" : charString) 
-                    + "'";
-            DBG("running input command: " << commandString);
-            system(commandString.toRawUTF8());
+            modPrefix += iter.second;
+            jassert(modPrefix.isNotEmpty());
         }
-        clearInput();
-        if(juce::Desktop::getInstance().getComponent(0) != nullptr)
-        {
-            xInterface.activateWindow(keyChordWindow);
-        }
-    },
-    focusTimeout,
+    }
+
+    // Focus target window before sending input:
+    Windows::FocusControl focusControl;
+    focusControl.focusWindow(targetWindow,
     []()
     {
         DBG(dbgPrefix << "sendAndClearInput: "
                 << "Failed to get window focus before timeout!");
-    });
-    focusChecker.waitForUpdate();
 
+        DBG(dbgPrefix << "sendAndClearInput: "
+                << "Target window is probably gone, exiting");
+        juce::JUCEApplication::getInstance()->quit();
+    });
+
+    for (int cIndex = 0; cIndex < inputText.size(); cIndex++)
+    {
+        juce::String charString = Text::CharSet::Values::getCharString(
+                inputText[cIndex]);
+        if (charString.isEmpty())
+        {
+            DBG(dbgPrefix << "sendAndClearInput: No string conversion for "
+                    <<  juce::String((int) inputText[cIndex]) 
+                    << " at index " << cIndex);
+            continue;
+        }
+        juce::String commandString;
+        if (inputText[cIndex] >= Text::CharSet::Values::extraPrintMin)
+        {
+            // Extended characters need to be sent as text, not key events.
+            commandString = typeCommand + "'";
+        }
+        else
+        {
+            commandString = keyCommand + "'" + modPrefix;
+        }
+        commandString += ((charString == "'") ? "\'" : charString) + "'";
+        DBG("running input command: " << commandString);
+        system(commandString.toRawUTF8());
+    }
+    clearInput();
     if(juce::Desktop::getInstance().getComponent(0) != nullptr)
     {
-        // Refocus the window:
-        xInterface.activateWindow(keyChordWindow);
-        focusChecker.startCheck([&xInterface, this]()
-        {
-            return xInterface.isActiveWindow(keyChordWindow);
-        },
-        [&xInterface, this]()
-        {
-            DBG(dbgPrefix << "sendAndClearInput: restored focus.");
-        },
-        focusTimeout,
-        []()
-        {
-            DBG(dbgPrefix << "sendAndClearInput: "
-                    << "Failed to get window focus before timeout!");
-            juce::JUCEApplication::getInstance()->quit();
-        });
-        focusChecker.waitForUpdate();
+        focusControl.takeFocus();
     }
 }
 
@@ -140,6 +134,8 @@ void Input::Buffer::deleteLastChar()
 void Input::Buffer::clearInput()
 {
     inputText.clear();
+    Text::ModTracker modTracker;
+    modTracker.clearAll();
 }
     
 // Checks if the input buffer currently contains any input.

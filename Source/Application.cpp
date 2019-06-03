@@ -1,6 +1,7 @@
-#include "HomeApplication.h"
-#include "HomeWindow.h"
+#include "Application.h"
+#include "MainWindow.h"
 #include "Windows_XInterface.h"
+#include "Windows_FocusControl.h"
 #include "Util_ShutdownListener.h"
 #include "Util_TempTimer.h"
 
@@ -10,16 +11,9 @@
 
 #ifdef JUCE_DEBUG
 // Print the full class name before all debug output:
-static const constexpr char* dbgPrefix = "HomeApplication::";
+static const constexpr char* dbgPrefix = "Application::";
 #endif
 
-// Milliseconds to wait between window focus attempts:
-static const constexpr int focusWaitMs = 100;
-// Each attempt to set and check window focus status should wait a little longer
-// before the next test. Wait time multiplier:
-static const constexpr float focusWaitMultiplier = 1.3;
-// Milliseconds to wait before abandoning window focus attempts:
-static const constexpr int focusTimeout = 20000;
 
 #ifdef INCLUDE_TESTING
 // Sets if tests should run after the window is created and focused.
@@ -34,7 +28,7 @@ static juce::StringArray testCategories;
 
 
 // Performs all required initialization when the application is first launched.
-void HomeApplication::initialise(const juce::String &commandLine)
+void Application::initialise(const juce::String &commandLine)
 {
     // Save the window that will receive input:
     Windows::XInterface xWindows;
@@ -93,7 +87,7 @@ void HomeApplication::initialise(const juce::String &commandLine)
     // normally:
     lookAndFeel.reset(new Theme::LookAndFeel);
     juce::LookAndFeel::setDefaultLookAndFeel(lookAndFeel.get());
-    homeWindow.reset(new HomeWindow(getApplicationName()));
+    homeWindow.reset(new MainWindow(getApplicationName()));
     homeWindow->setLookAndFeel(lookAndFeel.get());
 
     // Initialize and apply the chord component and input handler:
@@ -106,54 +100,20 @@ void HomeApplication::initialise(const juce::String &commandLine)
                 targetWindow, xWindows.getMainAppWindow()));
 
     // Ensure the application window is active and has keyboard focus:
-    focusChecker.setCheckInterval(focusWaitMs, focusWaitMultiplier);
-    const auto onFocus = [this]()
+    Windows::FocusControl focusControl;
+    focusControl.takeFocus();
+    #ifdef INCLUDE_TESTING
+    if (runTests)
     {
-        DBG(dbgPrefix << __func__
-                << ": Main window focused, enabling focus tracking:");
-        static_cast<Windows::MainWindow*>(homeWindow.get())
-                ->startFocusTracking();
-        #ifdef INCLUDE_TESTING
-        if (runTests)
-        {
-            runApplicationTests();
-        }
-        #endif
-    };
-    focusChecker.startCheck([this]() { return focusAppWindow(); },
-            onFocus, focusTimeout,
-    [this]()
-    {
-        DBG(dbgPrefix << "initialise"
-                << ": Window focus attempts timed out.");
-        #if defined(JUCE_DEBUG)
-        Windows::XInterface xWindows;
-        Window appWindow = xWindows.getMainAppWindow();
-        if (appWindow == BadWindow)
-        {
-            DBG(dbgPrefix << "initialise"
-                    << ": Failed because main window ID was bad.");
-        }
-        else
-        {
-            DBG(dbgPrefix << "initialise"
-                    << ": window active: "
-                    << (xWindows.isActiveWindow(appWindow) ? "true" : "false")
-                    << ", keyboard focused: "
-                    << (homeWindow->hasKeyboardFocus(true) ? "true" : "false"));
-        }
-        xWindows.printWindowTree();
-        #endif
-
-        static_cast<Windows::MainWindow*>(homeWindow.get())
-                ->startFocusTracking();
-    });
+        runApplicationTests();
+    }
+    #endif
 }
 
 
 // Performs all necessary cleanup steps before the application can be safely
 // closed.
-void HomeApplication::shutdown()
+void Application::shutdown()
 {
     DBG(dbgPrefix << __func__ << ": Closing application resources.");
     Util::ShutdownBroadcaster::broadcastShutdown();
@@ -171,28 +131,28 @@ void HomeApplication::shutdown()
 
 
 // Gets the name of this application.
-const juce::String HomeApplication::getApplicationName()
+const juce::String Application::getApplicationName()
 {
     return ProjectInfo::projectName;
 }
 
 
 // Gets the application's version string.
-const juce::String HomeApplication::getApplicationVersion()
+const juce::String Application::getApplicationVersion()
 {
     return ProjectInfo::versionString;
 }
 
 
 // Checks if multiple versions of this application may run simultaneously.
-bool HomeApplication::moreThanOneInstanceAllowed()
+bool Application::moreThanOneInstanceAllowed()
 {
     return false;
 }
 
 #ifdef INCLUDE_TESTING
 // Runs application tests and shuts down the application.
-void HomeApplication::runApplicationTests()
+void Application::runApplicationTests()
 {
     juce::UnitTestRunner tester;
     tester.setPassesAreLogged(verboseTesting);
@@ -214,31 +174,3 @@ void HomeApplication::runApplicationTests()
     juce::JUCEApplication::getInstance()->systemRequestedQuit();
 }
 #endif
-
-// Attempts to activate the application window and grab keyboard focus.
-bool HomeApplication::focusAppWindow()
-{
-    if (homeWindow == nullptr)
-    {
-        return false;
-    }
-    Windows::XInterface xWindows;
-    Window appWindow = xWindows.getMainAppWindow();
-    if (appWindow == BadWindow)
-    {
-        return false;
-    }
-    bool isActive = xWindows.isActiveWindow(appWindow);
-    if (! isActive)
-    {
-        xWindows.activateWindow(appWindow);
-        isActive = xWindows.isActiveWindow(appWindow);
-    }
-    bool hasKeyboardFocus = homeWindow->hasKeyboardFocus(true);
-    if (! hasKeyboardFocus)
-    {
-        homeWindow->grabKeyboardFocus();
-        hasKeyboardFocus = homeWindow->hasKeyboardFocus(true);
-    }
-    return isActive && hasKeyboardFocus;
-}

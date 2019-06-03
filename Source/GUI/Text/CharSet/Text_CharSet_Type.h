@@ -14,7 +14,8 @@ namespace Text
             main,         // main set, lowercase letters by default.
             alt,          // alternate set, number values by default.
             special,      // special character set
+            modifier,     // modifier keys
         };
-        static const constexpr int numCharacterSets = 3;
+        static const constexpr int numCharacterSets = 4;
     } 
 }

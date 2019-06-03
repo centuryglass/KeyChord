@@ -56,4 +56,19 @@ public:
      *                       type.
      */
     void setActiveType(const Type newActiveType);
+
+    /**
+     * @brief  Checks if shifted character sets are currently in use.
+     *
+     * @return   Whether shifted sets are currently enabled.
+     */
+    bool getShifted() const;
+
+    /**
+     * @brief  Sets whether the shifted versions of character sets will be used.
+     *
+     * @param shifted  True to use shifted versions, false to use the default
+     *                 versions.
+     */
+    void setShifted(const bool shifted);
 };

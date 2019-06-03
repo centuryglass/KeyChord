@@ -14,7 +14,7 @@ namespace Util
     class ShutdownBroadcaster;
 }
 
-class HomeApplication;
+class Application;
 
 /**
  * @brief  Receives a notification callback when the application is about to
@@ -56,7 +56,7 @@ class Util::ShutdownBroadcaster
 {
 private:
     // Only the main application class may send shutdown messages.
-    friend HomeApplication;
+    friend Application;
 
     /**
      * @brief  Sends the shutdown message to all shutdown listeners.

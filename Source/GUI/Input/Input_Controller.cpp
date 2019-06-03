@@ -1,6 +1,7 @@
 #include "Input_Controller.h"
 #include "Input_Key_JSONKeys.h"
-#include "HomeWindow.h"
+#include "Text_CharSet_Values.h"
+#include "MainWindow.h"
 #include "JuceHeader.h"
 #include <map>
 
@@ -33,14 +34,54 @@ void Input::Controller::selectedChordChanged(const Chord selectedChord)
 // ChordComponent when a chord character is entered.
 void Input::Controller::chordEntered(const Chord selected)
 {
+    if (mainView->isHelpScreenShowing())
+    {
+        // When the help screen is open, all input events just close the help
+        // screen.
+        mainView->toggleHelpScreen();
+        const int height = juce::Desktop::getInstance().getDisplays()
+            .getMainDisplay().userArea.getHeight() / 2;
+        MainWindow::getOpenWindow()->setHeight(height);
+        return;
+    }
     unsigned int enteredChar = charsetConfig.getActiveSet()
-            .getChordCharacter(selected,
-            modTracker.isKeyHeld(Text::ModTracker::ModKey::shift));
+            .getChordCharacter(selected, charsetConfig.getShifted());
+    /*
     DBG(dbgPrefix << __func__ << ": Entered character "
             << (char) enteredChar << "(0x" 
             << juce::String::toHexString((int) enteredChar) << ", "
             << (int) enteredChar << ")");
-    inputBuffer.appendCharacter(enteredChar);
+    */
+    if (Text::CharSet::Values::isModifier(enteredChar))
+    {
+        Text::ModTracker::ModKey modKey;
+        switch (enteredChar)
+        {
+            case Text::CharSet::Values::ctrl:
+                modKey = Text::ModTracker::ModKey::control;
+                break;
+            case Text::CharSet::Values::alt:
+                modKey = Text::ModTracker::ModKey::alt;
+                break;
+            case Text::CharSet::Values::shift:
+                modKey = Text::ModTracker::ModKey::shift;
+                break;
+            case Text::CharSet::Values::cmd:
+                modKey = Text::ModTracker::ModKey::command;
+                break;
+            default:
+                DBG(dbgPrefix << __func__ << ": Unexpected key value "
+                        << juce::String(enteredChar) 
+                        << " incorrectly evaluated as modifier.");
+                jassertfalse;
+        }
+        modTracker.toggleKey(modKey);
+        mainView->repaint();
+    }
+    else
+    {
+        inputBuffer.appendCharacter(enteredChar);
+    }
     if (immediateMode)
     {
         inputBuffer.sendAndClearInput();
@@ -54,7 +95,16 @@ void Input::Controller::chordEntered(const Chord selected)
 // close the application.
 void Input::Controller::keyPressed(const juce::KeyPress key)
 {
-    DBG("Controller got " << key.getTextDescription());
+    if (mainView->isHelpScreenShowing())
+    {
+        // When the help screen is open, all input events just close the help
+        // screen.
+        mainView->toggleHelpScreen();
+        const int height = juce::Desktop::getInstance().getDisplays()
+            .getMainDisplay().userArea.getHeight() / 2;
+        MainWindow::getOpenWindow()->setHeight(height);
+        return;
+    }
     namespace Keys = Input::Key::JSONKeys;
     using Text::CharSet::Type;
     if (! key.isValid())
@@ -110,39 +160,18 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             }
         },
         {
-            &Keys::openModSelect,
-            [this, &sendUpdate]()
+            &Keys::selectModSet,
+            [this, &sendUpdate, &charSetUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": modifiers not implemented.");
+                sendUpdate = charSetUpdate(Type::modifier);
             } 
         },
         {
             &Keys::toggleShift,
             [this, &sendUpdate]()
             {
-                modTracker.toggleKey(Text::ModTracker::ModKey::shift);
+                charsetConfig.setShifted(! charsetConfig.getShifted());
                 mainView->repaint();
-            } 
-        },
-        {
-            &Keys::toggleCtrl,
-            [this, &sendUpdate]()
-            {
-                modTracker.toggleKey(Text::ModTracker::ModKey::control);
-            } 
-        },
-        {
-            &Keys::toggleAlt,
-            [this, &sendUpdate]()
-            {
-                modTracker.toggleKey(Text::ModTracker::ModKey::alt);
-            } 
-        },
-        {
-            &Keys::toggleCmd,
-            [this, &sendUpdate]()
-            {
-                modTracker.toggleKey(Text::ModTracker::ModKey::command);
             } 
         },
         {
@@ -202,14 +231,17 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::showHelp,
             [this, &sendUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": help text not implemented.");
+                mainView->toggleHelpScreen();
+                const int height = juce::Desktop::getInstance().getDisplays()
+                    .getMainDisplay().userArea.getHeight();
+                MainWindow::getOpenWindow()->setHeight(height);
             } 
         },
         {
             &Keys::toggleWindowEdge,
             []() 
             { 
-                HomeWindow* window = HomeWindow::getOpenWindow();
+                MainWindow* window = MainWindow::getOpenWindow();
                 if (window != nullptr)
                 {
                     window->toggleEdge();
@@ -224,9 +256,12 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             } 
         },
     };
+    juce::KeyPress unmoddedKey(key.getKeyCode());
+    DBG("unmodded =" << unmoddedKey.getTextDescription());
     for (const juce::Identifier* binding : Keys::allKeys)
     {
-        if (keyConfig.getBoundKey(*binding) == key)
+        juce::KeyPress boundKey = keyConfig.getBoundKey(*binding);
+        if (boundKey == key || boundKey == unmoddedKey)
         {
             if (actionMap.count(binding) > 0)
             {
@@ -239,6 +274,5 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
         mainView->updateChordState(&charsetConfig.getActiveSet(),
                 chordReader.getSelectedChord(),
                 inputBuffer.getInputText());
-
     }
 }

@@ -209,6 +209,32 @@ Text::CharSet::Cache::Cache(const juce::var setData)
 }
 
 
+ // Creates a character set cache for the modifier keys.
+Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
+{
+    Cache modCache;
+    juce::Array<unsigned int> modKeys =
+    {
+        Values::shift,
+        Values::ctrl,
+        Values::alt,
+        Values::cmd
+    };
+    for (int i = 0; i < modKeys.size(); i++)
+    {
+        CharPair modPair = { modKeys[i], modKeys[i] };
+        modCache.charSet.add(modPair);
+        Chord modChord(chordConvenienceOrder[i]);
+        modCache.chordMap[modKeys[i]] = modChord;
+        modCache.charPairMap[modChord] = modPair;
+        if (Values::isWideValue(modKeys[i]))
+        {
+            modCache.wideDrawCharacters++;
+        }
+    }
+    return modCache;
+}
+
 // Gets the character in the alphabet with a particular index value.
 unsigned int Text::CharSet::Cache::getCharAtIndex
 (const unsigned int index, const bool shifted) const

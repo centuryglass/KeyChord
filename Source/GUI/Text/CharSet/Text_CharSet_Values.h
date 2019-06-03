@@ -42,12 +42,24 @@ namespace Text
              * @brief  Checks if a value needs to be drawn twice as wide as
              *         normal.
              *
-             * @param value  A ISO 8859 character code, or a replacement value
+             * @param value  An ISO 8859 character code, or a replacement value
              *               defined in Text::CharSet::Values.
              *
              * @return       Whether the value requires extra width.
              */
             bool isWideValue(const unsigned int& value);
+
+            /**
+             * @brief  Checks if a value represents a modifier, rather than a
+             *         typical printed character.
+             *
+             * @param value  An ISO 8859 character code, or a replacement value
+             *               defined in Text::CharSet::Values.
+             *
+             * @return       Whether the value represents the control, alt,
+             *               shift, or command keys.
+             */
+            bool isModifier(const unsigned int& value);
 
             // Indices of nonstandard characters, stored in place of unprintable
             // characters:
@@ -81,8 +93,8 @@ namespace Text
             static const constexpr unsigned int ctrl        = 0x10;
             static const constexpr unsigned int alt         = 0x12;
             static const constexpr unsigned int shift       = 0x14;
-            static const constexpr unsigned int escape      = 0x16;
-            static const constexpr unsigned int cmd         = 0x18;
+            static const constexpr unsigned int cmd         = 0x16;
+            static const constexpr unsigned int escape      = 0x18;
             static const constexpr unsigned int del         = 0x1a;
             static const constexpr unsigned int wideFill    = 0x1c;
             static const constexpr unsigned int wideOutline = 0x1e;

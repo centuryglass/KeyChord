@@ -73,6 +73,15 @@ void Text::ModTracker::toggleKey(const ModKey modKey)
 }
 
 
+// Releases all held modifier keys.
+void Text::ModTracker::clearAll()
+{
+    SharedResource::LockedPtr<ModResource> modResource
+            = getWriteLockedResource();
+    modResource->setKeyFlags(0);
+}
+
+
 // Checks if a specific modifier key is held down.
 bool Text::ModTracker::isKeyHeld(const ModKey modKey) const
 {

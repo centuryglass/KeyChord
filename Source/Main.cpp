@@ -1,12 +1,12 @@
 #include "JuceHeader.h"
-#include "HomeApplication.h"
+#include "Application.h"
 
-// //The macro START_JUCE_APPLICATION(HomeApplication)
+// //The macro START_JUCE_APPLICATION(Application)
 // //expands to this code when building for Linux:
 
 // juce::JUCEApplicationBase* juce_CreateApplication();
 // juce::JUCEApplicationBase* juce_CreateApplication() {
-// return new HomeApplication();
+// return new Application();
 // }
 
 
@@ -16,4 +16,4 @@
 // return juce::JUCEApplicationBase::main( argc, (const char**) argv );
 // }
 
-START_JUCE_APPLICATION(HomeApplication)
+START_JUCE_APPLICATION(Application)

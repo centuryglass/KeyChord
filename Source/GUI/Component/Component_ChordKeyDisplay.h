@@ -6,32 +6,32 @@
  *         input keys.
  */
 
-#include "Chord.h"
+#include "Component_KeyGrid.h"
 #include "JuceHeader.h"
 
 namespace Component { class ChordKeyDisplay; }
 
-class Component::ChordKeyDisplay : public juce::Component
+class Component::ChordKeyDisplay : public Component::KeyGrid
 {
 public:
-    enum ColourIds
-    {
-        chord1Selected = 0x1900102,
-        chord2Selected = 0x1900103,
-        chord3Selected = 0x1900104,
-        chord4Selected = 0x1900105,
-        chord5Selected = 0x1900106,
-    };
     ChordKeyDisplay();
 
     virtual ~ChordKeyDisplay() { }
 
     /**
-     * @brief  Updates the saved chord value.
+     * @brief  Gets the number of character columns the KeyGrid contains.
      *
-     * @param newChord  A new chord for the component to display.
+     * @return  One, as the ChordKeyDisplay arranges all chord keys in one
+     *          column.
      */
-    void updateChord(const Chord newChord);
+    int getColumnCount() const override;
+
+    /**
+     * @brief  Gets the number of character rows the KeyGrid contains.
+     *
+     * @return  The number of chord input keys.
+     */
+     int getRowCount() const override;
 
 private:
     /**
@@ -41,8 +41,6 @@ private:
      */
     void paint(juce::Graphics& g) override;
 
-    // The last held chord value:
-    Chord currentChord;
     // Stores the chord key characters:
     juce::Array<unsigned int> chordKeys;
 };

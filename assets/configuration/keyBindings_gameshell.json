@@ -1,0 +1,99 @@
+{
+    "Chord1" : { "key" : "H", "name" : "LK1", "charName" : "1" },
+    "Chord2" : { "key" : "Y", "name" : "LK2", "charName" : "2" },
+    "Chord3" : { "key" : "Z", "name" : "LK3", "charName" : "3" },
+    "Chord4" : { "key" : "O", "name" : "LK4", "charName" : "4" },
+    "Chord5" : { "key" : "L", "name" : "LK5", "charName" : "5" },
+    "Select main character set" :
+    {
+        "key"      : "home",
+        "name"     : "Shift + LK1",
+        "charName" : "f1"
+    },
+    "Select alternate character set" :
+    {
+        "key"      : "page up",
+        "name"     : "Shift + LK2",
+        "charName" : "f2"
+    },
+    "Select special character set" :
+    {
+        "key"      : "page down",
+        "name"     : "Shift + LK4",
+        "charName" : "f4"
+    },
+    "Show modifier selector" : 
+    { 
+        "key"      : "end",
+        "name"     : "Shift + LK5",
+        "charName" : "f5" },
+    "Select next character set" :
+    {
+        "key"      : "I",
+        "name"     : "",
+        "charName" : "X"
+    },
+    "Toggle shift modifier"  :
+    { 
+        "key"      : "right",
+        "name"     : "DPad right",
+        "charName" : "right" 
+    },
+    "Toggle ctrl modifier"   : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle alt modifier"    : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle cmd modifier"    : { "key" : "", "name" : "", "charName" : "" },
+    "Backspace" :
+    {
+        "key"      : "J",
+        "name"     : "B",
+        "charName" : "B"
+    },
+    "Clear all" :
+    {
+        "key"      : "backspace",
+        "name"     : "Shift + Menu",
+        "charName" : "backspace"
+    },
+    "Send text" :
+    {
+        "key"      : "K",
+        "name"     : "A",
+        "charName" : "A"
+    },
+    "Close and send" :
+    {
+        "key"      : "enter",
+        "name"     : "Start",
+        "charName" : "0x4"
+    },
+    "Close" :
+    {
+        "key"      : "escape",
+        "name"     : "Menu",
+        "charName" : "M"
+    },
+    "Toggle immediate mode" :
+    {
+        "key"      : "U",
+        "name"     : "Y",
+        "charName" : "Y"
+    },
+    "Show help" :
+    {
+        "key"      : "space",
+        "name"     : "Select",
+        "charName" : " "
+    },
+    "Toggle window edge" :
+    {
+        "key"      : "up",
+        "name"     : "DPad Up",
+        "charName" : "up"
+    },
+    "Toggle minimize" :
+    {
+        "key"      : "down",
+        "name"     : "DPad Down",
+        "charName" : "down"
+    }
+}

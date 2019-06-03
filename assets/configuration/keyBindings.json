@@ -4,6 +4,12 @@
     "Chord3" : { "key" : "D", "name" : "D", "charName" : "D" },
     "Chord4" : { "key" : "F", "name" : "F", "charName" : "F" },
     "Chord5" : { "key" : "G", "name" : "G", "charName" : "G" },
+    "Select next character set" :
+    {
+        "key"      : "H",
+        "name"     : "H",
+        "charName" : "H"
+    },
     "Select main character set" :
     {
         "key"      : "J",
@@ -22,17 +28,18 @@
         "name"     : "L",
         "charName" : "L"
     },
-    "Select next character set" :
-    {
-        "key"      : "H",
-        "name"     : "H",
-        "charName" : "H"
+    "Select modifier set" : 
+    { 
+        "key" : ";",
+        "name" : "semicolon",
+        "charName" : ";" 
     },
-    "Show modifier selector" : { "key" : "", "name" : "", "charName" : "" },
-    "Toggle shift modifier"  : { "key" : "", "name" : "", "charName" : "" },
-    "Toggle ctrl modifier"   : { "key" : "", "name" : "", "charName" : "" },
-    "Toggle alt modifier"    : { "key" : "", "name" : "", "charName" : "" },
-    "Toggle cmd modifier"    : { "key" : "", "name" : "", "charName" : "" },
+    "Toggle shifted characters"  : 
+    { 
+        "key" : "'",
+        "name" : "apostrophe",
+        "charName" : "'"
+    },
     "Backspace" :
     {
         "key"      : "backspace",
@@ -42,26 +49,26 @@
     "Clear all" :
     {
         "key"      : "-",
-        "name"     : "Shift + Select",
-        "charName" : "x"
+        "name"     : "Minus",
+        "charName" : "-"
     },
     "Send text" :
     {
         "key"      : "+",
-        "name"     : "+",
+        "name"     : "Plus",
         "charName" : "+"
     },
     "Close and send" :
     {
         "key"      : "enter",
-        "name"     : "Start",
+        "name"     : "Enter",
         "charName" : ">"
     },
     "Close" :
     {
         "key"      : "escape",
-        "name"     : "Menu",
-        "charName" : "M"
+        "name"     : "Escape",
+        "charName" : "0x18"
     },
     "Toggle immediate mode" :
     {

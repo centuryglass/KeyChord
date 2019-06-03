@@ -8,7 +8,7 @@ Testing::Window::Window(const juce::String testName,
         const int yPos,
         const int width,
         const int height) :
-Windows::MainWindow(testName, juce::Colours::white,
+juce::DocumentWindow(testName, juce::Colours::white,
         juce::DocumentWindow::allButtons)
 {
     setBounds(xPos, yPos, width, height);

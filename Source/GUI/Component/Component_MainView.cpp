@@ -4,14 +4,39 @@
 #include "Text_Painter.h"
 #include "Text_ModTracker.h"
 #include "Text_CharSet_Values.h"
+#include "Text_CharSet_ConfigFile.h"
+#include "MainWindow.h"
 #include <map>
 #include <vector>
+
+// Character padding values, as a fraction of character size:
+static const constexpr float xPaddingFraction = 0.1;
+static const constexpr float yPaddingFraction = 0.1;
+// Input preview margin size, as a fraction of input preview area height:
+static const constexpr float inputMargin = 0.05;
 
 //  Requests keyboard focus on construction.
 Component::MainView::MainView()
 {
     setWantsKeyboardFocus(true);
-    addAndMakeVisible(chordKeyDisplay);
+    KeyGrid* keyGrids [] =
+    {
+        &charsetDisplay,
+        &chordPreview,
+        &chordKeyDisplay
+    };
+
+    Text::CharSet::ConfigFile charSetConfig;
+    const Text::CharSet::Cache& activeSet = charSetConfig.getActiveSet();
+
+    for (KeyGrid* keyGrid : keyGrids)
+    {
+        keyGrid->setPaddingFractions(xPaddingFraction, yPaddingFraction);
+        keyGrid->updateCharacterSet(&activeSet);
+        addAndMakeVisible(keyGrid);
+    }
+    addAndMakeVisible(inputView);
+    addChildComponent(helpScreen);
 }
 
 
@@ -22,207 +47,69 @@ void Component::MainView::updateChordState(
         const Chord heldChord,
         const juce::Array<unsigned int> input)
 {
-    bool shouldRepaint = false;
-    if (activeSet != charSet)
+    KeyGrid* keyGrids [] =
     {
-        charSet = activeSet;
-        resized();
-        shouldRepaint = true;
-    }
-    if (heldChord != lastHeldChord)
-    {
-        lastHeldChord = heldChord;
-        chordKeyDisplay.updateChord(heldChord);
-        shouldRepaint = true;
-    }
-    if (input != bufferedInput)
-    {
-        bufferedInput = input;
-        shouldRepaint = true;
-    }
-
-    if (shouldRepaint)
-    {
-        repaint();
-    }
-}
-
-
-// Gets the ideal character width, given the current character set, bounds, and
-// settings.
-int Component::MainView::getPaddedCharWidth() const
-{
-    if (charSet == nullptr)
-    {
-        return getWidth();
-    }
-    const int charCount = charSet->getSize() 
-            + charSet->wideDrawCharacterCount();
-    return getWidth() / (charCount + 1);
-}
-
-
-// Gets the ideal character row height, given the current bounds and settings.
-int Component::MainView::getPaddedRowHeight() const
-{
-    return getHeight() / 8;
-}
-
-
-// Gets the amount of space to leave around characters, given the current
-// character set and bounds.
-int Component::MainView::getXPadding() const
-{
-    return getPaddedCharWidth() * 0.1;
-}
-
-
-// Gets the amount of space to leave around character rows given the current
-// bounds.
-int Component::MainView::getYPadding() const
-{
-    return getHeight() / 8 * 0.1;
-}
-
-// Draws all chord mappings within the current alphabet, which chord keys are
-// currently held down, and the buffered input string waiting to be sent to the
-// target window.
-void Component::MainView::paint(juce::Graphics& g)
-{
-    if (charSet == nullptr)
-    {
-        return;
-    }
-
-    using juce::uint8;
-    using juce::Colour;
-    using juce::Colours;
-    using juce::Rectangle;
-    using namespace Text::CharSet;
-
-    // Save the character set size:
-    const int charCount = charSet->getSize() 
-            + charSet->wideDrawCharacterCount();
-
-    // Calculate layout values:
-    const int paddedCharWidth = getPaddedCharWidth();
-    const int paddedRowHeight = getPaddedRowHeight();
-    const int xPadding = getXPadding();
-    const int yPadding = getYPadding();
-    const int rowHeight = paddedRowHeight - yPadding * 2;
-    const int charWidth = paddedCharWidth - xPadding * 2;
-    int xPos = 0;
-    int yPos = 0;
-    Text::ModTracker modTracker;
-
-    // A convenience function to more easily request character drawing 
-    // operations:
-    const auto drawChar = 
-        [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
-        (const unsigned int toDraw)
-    {
-        bool wideDrawChar = Values::isWideValue(toDraw);
-        Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
-                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight);
+        &charsetDisplay,
+        &chordPreview,
+        &chordKeyDisplay
     };
-
-    // Label and draw chords for each possible character:
-    xPos = getX();
-    for (int i = 0; i < charSet->getSize(); i++)
+    for (KeyGrid* keyGrid : keyGrids)
     {
-        xPos += paddedCharWidth;
-        yPos = getY();
-        // Current character set index:
-        const unsigned int charIndex = charSet->getCharAtIndex(i, 
-                modTracker.isKeyHeld(Text::ModTracker::ModKey::shift));
-        // Whether the character needs double the normal width:
-        const bool wideDrawChar = Text::CharSet::Values::isWideValue(charIndex);
-        // Binary mask for the chord used to type the character:
-        const Chord characterChord = charSet->getCharacterChord(charIndex);
-        // Whether this character is currently selected:
-        const bool charSelected = (characterChord == lastHeldChord);
-        // Whether no chord keys are held that aren't in this character's chord:
-        const bool charOpen = charSelected || lastHeldChord.isSubchordOf(
-                characterChord);
-
-        g.setColour(findColour(charOpen ? text : inactiveText, true));
-        if (charSelected)
-        {
-            drawChar(wideDrawChar ? Values::wideOutline : Values::outline);
-        }
-        drawChar(charIndex);
-
-        // Draw each chord key under the character:
-        for(int keyIdx = 0; keyIdx < Chord::numChordKeys(); keyIdx++)
-        {
-            yPos += paddedRowHeight;
-            // Check if this chord key is currently held down:
-            const bool keyIsHeld = lastHeldChord.usesChordKey(keyIdx);
-            // Check if this chord key is used for this character:
-            const bool charUsesKey = characterChord.usesChordKey(keyIdx);
-
-            // Select the color used to draw the character:
-            int colourID;
-            // If key is used for this character, check if selected, active,
-            // open, or blocked:
-            if (charSelected)
-            {
-                colourID = chord1Selected;
-            }
-            else if (! charOpen)
-            {
-                colourID = chord1Blocked;
-            }
-            else if (keyIsHeld)
-            {
-                colourID = chord1Active;
-            }
-            else
-            {
-                colourID = chord1Open;
-            }
-            if (charUsesKey)
-            {
-                colourID += keyIdx;
-            }
-            else
-            {
-                colourID += (emptySelected - chord1Selected);
-            }
-            g.setColour(findColour(colourID, true));
-            if (charUsesKey)
-            {
-                drawChar(wideDrawChar ? Values::wideFill : Values::fill);
-            }
-            else
-            {
-                drawChar(wideDrawChar ? Values::wideOutline : Values::outline);
-            }
-        }
-        if (wideDrawChar)
-        {
-            xPos += paddedCharWidth - xPadding;
-        }
+        keyGrid->updateCharacterSet(activeSet);
+        keyGrid->updateChordState(heldChord);
     }
+    inputView.updateInputText(input);
+    resized();
+}
 
-    // Draw all buffered input text:
-    g.setColour(findColour(text, true));
-    yPos = paddedRowHeight * 6 + yPadding;
-    g.fillRect(0, yPos, getWidth(), 1);
-    const Rectangle<int> inputBounds 
-            = getLocalBounds().withTop(yPos).reduced(xPadding, yPadding);
-    g.setColour(findColour(text));
-    Text::Painter::paintString(g, bufferedInput, inputBounds.getX(),
-            inputBounds.getY(), inputBounds.getWidth(), inputBounds.getHeight(),
-            rowHeight, 2);
+
+// Shows the help screen if it's not currently visible, or hides it if it is
+// visible.
+void Component::MainView::toggleHelpScreen()
+{
+    const bool showHelpScreen = ! helpScreen.isVisible();
+    helpScreen.setVisible(showHelpScreen);
+    charsetDisplay.setVisible(! showHelpScreen);
+    chordKeyDisplay.setVisible(! showHelpScreen);
+    chordPreview.setVisible(! showHelpScreen);
+    inputView.setVisible(! showHelpScreen);
+    repaint();
+}
+
+
+// Checks if the help screen is currently being shown.
+bool Component::MainView::isHelpScreenShowing() const
+{
+    return helpScreen.isVisible();
 }
 
 
 // Update child component bounds if the component changes size.
 void Component::MainView::resized()
 {
-    const int charWidth = getPaddedCharWidth();
-    const int charHeight = getPaddedRowHeight();
-    chordKeyDisplay.setBounds(0, charHeight, charWidth,
-            charHeight * Chord::numChordKeys());
+    Text::CharSet::ConfigFile charSetConfig;
+    const Text::CharSet::Cache& charSet = charSetConfig.getActiveSet();
+
+    // One row for each chord key, one for the list of chord characters, and
+    // one for the input text preview.
+    const int rowCount = Chord::numChordKeys() + 2;
+    const int rowHeight = getHeight() / rowCount;
+    // One column for each character in the current set, an extra column for
+    // each wide-draw character, and one for the chord key display.
+    int columnCount = 1 + charSet.getSize() + charSet.wideDrawCharacterCount();
+    const int columnWidth = getWidth() / columnCount;
+
+    chordKeyDisplay.setBounds(0, rowHeight, columnWidth,
+            rowHeight * chordKeyDisplay.getRowCount());
+    charsetDisplay.setBounds(columnWidth, 0, getWidth() - columnWidth,
+            rowHeight);
+    chordPreview.setBounds(columnWidth, rowHeight,
+            chordPreview.getColumnCount() * columnWidth,
+            rowHeight * chordPreview.getRowCount());
+    juce::Rectangle<int> inputBounds = getLocalBounds().withTop(
+            chordPreview.getBottom());
+    int marginSize = (inputBounds.getHeight() * inputMargin)
+            / (inputMargin + 1);
+    inputView.setBounds(inputBounds.reduced(marginSize, marginSize));
+    helpScreen.setBounds(getLocalBounds());
 }

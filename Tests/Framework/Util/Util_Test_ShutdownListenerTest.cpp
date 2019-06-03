@@ -12,7 +12,7 @@ namespace Util
 /**
  * @brief  A fake application class to trigger the shutdown notification.
  */
-class HomeApplication
+class Application
 {
 public:
     /**
@@ -72,21 +72,21 @@ public:
 
         // Make sure the shutdown notification runs safely if no listeners
         // exist:
-        HomeApplication::broadcastShutdown();
+        Application::broadcastShutdown();
 
         int listenerCount = 5;
         for (int i = 0; i < listenerCount; i++)
         {
             testListeners.add(new TestListener(notifyCount));
         }
-        HomeApplication::broadcastShutdown();
+        Application::broadcastShutdown();
         expectEquals(notifyCount, listenerCount,
                 "Notification count does not match listener count.");
 
         notifyCount = 0;
         listenerCount --;
         testListeners.removeLast();
-        HomeApplication::broadcastShutdown();
+        Application::broadcastShutdown();
         expectEquals(notifyCount, listenerCount,
                 juce::String("After removing listener, notification count does")
                 + juce::String("not match listener count."));
@@ -95,7 +95,7 @@ public:
         listenerCount += 2;
         testListeners.add(new TestListener(notifyCount));
         testListeners.add(new TestListener(notifyCount));
-        HomeApplication::broadcastShutdown();
+        Application::broadcastShutdown();
         expectEquals(notifyCount, listenerCount,
                 juce::String("After adding listeners, notification count does")
                 + juce::String("not match listener count."));
@@ -103,7 +103,7 @@ public:
         notifyCount = 0;
         listenerCount = 0;
         testListeners.clear();
-        HomeApplication::broadcastShutdown();
+        Application::broadcastShutdown();
         expectEquals(notifyCount, listenerCount,
                 juce::String("After clearing listeners, notification count ")
                 + juce::String("does not match listener count."));

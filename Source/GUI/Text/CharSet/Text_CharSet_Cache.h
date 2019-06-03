@@ -30,6 +30,13 @@ public:
     Cache() { }
 
     /**
+     * @brief  Creates a character set cache for the modifier keys.
+     *
+     * @return  The mod character set, which is not configurable.
+     */
+    static Cache getModCharset();
+
+    /**
      * @brief  Gets the character in the alphabet with a particular index value.
      *
      * @param index    The index of the requested character.

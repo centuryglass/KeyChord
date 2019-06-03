@@ -216,7 +216,7 @@ namespace KeyMappingEditor
     static const Element text(
             0x100ad01, UICategory::text);
 }
-namespace ChordComponent
+namespace Component_ChordPreview
 {
     static const Element text(
             0x1900100, UICategory::text);
@@ -270,18 +270,30 @@ namespace ChordComponent
             0x1900118, UICategory::none);
     static const Element emptyBlocked(
             0x1900119, UICategory::none);
-    static const Element activeModText(
-            0x1900120, UICategory::none);
-    static const Element activeModFill(
-            0x1900121, UICategory::none);
-    static const Element activeModLine(
-            0x1900122, UICategory::none);
-    static const Element inactiveModText(
-            0x1900123, UICategory::none);
-    static const Element inactiveModFill(
-            0x1900124, UICategory::none);
-    static const Element inactiveModLine(
-            0x1900125, UICategory::none);
+}
+namespace Component_InputView
+{
+    static const Element text(
+            0x1900200, UICategory::text);
+    static const Element background(
+            0x1900201, UICategory::textField);
+    static const Element outline(
+            0x1900202, UICategory::outline);
+    static const Element inputHighlight(
+            0x1900203, UICategory::highlightedTextField);
+}
+namespace Component_ChordKeyDisplay
+{
+    static const Element chord1Selected(
+            0x1900300, UICategory::none);
+    static const Element chord2Selected(
+            0x1900301, UICategory::none);
+    static const Element chord3Selected(
+            0x1900302, UICategory::none);
+    static const Element chord4Selected(
+            0x1900303, UICategory::none);
+    static const Element chord5Selected(
+            0x1900304, UICategory::none);
 }
 
 // The list of all Colour Element objects, sorted by ID:
@@ -355,38 +367,41 @@ const juce::Array<const Element*> allElements =
     &ToggleButton::tickDisabled,
     &KeyMappingEditor::background,
     &KeyMappingEditor::text,
-    &ChordComponent::text,
-    &ChordComponent::inactiveText,
-    &ChordComponent::chord1Selected,
-    &ChordComponent::chord2Selected,
-    &ChordComponent::chord3Selected,
-    &ChordComponent::chord4Selected,
-    &ChordComponent::chord5Selected,
-    &ChordComponent::emptySelected,
-    &ChordComponent::chord1Active,
-    &ChordComponent::chord2Active,
-    &ChordComponent::chord3Active,
-    &ChordComponent::chord4Active,
-    &ChordComponent::chord5Active,
-    &ChordComponent::emptyActive,
-    &ChordComponent::chord1Open,
-    &ChordComponent::chord2Open,
-    &ChordComponent::chord3Open,
-    &ChordComponent::chord4Open,
-    &ChordComponent::chord5Open,
-    &ChordComponent::emptyOpen,
-    &ChordComponent::chord1Blocked,
-    &ChordComponent::chord2Blocked,
-    &ChordComponent::chord3Blocked,
-    &ChordComponent::chord4Blocked,
-    &ChordComponent::chord5Blocked,
-    &ChordComponent::emptyBlocked,
-    &ChordComponent::activeModText,
-    &ChordComponent::activeModFill,
-    &ChordComponent::activeModLine,
-    &ChordComponent::inactiveModText,
-    &ChordComponent::inactiveModFill,
-    &ChordComponent::inactiveModLine
+    &Component_ChordPreview::text,
+    &Component_ChordPreview::inactiveText,
+    &Component_ChordPreview::chord1Selected,
+    &Component_ChordPreview::chord2Selected,
+    &Component_ChordPreview::chord3Selected,
+    &Component_ChordPreview::chord4Selected,
+    &Component_ChordPreview::chord5Selected,
+    &Component_ChordPreview::emptySelected,
+    &Component_ChordPreview::chord1Active,
+    &Component_ChordPreview::chord2Active,
+    &Component_ChordPreview::chord3Active,
+    &Component_ChordPreview::chord4Active,
+    &Component_ChordPreview::chord5Active,
+    &Component_ChordPreview::emptyActive,
+    &Component_ChordPreview::chord1Open,
+    &Component_ChordPreview::chord2Open,
+    &Component_ChordPreview::chord3Open,
+    &Component_ChordPreview::chord4Open,
+    &Component_ChordPreview::chord5Open,
+    &Component_ChordPreview::emptyOpen,
+    &Component_ChordPreview::chord1Blocked,
+    &Component_ChordPreview::chord2Blocked,
+    &Component_ChordPreview::chord3Blocked,
+    &Component_ChordPreview::chord4Blocked,
+    &Component_ChordPreview::chord5Blocked,
+    &Component_ChordPreview::emptyBlocked,
+    &Component_InputView::text,
+    &Component_InputView::background,
+    &Component_InputView::outline,
+    &Component_InputView::inputHighlight,
+    &Component_ChordKeyDisplay::chord1Selected,
+    &Component_ChordKeyDisplay::chord2Selected,
+    &Component_ChordKeyDisplay::chord3Selected,
+    &Component_ChordKeyDisplay::chord4Selected,
+    &Component_ChordKeyDisplay::chord5Selected
 };
 
 } } }

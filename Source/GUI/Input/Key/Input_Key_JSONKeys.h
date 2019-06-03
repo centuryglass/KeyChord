@@ -13,26 +13,18 @@ namespace Input { namespace Key { namespace JSONKeys
             { &chord1, &chord2, &chord3, &chord4, &chord5 };
 
     // Character set selection keys:
+    static const juce::Identifier selectNextSet(
+            "Select next character set");
     static const juce::Identifier selectMainSet(
             "Select main character set");
     static const juce::Identifier selectAltSet(
             "Select alternate character set");
     static const juce::Identifier selectSpecialSet(
             "Select special character set");
-    static const juce::Identifier selectNextSet(
-            "Select next character set");
-
-    // Modifiers control:
-    static const juce::Identifier openModSelect(
-            "Show modifier selector");
+    static const juce::Identifier selectModSet(
+            "Select modifier set");
     static const juce::Identifier toggleShift(
-            "Toggle shift modifier");
-    static const juce::Identifier toggleCtrl(
-            "Toggle ctrl modifier");
-    static const juce::Identifier toggleAlt(
-            "Toggle alt modifier");
-    static const juce::Identifier toggleCmd(
-            "Toggle cmd modifier");
+            "Toggle shifted characters");
 
     // Misc. control keys:
     static const juce::Identifier backspace(
@@ -65,11 +57,8 @@ namespace Input { namespace Key { namespace JSONKeys
         &selectAltSet,
         &selectSpecialSet,
         &selectNextSet,
-        &openModSelect,
+        &selectModSet,
         &toggleShift,
-        &toggleCtrl,
-        &toggleAlt,
-        &toggleCmd,
         &backspace,
         &clearAll,
         &sendText,

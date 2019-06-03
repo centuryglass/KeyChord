@@ -8,24 +8,36 @@ namespace Text
         /**
          * @brief  Paints a single character value using Text::BinaryFont.
          *
-         * @param g        JUCE graphics context used for drawing.
+         * @param g                    JUCE graphics context used for drawing.
          *
-         * @param toPrint  ISO 8859 index of the character to draw.
+         * @param toPrint              ISO 8859 index of the character to draw.
          *
-         * @param x        X coordinate where the character will be drawn.
+         * @param x                    X coordinate where the character will be
+         *                             drawn.
          *
-         * @param y        Y coordinate where the character will be drawn.
+         * @param y                    Y coordinate where the character will be
+         *                             drawn.
          *
-         * @param width    Width of the drawn character.
+         * @param width                Width of the area where the character
+         *                             will be drawn.
          *
-         * @param height   Height of the drawn character.
+         * @param height               Height of the area where the character
+         *                             will be drawn.
+         *
+         * @param preserveAspectRatio  Whether the character's aspect ratio
+         *                             should be preserved when scaling it to
+         *                             fit the target bounds.
+         *
+         * @return                     The x-coordinate of the end of the
+         *                             string.
          */
-        void paintChar(juce::Graphics& g,
+        int paintChar(juce::Graphics& g,
                 const unsigned int toPrint,
-                const int x,
-                const int y,
-                const int width,
-                const int height);
+                int x,
+                int y,
+                int width,
+                int height,
+                const bool preserveAspectRatio = false);
 
         /**
          * @brief  Draws an entire string using Text::BinaryFont.
@@ -45,16 +57,14 @@ namespace Text
          *
          * @param maxCharSize    Maximum size to draw characters.
          *
-         * @param maxRowCount    Maximum number of rows to split the string 
-         *                       across if necessary.
+         * @return               The x-coordinate of the end of the string.
          */
-        void paintString(juce::Graphics& g,
+        int paintString(juce::Graphics& g,
                 const juce::Array<unsigned int> charIndices,
                 const int x,
                 const int y,
                 const int width,
                 const int height,
-                const int maxCharSize,
-                const int maxRowCount = 1);
+                const int maxCharSize);
     }
 }

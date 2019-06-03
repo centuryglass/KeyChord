@@ -35,6 +35,8 @@ juce::String Text::CharSet::ConfigFile::getSetName(const Type type) const
         case Type::special:
             return charsetConfig->getConfigValue<String>(
                     JSONKeys::specialSetName);
+        case Type::modifier:
+            return "modifier (TODO: localize)";
     }
     DBG(dbgPrefix << __func__ << ": invalid set type \"" << (int) type 
             << "\".");
@@ -56,4 +58,22 @@ void Text::CharSet::ConfigFile::setActiveType(const Type newActiveType)
     const SharedResource::LockedPtr<JSONResource> charsetConfig
             = getWriteLockedResource();
     charsetConfig->setActiveType(newActiveType);
+}
+
+
+// Checks if shifted character sets are currently in use.
+bool Text::CharSet::ConfigFile::getShifted() const
+{
+    const SharedResource::LockedPtr<const JSONResource> charsetConfig
+            = getReadLockedResource();
+    return charsetConfig->getShifted();
+}
+
+
+// Sets whether the shifted versions of character sets will be used.
+void Text::CharSet::ConfigFile::setShifted(const bool shifted)
+{
+    const SharedResource::LockedPtr<JSONResource> charsetConfig
+            = getWriteLockedResource();
+    charsetConfig->setShifted(shifted);
 }

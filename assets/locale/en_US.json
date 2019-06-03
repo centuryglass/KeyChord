@@ -1,34 +1,35 @@
 {
-    "Locale::Time":
+    "Component_HelpScreen":
     {
-        "never"          : "never",
-        "now"            : "now",
-        "momentsAgo"     : "moments ago",
-        "secondsPrefix"  : "",
-        "minutesPrefix"  : "",
-        "hoursPrefix"    : "",
-        "daysPrefix"     : "",
-        "weeksPrefix"    : "",
-        "yearsPrefix"    : "",
-        "secondsPostfix" : " seconds ago",
-        "minutesPostfix" : " minutes ago",
-        "hoursPostfix"   : " hours ago",
-        "daysPostfix"    : " days ago",
-        "weeksPostfix"   : " weeks ago",
-        "yearsPostfix"   : " years ago"
+        "helpTitle" : "KeyChord Controls:",
+        "chordKeys" : "Chord input keys"
+    },
+    "Input_Key_Binding":
+    {
+        "Chord1" : "Chord Key 1",
+        "Chord2" : "Chord Key 2",
+        "Chord3" : "Chord Key 3",
+        "Chord4" : "Chord Key 4",
+        "Chord5" : "Chord Key 5",
+        "Select next character set"      : "Select next character set",
+        "Select main character set"      : "Select main character set",
+        "Select alternate character set" : "Select alternate character set",
+        "Select special character set"   : "Select special character set",
+        "Select modifier set"            : "Show modifier character set",
+        "Toggle shifted characters"      : "Toggle shifted characters",
+        "Backspace"              : "Delete last character",
+        "Clear all"              : "Clear all",
+        "Send text"              : "Send text",
+        "Close and send"         : "Close and send",
+        "Close"                  : "Close",
+        "Toggle immediate mode"  : "Toggle immediate input sending",
+        "Show help"              : "Show help screen",
+        "Toggle window edge"     : "Toggle window edge",
+        "Toggle minimize"        : "Toggle minimize"
     },
     "Process::Launcher":
     {
         "couldNotOpen"    : "Couldn't open application",
         "notValidCommand" : " is not a valid command."
-    },
-    "Widgets::ColourPicker" :
-    {
-        "setColour" : "Set Color"
-    },
-    "Widgets::FilePathEditor":
-    {
-        "defaultTitle"       : "Select an image file",
-        "defaultDescription" : "Please select an image file"
     }
 }

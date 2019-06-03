@@ -56,6 +56,11 @@ public:
     void toggleKey(const ModKey modKey);
 
     /**
+     * @brief  Releases all held modifier keys.
+     */
+    void clearAll();
+
+    /**
      * @brief  Checks if a specific modifier key is held down.
      *
      * @param modKey  The modifier key to check.

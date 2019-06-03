@@ -19,50 +19,61 @@ Each UI component colour is categorized using one of eleven different general UI
  "Highlighted text field" | Contains colour values for highlighted text within an editable text field.
 
 ## Other Colour Values
-Colour Value Key         | Colour Category   | Description
------------------------- | ----------------- | ---
-"WindowBackground"       | Window background | The application window background colour.
-"Chord Text"             | Text              | Default text color for UI labels.
-"Inactive Chord Text"    | Text              | Text color for keys that conflict with the current held chord.
-"Chord1 (Selected)"      | none              | 
-"Chord2 (Selected)"      | none              | 
-"Chord3 (Selected)"      | none              | 
-"Chord4 (Selected)"      | none              | 
-"Chord5 (Selected)"      | none              | 
-"Chord1 (Active)"        | none              | 
-"Chord2 (Active)"        | none              | 
-"Chord3 (Active)"        | none              | 
-"Chord4 (Active)"        | none              | 
-"Chord5 (Active)"        | none              | 
-"Chord1 (Open)"          | none              | 
-"Chord2 (Open)"          | none              | 
-"Chord3 (Open)"          | none              | 
-"Chord4 (Open)"          | none              | 
-"Chord5 (Open)"          | none              | 
-"Chord1 (Blocked)"       | none              | 
-"Chord2 (Blocked)"       | none              | 
-"Chord3 (Blocked)"       | none              | 
-"Chord4 (Blocked)"       | none              | 
-"Chord5 (Blocked)"       | none              | 
-"Empty Chord"            | none              | 
-"Active Modifier Text"   | none              | 
-"Active Modifier Fill"   | none              | 
-"Active Modifier Line"   | none              | 
-"Inactive Modifier Text" | none              | 
-"Inactive Modifier Fill" | none              | 
-"Inactive Modifier Line" | none              | 
-REMOVED:REMOVED:REMOVED:"Chord1(Active)"      | none              | First chord button, selected.
-REMOVED:REMOVED:REMOVED:"Chord2(Active)"      | none              | Second chord button, selected.
-REMOVED:REMOVED:REMOVED:"Chord3(Active)"      | none              | Third chord button, selected.
-REMOVED:REMOVED:REMOVED:"Chord4(Active)"      | none              | Fourth chord button, selected.
-REMOVED:REMOVED:REMOVED:"Chord5(Active)"      | none              | Fifth chord button, selected.
-REMOVED:REMOVED:REMOVED:"Chord1(Open)"        | none              | 
-REMOVED:REMOVED:REMOVED:"Chord2(Open)"        | none              | 
-REMOVED:REMOVED:REMOVED:"Chord3(Open)"        | none              | 
-REMOVED:REMOVED:REMOVED:"Chord4(Open)"        | none              | 
-REMOVED:REMOVED:REMOVED:"Chord5(Open)"        | none              | 
-REMOVED:REMOVED:REMOVED:"Chord1(Blocked)"     | none              | 
-REMOVED:REMOVED:REMOVED:"Chord2(Blocked)"     | none              | 
-REMOVED:REMOVED:REMOVED:"Chord3(Blocked)"     | none              | 
-REMOVED:REMOVED:REMOVED:"Chord4(Blocked)"     | none              | 
-REMOVED:REMOVED:REMOVED:"Chord5(Blocked)"     | none              | 
+Colour Value Key           | Colour Category        | Description
+-------------------------- | ---------------------- | ---
+"Main Window Background"   | Window background      | 
+"Active chord key text"    | Text                   | 
+"Inactive Chord Text"      | Text                   | Text color for keys that conflict with the current held chord.
+"Chord1 (Selected)"        | none                   | 
+"Chord2 (Selected)"        | none                   | 
+"Chord3 (Selected)"        | none                   | 
+"Chord4 (Selected)"        | none                   | 
+"Chord5 (Selected)"        | none                   | 
+"Empty key (Selected)"     | none                   | 
+"Chord1 (Active)"          | none                   | 
+"Chord2 (Active)"          | none                   | 
+"Chord3 (Active)"          | none                   | 
+"Chord4 (Active)"          | none                   | 
+"Chord5 (Active)"          | none                   | 
+"Empty key (Active)"       | none                   | 
+"Chord1 (Open)"            | none                   | 
+"Chord2 (Open)"            | none                   | 
+"Chord3 (Open)"            | none                   | 
+"Chord4 (Open)"            | none                   | 
+"Chord5 (Open)"            | none                   | 
+"Empty key (Open)"         | none                   | 
+"Chord1 (Blocked)"         | none                   | 
+"Chord2 (Blocked)"         | none                   | 
+"Chord3 (Blocked)"         | none                   | 
+"Chord4 (Blocked)"         | none                   | 
+"Chord5 (Blocked)"         | none                   | 
+"Empty key (Blocked)"      | none                   | 
+"Input preview text"       | Text                   | 
+"Input preview background" | Text field             | 
+"Input preview outline"    | Outline                | 
+"Input preview highlight"  | Highlighted text field | 
+REMOVED:""Active chord key text"" | Text              | Color used for potentially selected key names
+REMOVED:REMOVED:REMOVED:"Active Modifier Text"   | none              | 
+REMOVED:REMOVED:REMOVED:"Active Modifier Fill"   | none              | 
+REMOVED:REMOVED:REMOVED:"Active Modifier Line"   | none              | 
+REMOVED:REMOVED:REMOVED:"Inactive Modifier Text" | none              | 
+REMOVED:REMOVED:REMOVED:"Inactive Modifier Fill" | none              | 
+REMOVED:REMOVED:REMOVED:"Inactive Modifier Line" | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:"Chord Text"             | none              | Default text color for UI labels.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"WindowBackground"       | Window background | The application window background colour.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Empty Chord"            | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord1(Active)"      | none              | First chord button, selected.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord2(Active)"      | none              | Second chord button, selected.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord3(Active)"      | none              | Third chord button, selected.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord4(Active)"      | none              | Fourth chord button, selected.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord5(Active)"      | none              | Fifth chord button, selected.
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord1(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord2(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord3(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord4(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord5(Open)"        | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord1(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord2(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord3(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord4(Blocked)"     | none              | 
+REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:REMOVED:"Chord5(Blocked)"     | none              | 

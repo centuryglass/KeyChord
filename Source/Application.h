@@ -1,6 +1,6 @@
 #pragma once
 /**
- * @file  HomeApplication.h
+ * @file  Application.h
  *
  * @brief  Initializes and shuts down the JUCE application.
  */
@@ -8,7 +8,6 @@
 #include "JuceHeader.h"
 #include "Theme_LookAndFeel.h"
 #include "Theme_Colour_ConfigFile.h"
-#include "Util_ConditionChecker.h"
 #include "Component_MainView.h"
 #include "Input_Controller.h"
 
@@ -17,12 +16,12 @@
  * @brief  Controls how the JUCE library initializes and shuts down the
  *         application.
  */
-class HomeApplication : public juce::JUCEApplication
+class Application : public juce::JUCEApplication
 {
 public:
-    HomeApplication() { }
+    Application() { }
 
-    virtual ~HomeApplication() { }
+    virtual ~Application() { }
 
 private:
     /**
@@ -86,10 +85,6 @@ private:
      */
     void runApplicationTests();
     #endif
-
-    // Waits for the main window to be focused before starting focus updates
-    // and running tests(if applicable):
-    Util::ConditionChecker focusChecker;
 
     // Holds UI colour settings:
     Theme::Colour::ConfigFile colourConfig;

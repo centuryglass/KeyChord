@@ -221,8 +221,8 @@ include $(shell pwd)/makefiles/*.mk
 
 OBJECTS_MAIN := \
   $(JUCE_OBJDIR)/Main.o \
-  $(JUCE_OBJDIR)/HomeApplication.o \
-  $(JUCE_OBJDIR)/HomeWindow.o \
+  $(JUCE_OBJDIR)/Application.o \
+  $(JUCE_OBJDIR)/MainWindow.o \
   $(JUCE_OBJDIR)/Chord.o
 
 
@@ -316,9 +316,9 @@ help:
 
 $(JUCE_OBJDIR)/Main.o: \
 	Source/Main.cpp
-$(JUCE_OBJDIR)/HomeApplication.o: \
-	Source/HomeApplication.cpp
-$(JUCE_OBJDIR)/HomeWindow.o: \
-	Source/HomeWindow.cpp
+$(JUCE_OBJDIR)/Application.o: \
+	Source/Application.cpp
+$(JUCE_OBJDIR)/MainWindow.o: \
+	Source/MainWindow.cpp
 $(JUCE_OBJDIR)/Chord.o: \
 	Source/Chord.cpp

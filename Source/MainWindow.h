@@ -1,17 +1,17 @@
 #pragma once
 /**
- * @file  HomeWindow.h
+ * @file  MainWindow.h
  *
  * @brief  Creates the main application window.
  */
 
-#include "Windows_MainWindow.h"
+#include "JuceHeader.h"
 
 /**
  * @brief  The sole application window object and the root component in the
  *         component display tree.
  */
-class HomeWindow : public Windows::MainWindow
+class MainWindow : public juce::DocumentWindow
 {
 public:
     /**
@@ -19,9 +19,9 @@ public:
      *
      * @param windowName  Sets the text of the window title bar.
      */
-    HomeWindow(juce::String windowName);
+    MainWindow(juce::String windowName);
 
-    virtual ~HomeWindow() { }
+    virtual ~MainWindow() { }
 
     /**
      * @brief  Gets a pointer to the current open window object.
@@ -29,7 +29,7 @@ public:
      * @return  The application window pointer, or nullptr if the window is not
      *          currently open.
      */
-    static HomeWindow* getOpenWindow();
+    static MainWindow* getOpenWindow();
 
     /**
      * @brief  Toggles window placement between the top and bottom of the
@@ -60,5 +60,5 @@ private:
     // display.
     bool bottomEdge = true;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HomeWindow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

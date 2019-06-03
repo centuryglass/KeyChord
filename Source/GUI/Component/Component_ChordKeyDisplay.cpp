@@ -1,4 +1,5 @@
 #include "Component_ChordKeyDisplay.h"
+#include "Component_ColourIds.h"
 #include "Input_Key_ConfigFile.h"
 #include "Input_Key_JSONKeys.h"
 #include "Text_CharSet_Values.h"
@@ -15,26 +16,32 @@ Component::ChordKeyDisplay::ChordKeyDisplay()
 }
 
 
-// Updates the saved chord value.
-void Component::ChordKeyDisplay::updateChord(const Chord newChord)
+// Gets the number of character columns the KeyGrid contains.
+int Component::ChordKeyDisplay::getColumnCount() const
 {
-    currentChord = newChord;
-    repaint();
+    return 1;
 }
 
+
+// Gets the number of character rows the KeyGrid contains.
+int Component::ChordKeyDisplay::getRowCount() const
+{
+    return Chord::numChordKeys();
+}
 
 // Paints the chord keys.
 void Component::ChordKeyDisplay::paint(juce::Graphics& g)
 {
     using namespace Text::CharSet;
     // Calculate layout values:
-    const int paddedRowHeight = getHeight() / Chord::numChordKeys();
-    const int paddedCharWidth = getWidth();
-    const int yPadding = paddedRowHeight * 0.1;
-    const int xPadding = paddedCharWidth * 0.1;
+    const int paddedRowHeight = getPaddedRowHeight();
+    const int paddedCharWidth = getPaddedCharWidth();
+    const Chord currentChord = getHeldChord();
+    const int xPadding = getXPadding();
+    const int yPadding = getYPadding();
     const int rowHeight = paddedRowHeight - yPadding;
     const int charWidth = paddedCharWidth - xPadding;
-    int yPos = 0;
+    int yPos = yPadding;
     int xPos = 0;
 
     // A convenience function to more easily request character drawing 
@@ -45,7 +52,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
     {
         bool wideDrawChar = Values::isWideValue(toDraw);
         Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
-                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight);
+                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
     };
     for(int keyIdx = 0; keyIdx < chordKeys.size(); keyIdx++)
     {
@@ -63,7 +70,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
             drawChar(Values::outline);
         }
         Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
-                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight);
+                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
         yPos += paddedRowHeight;
     }
 }

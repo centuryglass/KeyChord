@@ -42,6 +42,7 @@ Config::FileResource(resourceKey, configFilename)
         var setArray = initProperty<var>(setData.key);
         characterSets.add(Cache(setArray));
     }
+    characterSets.add(Cache::getModCharset());
     loadJSONData();
 }
 
@@ -55,9 +56,16 @@ const Text::CharSet::Cache& Text::CharSet::JSONResource::getCharacterSet
 
 
 // Gets the character set type that is currently selected.
-const Text::CharSet::Type Text::CharSet::JSONResource::getActiveType() const
+Text::CharSet::Type Text::CharSet::JSONResource::getActiveType() const
 {
     return activeType;
+}
+
+
+// Checks if shifted character sets are currently in use.
+bool Text::CharSet::JSONResource::getShifted() const
+{
+    return shifted;
 }
 
 
@@ -67,6 +75,12 @@ void Text::CharSet::JSONResource::setActiveType(const Type newActiveType)
     activeType = newActiveType;
 }
 
+
+// Sets whether the shifted versions of character sets will be used.
+void Text::CharSet::JSONResource::setShifted(const bool shifted)
+{
+    this->shifted = shifted;
+}
 
 // Gets the set of all basic(non-array, non-object) properties tracked by this
 // Resource.

@@ -1,26 +1,99 @@
 #include "Text_Painter.h"
 #include "Text_BinaryFont.h"
 #include "Text_CharSet_Values.h"
+#include "Util_Math.h"
 #include <map>
 
 // Character width in bits/pixels
 static const constexpr int charSize = 10;
-
-// Minimum buffer between text rows, as a fraction of height:
-static const constexpr float minRowPadding = 0.1;
-
-// Maximum buffer between text rows, as a fraction of height:
-static const constexpr float maxRowPadding = 0.2;
+// Number of (scaled) blank pixels to insert between characters:
+static const constexpr int charPixelPadding = 2;
+// Number of (scaled) blank pixels to represent whitespace characters:
+static const constexpr int whitespaceWidth = 1;
 
 
-void Text::Painter::paintChar(juce::Graphics& g, const unsigned int toPrint,
-        const int x, const int y, const int width, const int height)
+#ifdef JUCE_DEBUG
+// Print the full namespace name before all debug output:
+static const constexpr char* dbgPrefix = "Text::Painter::";
+#endif
+
+// Returns the leftmost and rightmost horizontal indices of the area in a
+// character that actually contain pixels, or { -1, -1} if the character is
+// empty.
+static std::pair<int, int> charBounds(const unsigned int toMeasure)
+{
+    const bool doubleWidth = Text::CharSet::Values::isWideValue(toMeasure);
+    const int charWidth = doubleWidth ? charSize * 2 : charSize;
+    
+    std::pair<int, int> bounds = {-1, -1 };
+
+    for (int row = 0; row < charSize; row++)
+    {
+        juce::uint32 rowPixels;
+        if (doubleWidth)
+        {
+            rowPixels = Text::BinaryFont::getDoubleCharRow(toMeasure, row);
+        }
+        else
+        {
+            rowPixels = Text::BinaryFont::getCharacterRow(toMeasure, row);
+        }
+        for (int xPixel = 0; xPixel < charWidth; xPixel++)
+        {
+            if ((xPixel >= bounds.first && bounds.first != -1)
+                    && xPixel <= bounds.second)
+            {
+                continue;
+            }
+            const bool pixelFound = ((1 << (charWidth - xPixel - 1)) 
+                    & rowPixels);
+            if (pixelFound)
+            {
+                if ((bounds.first < 0) || bounds.first > xPixel)
+                {
+                    bounds.first = xPixel;
+                }
+                if (bounds.second <= xPixel)
+                {
+                    bounds.second = xPixel + 1;
+                }
+            }
+        }
+    }
+    if (doubleWidth)
+    {
+        DBG(dbgPrefix << __func__ << ": bounds of " << juce::String(toMeasure)
+                << " are " << bounds.first << " to " <<bounds.second);
+    }
+    return bounds;
+}
+
+int Text::Painter::paintChar(juce::Graphics& g, const unsigned int toPrint,
+        int x, int y, int width, int height, const bool preserveAspectRatio)
 {
     const bool doubleWidth = Text::CharSet::Values::isWideValue(toPrint);
+    if (preserveAspectRatio)
+    {
+        // Regular character w:h ratio is 1:1, doubleWidth characters are 2:1
+        if (width > (doubleWidth ? height * 2 : height))
+        {
+            int reduction = width - (doubleWidth ? height * 2 : height);
+            width -= reduction;
+            x += reduction / 2;
+        }
+        else if (height > (doubleWidth ? width / 2 : width))
+        {
+            int reduction = height - (doubleWidth ? width / 2 : width);
+            height -= reduction;
+            y += reduction / 2;
+        }
+    }
     const int charWidth = doubleWidth ? charSize * 2 : charSize;
     const int pixelWidth = std::max(1, width / charWidth);
     const int pixelHeight = std::max(1, height / charSize);
-    using juce::uint64;
+    
+    int rightmost = x;
+
     for (int row = 0; row < charSize; row++)
     {
         juce::uint32 rowPixels;
@@ -49,100 +122,67 @@ void Text::Painter::paintChar(juce::Graphics& g, const unsigned int toPrint,
                 const int yPos = row * pixelHeight + y;
                 const int width = pixelsToDraw * pixelWidth;
                 g.fillRect(xPos, yPos, width, pixelHeight);
+                rightmost = std::max(rightmost, xPos + width + 1);
                 pixelsToDraw = 0;
             }
         }
     }
+    return rightmost;
 }
 
 
 // Draws an entire string using Text::BinaryFont.
-void Text::Painter::paintString(juce::Graphics& g,
+int Text::Painter::paintString(juce::Graphics& g,
         const juce::Array<unsigned int> charIndices,
         const int x,
         const int y,
         const int width,
         const int height,
-        const int maxCharSize,
-        const int maxRowCount)
+        const int maxCharSize)
 {
-    jassert(maxRowCount > 0); // You can't have less than one row...
-
-    // In strings, overlap characters by the scaled equivalent of two pixels:
-    const float widthOverlapAdjustment = 0.8;
-    // Check if text will fit without any obnoxious layout adjustment:
-    const int strLength = charIndices.size();
-    int wideChars = 0;
+    // Map character widths:
+    std::map<unsigned int, int> drawnWidths;
+    std::map<unsigned int, std::pair<int, int>> borders;
+    int widthSum;
     for (const unsigned int& charIndex : charIndices)
     {
-        if (CharSet::Values::isWideValue(charIndex))
+        try
         {
-            ++wideChars;
+            widthSum += drawnWidths.at(charIndex);
         }
-    }
-    const int adjustedLength = strLength + wideChars;
-    int charSize = std::min(height, maxCharSize);
-
-    int rowCount = 1;
-    int skippedChars = 0;
-
-    while (charSize * ((adjustedLength / rowCount) 
-            + (adjustedLength % rowCount)) * widthOverlapAdjustment > width)
-    {
-        // Try increasing padding:
-        float paddingNeeded = width * adjustedLength * widthOverlapAdjustment
-                / height / rowCount;
-        if (paddingNeeded <= (maxRowPadding))
+        catch (const std::out_of_range& e)
         {
-            if (paddingNeeded < minRowPadding)
+            const std::pair<unsigned int, int> border = charBounds(charIndex);
+            int width = border.second - border.first; 
+            if (width == 0)
             {
-                paddingNeeded = minRowPadding;
+                width = whitespaceWidth;
             }
-            charSize = std::min<int>(height * (1.0 - paddingNeeded) / rowCount,
-                    maxCharSize);
-        }
-        // Try increasing row count:
-        else if (rowCount < maxRowCount)
-        {
-            ++rowCount;
-            charSize = std::min<int>((height * (1.0 - minRowPadding) 
-                    / rowCount), maxCharSize);
-        }
-        // No way to make it fit, cut characters:
-        else
-        {
-            const int widthNeeded = charSize * adjustedLength 
-                    * widthOverlapAdjustment;
-            const int overflow = widthNeeded - width * rowCount;
-            skippedChars = overflow / charSize / widthOverlapAdjustment + 1;
-            break;
+            width += charPixelPadding;
+            drawnWidths[charIndex] = width;
+            borders[charIndex] = border;
+            widthSum += width;
         }
     }
 
-    const int paddingSize = (height / rowCount - charSize) / 2;
-    const int charXOffset = charSize * widthOverlapAdjustment;
-    int rowIndex = 0;
-    int xPos = x;
-    int yPos = y;
-    /*
-    DBG("X=" << xPos << ", Y=" << yPos << ", size=" << charSize << ", padding="
-            << paddingSize << ", rows=" << rowCount << ", skippedChars="
-            << skippedChars);
-    */
-    for (int i = skippedChars; i < strLength; i++)
+    float pixelSize = Util::Math::median<float>(1.0f,
+            (float) width / ((float) widthSum + charIndices.size()),
+            (float) maxCharSize / (float) charSize);
+    pixelSize = std::min(pixelSize, (float) height / float(charSize));
+            
+    int xPos = x + pixelSize;
+    for (int i = 0; i < charIndices.size(); i++)
     {
-        bool isWideDrawChar = CharSet::Values::isWideValue(charIndices[i]);
-        const int charWidth = isWideDrawChar ? charSize * 2 : charSize;
-        if ((xPos + charWidth) > (x + width))
+        const unsigned char& charIndex = charIndices[i];
+        const int xStart = borders[charIndex].first;
+        if (i > 0 && xStart >= 0)
         {
-            rowIndex++;
-            jassert(rowIndex < maxRowCount);
-            xPos = x;
-            yPos += (height / rowCount);
+            xPos -= (xStart - 1) * pixelSize;
         }
-        paintChar(g, charIndices[i], xPos, yPos, charWidth, charSize);
-        xPos += (isWideDrawChar ? charXOffset * 2 : charXOffset);
+        xPos = pixelSize * charPixelPadding
+                + paintChar(g, charIndex, xPos, y, pixelSize * charSize,
+                pixelSize * charSize);
+        //xPos += drawnWidths[charIndex] * pixelSize;
     }
-
-
+    return xPos;
 }
