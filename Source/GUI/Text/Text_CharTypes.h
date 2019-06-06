@@ -12,7 +12,7 @@ namespace Text
     
     /**
      * @brief  Either the value of a printable ISO 8859 character value, or one
-     *         of the special values assigned in Text::CharSet::Values;
+     *         of the special values assigned in Text::Values;
      */
     typedef unsigned int CharValue;
 

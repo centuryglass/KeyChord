@@ -2,12 +2,9 @@
 #include "Component_ColourIds.h"
 #include "Text_ModTracker.h"
 #include "Text_Painter.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "Text_CharSet_ConfigFile.h"
 #include "Text_CharTypes.h"
-
-Component::ChordPreview::ChordPreview() { }
-
 
 // Gets the number of character columns the KeyGrid contains.
 int Component::ChordPreview::getColumnCount() const
@@ -36,15 +33,10 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         return;
     }
 
-    using juce::uint8;
     using juce::Colour;
     using juce::Colours;
     using juce::Rectangle;
-    using namespace Text::CharSet;
-
-    // Save the character set size:
-    const int charCount = getActiveSet()->getSize() 
-            + getActiveSet()->wideDrawCharacterCount();
+    using namespace Text;
 
     // Calculate layout values:
     const int paddedCharWidth = getPaddedCharWidth();
@@ -58,8 +50,9 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     Text::CharSet::ConfigFile charsetConfig;
     bool isShifted = charsetConfig.getShifted();
 
-    const int xStart = xPadding;
-    const int yStart = yPadding;
+    // Center all columns within the available space:
+    const int xStart = (getWidth() % getColumnCount()) / 2;
+    const int yStart = (getHeight() % getRowCount()) / 2;
     int xPos = xStart;
     int yPos = yStart;
     
@@ -70,7 +63,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         (const Text::CharValue toDraw)
     {
         bool wideDrawChar = Values::isWideValue(toDraw);
-        Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
+        Text::Painter::paintChar(g, toDraw, xPos, yPos,
                 (wideDrawChar ? charWidth * 2 : charWidth), rowHeight,
                 true);
     };
@@ -82,12 +75,12 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         const Text::CharValue charIndex 
                 = activeSet->getCharAtIndex(i, isShifted);
         // Whether the character needs double the normal width:
-        const bool wideDrawChar = Text::CharSet::Values::isWideValue(charIndex);
-        // Binary mask for the chord used to type the character:
+        const bool wideDrawChar = Text::Values::isWideValue(charIndex);
+        // The chord used to type the character:
         const Chord characterChord = activeSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
         const bool charSelected = (characterChord == getHeldChord());
-        // Whether no chord keys are held that aren't in this character's chord:
+        // Whether all held chord keys are in this character's chord:
         const bool charOpen = charSelected || getHeldChord().isSubchordOf(
                 characterChord);
 
@@ -105,18 +98,26 @@ void Component::ChordPreview::paint(juce::Graphics& g)
             // open, or blocked:
             if (charSelected)
             {
+                // Selected: Releasing all chord keys will select the current
+                //           character.
                 colourID = chord1Selected;
             }
             else if (! charOpen)
             {
+                // Blocked: A chord key is held down that isn't used by the
+                //          current character.
                 colourID = chord1Blocked;
             }
             else if (keyIsHeld)
             {
+                // Active: Not the selected character, but the chord key is held
+                //         down and only chord keys that this character uses are
+                //         held down.
                 colourID = chord1Active;
             }
             else
             {
+                // Open: same as active, only this chord key isn't held down.
                 colourID = chord1Open;
             }
             if (charUsesKey)
@@ -142,7 +143,6 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         {
             xPos += paddedCharWidth - xPadding;
         }
-
         xPos += paddedCharWidth;
         yPos = yStart;
     }

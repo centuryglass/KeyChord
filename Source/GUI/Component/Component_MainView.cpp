@@ -3,14 +3,14 @@
 #include "Text_BinaryFont.h"
 #include "Text_Painter.h"
 #include "Text_ModTracker.h"
-#include "Text_CharSet_Values.h"
-#include "Text_CharSet_ConfigFile.h"
+#include "Text_Values.h"
 #include "MainWindow.h"
+#include "Config_MainFile.h"
 #include <map>
 #include <vector>
 
 // Character padding values, as a fraction of character size:
-static const constexpr float xPaddingFraction = 0.1;
+static const constexpr float xPaddingFraction = 0.15;
 static const constexpr float yPaddingFraction = 0.1;
 // Input preview margin size, as a fraction of input preview area height:
 static const constexpr float inputMargin = 0.05;
@@ -26,21 +26,25 @@ Component::MainView::MainView()
         &chordKeyDisplay
     };
 
-    Text::CharSet::ConfigFile charSetConfig;
-    const Text::CharSet::Cache& activeSet = charSetConfig.getActiveSet();
+    const Text::CharSet::Cache& activeSet = charsetConfig.getActiveSet();
 
     for (KeyGrid* keyGrid : keyGrids)
     {
         keyGrid->setPaddingFractions(xPaddingFraction, yPaddingFraction);
         keyGrid->updateCharacterSet(&activeSet);
-        addAndMakeVisible(keyGrid);
+    }
+    addAndMakeVisible(charsetDisplay);
+    if (! mainConfig.getMinimized())
+    {
+        addAndMakeVisible(chordPreview);
+        addAndMakeVisible(chordKeyDisplay);
     }
     addAndMakeVisible(inputView);
     addChildComponent(helpScreen);
 }
 
 
-// Sets the current state of the chorded keyboard, immediately redrawing the
+// Updates the current state of the chorded keyboard, immediately redrawing the
 // component if the state changes.
 void Component::MainView::updateChordState(
         const Text::CharSet::Cache* activeSet, 
@@ -68,10 +72,11 @@ void Component::MainView::updateChordState(
 void Component::MainView::toggleHelpScreen()
 {
     const bool showHelpScreen = ! helpScreen.isVisible();
+    const bool minimized = mainConfig.getMinimized();
     helpScreen.setVisible(showHelpScreen);
     charsetDisplay.setVisible(! showHelpScreen);
-    chordKeyDisplay.setVisible(! showHelpScreen);
-    chordPreview.setVisible(! showHelpScreen);
+    chordKeyDisplay.setVisible(! showHelpScreen && ! minimized);
+    chordPreview.setVisible(! showHelpScreen && ! minimized);
     inputView.setVisible(! showHelpScreen);
     repaint();
 }
@@ -87,29 +92,50 @@ bool Component::MainView::isHelpScreenShowing() const
 // Update child component bounds if the component changes size.
 void Component::MainView::resized()
 {
-    Text::CharSet::ConfigFile charSetConfig;
-    const Text::CharSet::Cache& charSet = charSetConfig.getActiveSet();
+    helpScreen.setBounds(getLocalBounds());
+    const Text::CharSet::Cache& charSet = charsetConfig.getActiveSet();
 
+    // Only display the character set and input buffer if minimized:
+    if (mainConfig.getMinimized())
+    {
+        const int rowHeight = getHeight() / 2;
+        charsetDisplay.setBounds(getLocalBounds().withHeight(rowHeight));
+        const int inputMargin = (rowHeight * inputMargin) / (inputMargin + 1);
+        inputView.setBounds(0, rowHeight + inputMargin,
+                getWidth() - 2 * inputMargin, rowHeight - 2 * inputMargin);
+        return;
+    }
+
+    // Calculate row and column counts and sizes:
     // One row for each chord key, one for the list of chord characters, and
     // one for the input text preview.
     const int rowCount = Chord::numChordKeys() + 2;
     const int rowHeight = getHeight() / rowCount;
+
     // One column for each character in the current set, an extra column for
     // each wide-draw character, and one for the chord key display.
     int columnCount = 1 + charSet.getSize() + charSet.wideDrawCharacterCount();
     const int columnWidth = getWidth() / columnCount;
 
+    // Use column and row sizes to align all components:
     chordKeyDisplay.setBounds(0, rowHeight, columnWidth,
             rowHeight * chordKeyDisplay.getRowCount());
     charsetDisplay.setBounds(columnWidth, 0, getWidth() - columnWidth,
             rowHeight);
     chordPreview.setBounds(columnWidth, rowHeight,
-            chordPreview.getColumnCount() * columnWidth,
+            getWidth() - columnWidth,
             rowHeight * chordPreview.getRowCount());
     juce::Rectangle<int> inputBounds = getLocalBounds().withTop(
             chordPreview.getBottom());
     int marginSize = (inputBounds.getHeight() * inputMargin)
             / (inputMargin + 1);
     inputView.setBounds(inputBounds.reduced(marginSize, marginSize));
-    helpScreen.setBounds(getLocalBounds());
+}
+
+
+// Makes sure the background is filled in with the appropriate background color.
+void Component::MainView::paint(juce::Graphics& g)
+{
+    g.setColour(findColour(juce::DocumentWindow::backgroundColourId));
+    g.fillRect(getLocalBounds());
 }

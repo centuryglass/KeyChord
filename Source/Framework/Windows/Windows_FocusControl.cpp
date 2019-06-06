@@ -11,7 +11,7 @@ static const constexpr char* dbgPrefix = "Windows::FocusControl::";
 static const constexpr int focusWaitMs = 100;
 // Each attempt to set and check window focus status should wait a little longer
 // before the next test. Wait time multiplier:
-static const constexpr float focusWaitMultiplier = 1.3;
+static const constexpr float focusWaitMultiplier = 1.1;
 // Milliseconds to wait before abandoning window focus attempts:
 static const constexpr int focusTimeout = 20000;
 
@@ -56,8 +56,20 @@ void Windows::FocusControl::takeFocus()
     xInterface.activateWindow(appWindowID);
     focusChecker.startCheck([&xInterface, appWindowID, mainComponent]()
     {
-        if (mainComponent->isShowing() || mainComponent->isOnDesktop())
+        DBG(dbgPrefix << "::takeFocus: checking focus: ");
+        const bool keyboardFocused = mainComponent->hasKeyboardFocus(true);
+        const bool windowFocused = xInterface.isActiveWindow(appWindowID);
+        if (! windowFocused)
         {
+            DBG(dbgPrefix 
+                    << "::takeFocus: no window focus, trying again..: ");
+            xInterface.activateWindow(xInterface.getMainAppWindow());
+        }
+        if (! keyboardFocused && (mainComponent->isShowing() 
+                || mainComponent->isOnDesktop()))
+        {
+            DBG(dbgPrefix 
+                    << "::takeFocus: trying to get missing keyboard focus: ");
             mainComponent->grabKeyboardFocus();
         }
         return xInterface.isActiveWindow(appWindowID) 
@@ -66,6 +78,10 @@ void Windows::FocusControl::takeFocus()
     [appWindowID]()
     {
         DBG(dbgPrefix << "::takeFocus: Focused window " << appWindowID);
-    }, focusTimeout);
+    }, focusTimeout,
+    []()
+    {
+        DBG(dbgPrefix << "::takeFocus: Failed to focus window!");
+    });
     focusChecker.waitForUpdate(false);
 }

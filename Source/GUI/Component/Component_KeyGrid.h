@@ -12,6 +12,16 @@ namespace Component { class KeyGrid; }
 
 namespace Text { namespace CharSet { class Cache; } }
 
+/**
+ * @brief  An abstract basis for classes that draw a grid of key values.
+ *
+ *  KeyGrid is the basis for all classes that draw grids of values using 
+ * Text::Painter. It tracks the dimensions of the grid, the current held Chord
+ * value, and the active character set, so that inheriting classes can access
+ * and draw this information. It also tracks the size and padding space used
+ * by grid characters, so different KeyGrid subclasses can be aligned fairly
+ * easily.
+ */
 class Component::KeyGrid : public juce::Component
 {
 public:

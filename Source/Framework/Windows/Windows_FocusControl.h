@@ -35,5 +35,7 @@ public:
     void takeFocus();
 
 private:
+    // Handles the process of regularly checking for window focus conditions to
+    // be met:
     Util::ConditionChecker focusChecker;
 };

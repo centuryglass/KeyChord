@@ -23,6 +23,10 @@ public:
 
     virtual ~Application() { }
 
+    /**
+     * @brief  Cleans up all application resources, then sets them up again.
+     */
+    void restart();
 private:
     /**
      * @brief  Performs all required initialization when the application is
@@ -62,19 +66,18 @@ private:
      * @brief  Checks if multiple versions of this application may run
      *         simultaneously.
      *
-     * @return  False, since there's no good reason to run multiple instances of
-     *          this application, and any attempt to do so is probably
-     *          accidental.
+     * @return  True, as a new instance of the application may need to replace
+     *          this one if it loses focus and can't be refocused.
      */
     bool moreThanOneInstanceAllowed() override;
 
     /**
-     * @brief  Attempts to activate the application window and grab keyboard
-     *         focus.
+     * @brief  Kills this instance of the application when a new instance
+     *         launches to replace it.
      *
-     * @return  Whether the main application window exists and is focused.
+     * @param commandLine  The new instance's command line arguments.
      */
-    bool focusAppWindow();
+    void anotherInstanceStarted(const juce::String& commandLine) override;
 
     #ifdef INCLUDE_TESTING
     /**

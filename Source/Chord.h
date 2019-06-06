@@ -10,6 +10,11 @@
 /**
  * @brief  Represents a key combination that, when released, may be used to
  *         select a specific keyboard input event.
+ *
+ *  Chorded input allows 31 different characters to be typed using only five 
+ * keys. Any combination of chord keys is held down, and then are released at
+ * once. When all keys are released, the combination of keys that was held down
+ * last selects the input character.
  */
 class Chord
 {
@@ -26,14 +31,14 @@ public:
      *
      * @param bitMap  A byte value where each bit is set to one if and only if a
      *                chord key at the same index is held down to create this
-     *                chord.  Bits are counted from least to most significant.
+     *                chord. Bits are counted from least to most significant.
      */
     Chord(const uint8 bitMap);
 
     /**
      * @brief  Checks if this object represents a valid input chord.
      *
-     * @return  Whether the object has a non-zero value, where only valid chord
+     * @return  Whether the object has a nonzero value, where only valid chord
      *          key bits are set to one.
      */
     bool isValid() const;
@@ -111,7 +116,7 @@ public:
     /**
      * @brief  Checks if two chords are equal.
      *
-     * @param rhs  The comparison chord.
+     * @param rhs  The chord being compared with this chord.
      *
      * @return     Whether this Chord and rhs use the same set of chord keys.
      */
@@ -120,7 +125,7 @@ public:
     /**
      * @brief  Checks if two chords are not equal.
      *
-     * @param rhs  The comparison chord.
+     * @param rhs  The chord being compared with this chord.
      *
      * @return     Whether this Chord and rhs do not use the same set of chord
      *             keys.
@@ -128,24 +133,27 @@ public:
     bool operator!=(const Chord& rhs) const;
 
     /**
-     * @brief  Checks if this Chord comes after another Chord.
+     * @brief  Checks if this Chord comes after another Chord when sorting chord
+     *         values.
      *
-     * @param rhs  The comparison chord.
+     * @param rhs  The chord being compared with this chord.
      *
-     * @return     Whether this Chord is sorted after rhs. 
+     * @return     Whether this Chord should be placed after rhs. 
      */
     bool operator<(const Chord& rhs) const;
 
     /**
-     * @brief  Checks if this Chord comes before another Chord.
+     * @brief  Checks if this Chord comes before another Chord when sorting
+     *         chord values.
      *
-     * @param rhs  The comparison chord.
+     * @param rhs  The chord being compared with this chord.
      *
-     * @return     Whether this Chord is sorted before rhs.
+     * @return     Whether this Chord should be placed before rhs.
      */
     bool operator>(const Chord& rhs) const;
 
 private:
-    // Marks held key indices with individual bits:
+    // Each of the first [numChordKeys()] bits in this value marks if a key is
+    // held down.
     uint8 bitMap = 0;
 };

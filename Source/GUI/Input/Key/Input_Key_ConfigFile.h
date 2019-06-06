@@ -2,10 +2,11 @@
 /**
  * @file  Input_Key_ConfigFile.h
  *
- * @brief  Loads key bindings from the key configuration resource.
+ * @brief  Accesses key bindings from the key configuration file resource.
  */
 
 #include "Config_FileHandler.h"
+#include "Text_CharTypes.h"
 #include "JuceHeader.h"
 
 namespace Input
@@ -18,6 +19,19 @@ namespace Input
     }
 }
 
+/**
+ * @brief  Connects to Input::Key::JSONResource to get key binding information.
+ *
+ *  This ConfigFile reads which keys are assigned to each keyboard action, along
+ * with names and character values used to represent those keys to the user. All
+ * key bindings should be read from Input::Key::ConfigFile objects.
+ *
+ *  As a Config::FileHandler class, Input::Key::ConfigFile shares access to a
+ * single Input::Key::JSONResource object that holds the configuration data.
+ * This resource is initialized when the first of its ConfigFile objects is
+ * created, and it continues to exist until its last ConfigFile object is
+ * destroyed.
+ */
 class Input::Key::ConfigFile : public Config::FileHandler<JSONResource>
 {
 public:
@@ -65,7 +79,7 @@ public:
      *
      * @return           The key character defined in the configuration file.
      */
-    unsigned int getKeyChar(const juce::Identifier& bindingID) const;
+    Text::CharValue getKeyChar(const juce::Identifier& bindingID) const;
 
 private:
     /**

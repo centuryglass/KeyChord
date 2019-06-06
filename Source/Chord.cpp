@@ -1,7 +1,9 @@
 #include "Chord.h"
 
-// Sets the number of input keys used. Don't mess with this value lightly, and
-// definitely don't set it to be larger than eight or less than one.
+// Sets the number of input keys used.  If you change this value, you'll also
+// need to update chord key bindings, extend/reduce the sizes of character sets,
+// and probably fix a lot of other less obvious problems. You definitely should
+// not set this value to be larger than eight or less than one.
 static const constexpr int inputKeyCount = 5;
 
 

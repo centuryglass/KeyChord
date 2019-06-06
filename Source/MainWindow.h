@@ -6,10 +6,15 @@
  */
 
 #include "JuceHeader.h"
+#include "Config_MainFile.h"
 
 /**
  * @brief  The sole application window object and the root component in the
  *         component display tree.
+ *
+ *  The open window object can be accessed statically using
+ * MainWindow::getOpenWindow(). Use this when you need to check or adjust the
+ * bounds of the window, or see if the window is currently open.
  */
 class MainWindow : public juce::DocumentWindow
 {
@@ -32,12 +37,6 @@ public:
     static MainWindow* getOpenWindow();
 
     /**
-     * @brief  Toggles window placement between the top and bottom of the
-     *         display.
-     */
-    void toggleEdge();
-
-    /**
      * @brief  Updates the window's height, while keeping the window snapped
      *         to the selected display edge.
      *
@@ -56,9 +55,8 @@ private:
      */
     virtual void resized() override;
 
-    // Tracks whether the window should snap to the top or the bottom of the
-    // display.
-    bool bottomEdge = true;
+    // Keeps the main configuration file loaded.
+    Config::MainFile mainConfig;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

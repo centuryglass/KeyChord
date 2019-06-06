@@ -7,13 +7,23 @@
  */
 
 #include "Component_KeyGrid.h"
+#include "Text_CharTypes.h"
 #include "JuceHeader.h"
 
 namespace Component { class ChordKeyDisplay; }
 
+/**
+ * @brief  Draws key images representing each chord key, highlighting each key
+ *         if it is currently held down.
+ *
+ * Chord keys are drawn in a single vertical column.
+ */
 class Component::ChordKeyDisplay : public Component::KeyGrid
 {
 public:
+    /**
+     * @brief  Loads and saves chord key bindings on construction.
+     */
     ChordKeyDisplay();
 
     virtual ~ChordKeyDisplay() { }
@@ -42,5 +52,5 @@ private:
     void paint(juce::Graphics& g) override;
 
     // Stores the chord key characters:
-    juce::Array<unsigned int> chordKeys;
+    Text::CharString chordKeys;
 };

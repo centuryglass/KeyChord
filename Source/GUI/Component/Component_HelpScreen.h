@@ -2,7 +2,7 @@
 /**
  * @file  Component_HelpScreen.h
  *
- * @brief  Displays key bindings to the user.
+ * @brief  Displays localized key binding descriptions to the user.
  */
 
 #include "Input_Key_ConfigFile.h"
@@ -42,7 +42,7 @@ private:
     // Chord key description:
     Text::CharString chordDescription;
 
-    // Single symbols used to mark key commands:
+    // Single symbols used to represent key commands:
     Text::CharString symbolChars;
     // All key names, divided into lines.
     Text::CharLineArray keyNames;

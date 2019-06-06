@@ -13,6 +13,15 @@
 
 namespace Input { class ChordReader; }
 
+/**
+ * @brief  Listens to keyboard input, reading and interpreting input to the
+ *         Chord input keys.
+ *
+ *  Chord reader converts these key events to Chord objects, makes sure these
+ * objects update appropriately when the list of held keys changes, and forwards
+ * information to Listener objects whenever the keys change or a chord is
+ * entered.
+ */
 class Input::ChordReader : public juce::KeyListener
 {
 public:

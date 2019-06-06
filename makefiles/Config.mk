@@ -12,7 +12,9 @@ OBJECTS_CONFIG_IMPL := \
 OBJECTS_CONFIG := \
   $(OBJECTS_CONFIG_IMPL) \
   $(CONFIG_OBJ)FileResource.o \
-  $(CONFIG_OBJ)DataKey.o
+  $(CONFIG_OBJ)DataKey.o \
+  $(CONFIG_OBJ)MainResource.o \
+  $(CONFIG_OBJ)MainFile.o
 
 CONFIG_TEST_PREFIX := $(CONFIG_PREFIX)Test_
 CONFIG_TEST_OBJ := $(CONFIG_OBJ)Test_
@@ -41,7 +43,10 @@ $(CONFIG_OBJ)FileResource.o: \
     $(CONFIG_DIR)/$(CONFIG_PREFIX)FileResource.cpp
 $(CONFIG_OBJ)DataKey.o: \
     $(CONFIG_DIR)/$(CONFIG_PREFIX)DataKey.cpp
+$(CONFIG_OBJ)MainResource.o: \
+    $(CONFIG_DIR)/$(CONFIG_PREFIX)MainResource.cpp
 $(CONFIG_OBJ)MainFile.o: \
+    $(CONFIG_DIR)/$(CONFIG_PREFIX)MainFile.cpp
 
 $(CONFIG_TEST_OBJ)Resource.o: \
     $(CONFIG_TEST_DIR)/$(CONFIG_TEST_PREFIX)Resource.cpp

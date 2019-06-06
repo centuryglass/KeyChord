@@ -1,7 +1,7 @@
 {
-    "main character set name"      : "Letters",
-    "alternate character set name" : "Numbers",
-    "special character set name"   : "Special characters",
+    "main character set name"      : "letter",
+    "alternate character set name" : "number",
+    "special character set name"   : "special",
     "main character set" :
     [
         {
@@ -249,10 +249,24 @@
     ],
     "special character set" :
     [
-        { "character"      : "Enter"     },
-        { "character"      : "Backspace" },
-        { "character"      : "Escape"    },
-        { "character"      : "Tab"       },
+        {
+          "character": "Enter",
+          "shifted":   "left"
+        },
+        {
+          "character": "Backspace",
+          "shifted":   "down"
+
+        },
+        {
+          "character": "Escape",
+          "shifted":   "up"
+
+        },
+        {
+          "character": "Tab",
+          "shifted":   "right"
+        },
         { "character"      : "F1"        },
         { "character"      : "F2"        },
         { "character"      : "F3"        },

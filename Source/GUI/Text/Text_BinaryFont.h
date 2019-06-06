@@ -4,6 +4,7 @@
  * @brief  Loads low-res character image data encoded in binary.
  */
 
+#include "Text_CharTypes.h"
 #include "JuceHeader.h"
 
 namespace Text 
@@ -12,8 +13,6 @@ namespace Text
     {
         // The width and height of each character:
         static const constexpr int charSize = 10;
-
-
 
         /**
          * @brief  Gets one row of image data for a specific character.
@@ -28,7 +27,7 @@ namespace Text
          * @return           A bitmap storing black and white image data for
          *                   that row.
          */
-        juce::uint16 getCharacterRow(const unsigned int character,
+        juce::uint16 getCharacterRow(const CharValue character,
                 const int row);
 
         /**
@@ -43,7 +42,7 @@ namespace Text
          * @return           A bitmap storing black and white image data for
          *                   that row.
          */
-        juce::uint32 getDoubleCharRow(const unsigned int character,
+        juce::uint32 getDoubleCharRow(const CharValue character,
                 const int row);
     }
 }

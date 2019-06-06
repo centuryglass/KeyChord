@@ -8,7 +8,6 @@
 
 #include "Config_FileResource.h"
 #include "Config_Listener.h"
-#include "Theme_Colour_ListenerInterface.h"
 
 namespace Theme { namespace Colour { class JSONResource; } }
 
@@ -31,17 +30,5 @@ private:
      */
     virtual const std::vector<Config::DataKey>& getConfigKeys()
         const final override;
-
-    /**
-     * @brief  Checks if a single handler object is a Listener tracking updates
-     *         of a single key value, and if so, notifies it that the tracked
-     *         value has updated.
-     *
-     * @param listener  A Listener object attached to the JSON resource.
-     *
-     * @param key       The key to an updated configuration value.
-     */
-    void notifyListener(ListenerInterface* listener,
-            const juce::Identifier& key);
 };
 

@@ -1,5 +1,5 @@
 #include "Component_InputView.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "Text_Painter.h"
 #include "Text_ModTracker.h"
 
@@ -42,9 +42,9 @@ void Component::InputView::paint(juce::Graphics& g)
 
     // Add active modifiers to drawn text:
     using ModKey = Text::ModTracker::ModKey;
-    namespace CharValue = Text::CharSet::Values;
+    namespace CharValue = Text::Values;
     Text::ModTracker modTracker;
-    const std::pair<ModKey, unsigned int> modMappings [] =
+    const std::pair<ModKey, Text::CharValue> modMappings [] =
     {
         { ModKey::control , CharValue::ctrl },
         { ModKey::alt     , CharValue::alt },
@@ -57,11 +57,10 @@ void Component::InputView::paint(juce::Graphics& g)
         if (modTracker.isKeyHeld(mapping.first))
         {
             drawnText.add(mapping.second);
-            drawnText.add((unsigned int) '+');
+            drawnText.add((Text::CharValue) '+');
         }
     }
     drawnText.addArray(inputText);
-
 
     g.setColour(findColour(inputHighlight));
     const int rightEdge = Text::Painter::paintString(g, drawnText,

@@ -8,6 +8,10 @@
 
 namespace Component
 {
+    /**
+     * @brief  The set of shared colors used by Component::KeyGrid classes.
+     *         
+     */
     enum ColourIds
     {
         // Color used to draw text:
@@ -15,23 +19,23 @@ namespace Component
         // Color used to draw text for characters that conflict with the current
         // selection:
         inactiveText = 0x1900101,
-        // Colors used to draw active chord keys on the selected character:
+        // Colors used to draw held chord keys on the selected character:
         chord1Selected = 0x1900102,
         chord2Selected = 0x1900103,
         chord3Selected = 0x1900104,
         chord4Selected = 0x1900105,
         chord5Selected = 0x1900106,
         emptySelected =  0x1900107, // Empty = key should not be held down.
-        // Colors used to draw active chord keys in chords that don't 
-        // conflict with the current selection:
+        // Colors used to draw held chord keys in chords that don't conflict
+        // with the current selection:
         chord1Active = 0x1900108,
         chord2Active = 0x1900109,
         chord3Active = 0x190010a,
         chord4Active = 0x190010b,
         chord5Active = 0x190010c,
         emptyActive =  0x190010d,
-        // Colors used to draw active chord keys in chords that don't 
-        // conflict with the current selection:
+        // Colors used to draw chord keys in chords that aren't held down and
+        // don't conflict with the current selection:
         chord1Open = 0x190010e,
         chord2Open = 0x190010f,
         chord3Open = 0x1900110,

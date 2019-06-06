@@ -12,7 +12,12 @@ ColourTheme::ConfigFile::ConfigFile() { }
 juce::Colour ColourTheme::ConfigFile::getColour(const int colourId)
 {
     using namespace JSONKeys;
-    juce::String colourStr = getColourString(getColourKey(colourId));
+    juce::String colourStr;
+    const juce::Identifier& colourKey = getColourKey(colourId);
+    if (colourKey != invalidKey)
+    {
+        colourStr = getColourString(colourKey);
+    }
     if (colourStr.isEmpty())
     {
         // No specific value set, look up the UICategory value.

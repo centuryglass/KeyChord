@@ -1,4 +1,5 @@
 #pragma once
+#include "Text_Values.h"
 #include "JuceHeader.h"
 
 namespace Text
@@ -32,7 +33,7 @@ namespace Text
          *                             string.
          */
         int paintChar(juce::Graphics& g,
-                const unsigned int toPrint,
+                const CharValue toPrint,
                 int x,
                 int y,
                 int width,
@@ -60,7 +61,7 @@ namespace Text
          * @return               The x-coordinate of the end of the string.
          */
         int paintString(juce::Graphics& g,
-                const juce::Array<unsigned int> charIndices,
+                const CharString toPrint,
                 const int x,
                 const int y,
                 const int width,

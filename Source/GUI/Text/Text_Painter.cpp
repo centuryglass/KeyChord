@@ -1,13 +1,14 @@
 #include "Text_Painter.h"
 #include "Text_BinaryFont.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "Util_Math.h"
+#include <iostream>
 #include <map>
 
 // Character width in bits/pixels
 static const constexpr int charSize = 10;
 // Number of (scaled) blank pixels to insert between characters:
-static const constexpr int charPixelPadding = 2;
+static const constexpr int charPixelPadding = 1;
 // Number of (scaled) blank pixels to represent whitespace characters:
 static const constexpr int whitespaceWidth = 1;
 
@@ -20,9 +21,9 @@ static const constexpr char* dbgPrefix = "Text::Painter::";
 // Returns the leftmost and rightmost horizontal indices of the area in a
 // character that actually contain pixels, or { -1, -1} if the character is
 // empty.
-static std::pair<int, int> charBounds(const unsigned int toMeasure)
+static std::pair<int, int> charBounds(const Text::CharValue toMeasure)
 {
-    const bool doubleWidth = Text::CharSet::Values::isWideValue(toMeasure);
+    const bool doubleWidth = Text::Values::isWideValue(toMeasure);
     const int charWidth = doubleWidth ? charSize * 2 : charSize;
     
     std::pair<int, int> bounds = {-1, -1 };
@@ -68,10 +69,10 @@ static std::pair<int, int> charBounds(const unsigned int toMeasure)
     return bounds;
 }
 
-int Text::Painter::paintChar(juce::Graphics& g, const unsigned int toPrint,
+int Text::Painter::paintChar(juce::Graphics& g, const CharValue toPrint,
         int x, int y, int width, int height, const bool preserveAspectRatio)
 {
-    const bool doubleWidth = Text::CharSet::Values::isWideValue(toPrint);
+    const bool doubleWidth = Text::Values::isWideValue(toPrint);
     if (preserveAspectRatio)
     {
         // Regular character w:h ratio is 1:1, doubleWidth characters are 2:1
@@ -133,7 +134,7 @@ int Text::Painter::paintChar(juce::Graphics& g, const unsigned int toPrint,
 
 // Draws an entire string using Text::BinaryFont.
 int Text::Painter::paintString(juce::Graphics& g,
-        const juce::Array<unsigned int> charIndices,
+        const CharString toPrint,
         const int x,
         const int y,
         const int width,
@@ -141,10 +142,10 @@ int Text::Painter::paintString(juce::Graphics& g,
         const int maxCharSize)
 {
     // Map character widths:
-    std::map<unsigned int, int> drawnWidths;
-    std::map<unsigned int, std::pair<int, int>> borders;
+    std::map<CharValue, int> drawnWidths;
+    std::map<CharValue, std::pair<int, int>> borders;
     int widthSum;
-    for (const unsigned int& charIndex : charIndices)
+    for (const CharValue& charIndex : toPrint)
     {
         try
         {
@@ -152,7 +153,7 @@ int Text::Painter::paintString(juce::Graphics& g,
         }
         catch (const std::out_of_range& e)
         {
-            const std::pair<unsigned int, int> border = charBounds(charIndex);
+            const std::pair<CharValue, int> border = charBounds(charIndex);
             int width = border.second - border.first; 
             if (width == 0)
             {
@@ -166,14 +167,15 @@ int Text::Painter::paintString(juce::Graphics& g,
     }
 
     float pixelSize = Util::Math::median<float>(1.0f,
-            (float) width / ((float) widthSum + charIndices.size()),
+            (float) width / (float) widthSum,
             (float) maxCharSize / (float) charSize);
     pixelSize = std::min(pixelSize, (float) height / float(charSize));
+    std::cout << "PixelSize = " << pixelSize << "\n";
             
     int xPos = x + pixelSize;
-    for (int i = 0; i < charIndices.size(); i++)
+    for (int i = 0; i < toPrint.size(); i++)
     {
-        const unsigned char& charIndex = charIndices[i];
+        const CharValue& charIndex = toPrint[i];
         const int xStart = borders[charIndex].first;
         if (i > 0 && xStart >= 0)
         {
@@ -182,7 +184,6 @@ int Text::Painter::paintString(juce::Graphics& g,
         xPos = pixelSize * charPixelPadding
                 + paintChar(g, charIndex, xPos, y, pixelSize * charSize,
                 pixelSize * charSize);
-        //xPos += drawnWidths[charIndex] * pixelSize;
     }
     return xPos;
 }

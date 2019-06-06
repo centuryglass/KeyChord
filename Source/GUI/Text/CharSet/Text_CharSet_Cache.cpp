@@ -1,5 +1,5 @@
 #include "Text_CharSet_Cache.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 
 #ifdef JUCE_DEBUG
 // Print the full class name before all debug output:
@@ -134,10 +134,6 @@ Text::CharSet::Cache::Cache(const juce::var setData)
             {
                 charIndex = Values::getCharValue(
                         varChar.operator juce::String());
-            }
-            if (charIndex > 128)
-            {
-                DBG("BIG_CHAR: " << (int) charIndex);
             }
             return charIndex;
         };

@@ -2,8 +2,6 @@
 #include "MainWindow.h"
 #include "Windows_XInterface.h"
 #include "Windows_FocusControl.h"
-#include "Util_ShutdownListener.h"
-#include "Util_TempTimer.h"
 
 #ifdef INCLUDE_TESTING
 #include "Debug_ScopeTimerRecords.h"
@@ -26,15 +24,33 @@ static bool verboseTesting = false;
 static juce::StringArray testCategories;
 #endif
 
+static Window targetWindow = BadWindow;
 
+// Cleans up all application resources, then sets them up again.
+void Application::restart()
+{
+    inputController.reset(nullptr);
+    mainView.reset(nullptr);
+
+    homeWindow.reset(new MainWindow(getApplicationName()));
+    mainView.reset(new Component::MainView);
+    inputController.reset(new Input::Controller(mainView.get(), targetWindow));
+    homeWindow->setContentNonOwned(mainView.get(), false);
+    homeWindow->setVisible(true);
+    homeWindow->addToDesktop();
+}
 // Performs all required initialization when the application is first launched.
 void Application::initialise(const juce::String &commandLine)
 {
     // Save the window that will receive input:
+
     Windows::XInterface xWindows;
-    Window targetWindow = xWindows.getActiveWindow();
-    DBG("Saving target window " << (int) targetWindow << " with name "
-            << xWindows.getWindowName(targetWindow));
+    if (targetWindow == BadWindow)
+    {
+        targetWindow = xWindows.getActiveWindow();
+        DBG("Saving target window " << (int) targetWindow << " with name "
+                << xWindows.getWindowName(targetWindow));
+    }
 
     // Extract and process arguments:
     using juce::StringArray;
@@ -96,8 +112,7 @@ void Application::initialise(const juce::String &commandLine)
     homeWindow->setVisible(true);
     homeWindow->addToDesktop();
     mainView->setBounds(homeWindow->getLocalBounds());
-    inputController.reset(new Input::Controller(mainView.get(),
-                targetWindow, xWindows.getMainAppWindow()));
+    inputController.reset(new Input::Controller(mainView.get(), targetWindow));
 
     // Ensure the application window is active and has keyboard focus:
     Windows::FocusControl focusControl;
@@ -116,11 +131,11 @@ void Application::initialise(const juce::String &commandLine)
 void Application::shutdown()
 {
     DBG(dbgPrefix << __func__ << ": Closing application resources.");
-    Util::ShutdownBroadcaster::broadcastShutdown();
-    homeWindow.reset(nullptr);
     juce::LookAndFeel::setDefaultLookAndFeel(nullptr);
+
     inputController.reset(nullptr);
     mainView.reset(nullptr);
+    homeWindow.reset(nullptr);
     lookAndFeel.reset(nullptr);
     #ifdef INCLUDE_TESTING
     Debug::ScopeTimerRecords::printRecords();
@@ -147,8 +162,19 @@ const juce::String Application::getApplicationVersion()
 // Checks if multiple versions of this application may run simultaneously.
 bool Application::moreThanOneInstanceAllowed()
 {
-    return false;
+    return true;
 }
+
+
+// Kills this instance of the application when a new instance launches to
+// replace it.
+void Application::anotherInstanceStarted(const juce::String& commandLine)
+{
+    DBG(dbgPrefix << __func__ << ": New instance launching, closing this one.");
+    quit();
+}
+
+
 
 #ifdef INCLUDE_TESTING
 // Runs application tests and shuts down the application.

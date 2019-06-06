@@ -85,7 +85,7 @@ public:
      *         draw.
      *
      * @return  The number of characters that are twice as wide, as evaluated by
-     *          Text::CharSet::Values::isWideValue()
+     *          Text::Values::isWideValue()
      */
     int wideDrawCharacterCount() const;
 

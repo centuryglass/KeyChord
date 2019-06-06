@@ -12,8 +12,7 @@ OBJECTS_THEME_COLOUR := \
   $(THEME_COLOUR_OBJ)Element.o \
   $(THEME_COLOUR_OBJ)JSONKeys.o \
   $(THEME_COLOUR_OBJ)JSONResource.o \
-  $(THEME_COLOUR_OBJ)ConfigFile.o \
-  $(THEME_COLOUR_OBJ)ConfigListener.o
+  $(THEME_COLOUR_OBJ)ConfigFile.o
 
 OBJECTS_THEME := \
   $(OBJECTS_THEME_COLOUR) \
@@ -40,8 +39,6 @@ $(THEME_COLOUR_OBJ)JSONResource.o : \
     $(THEME_COLOUR_DIR)/$(THEME_COLOUR_PREFIX)JSONResource.cpp
 $(THEME_COLOUR_OBJ)ConfigFile.o : \
     $(THEME_COLOUR_DIR)/$(THEME_COLOUR_PREFIX)ConfigFile.cpp
-$(THEME_COLOUR_OBJ)ConfigListener.o : \
-    $(THEME_COLOUR_DIR)/$(THEME_COLOUR_PREFIX)ConfigListener.cpp
 
 $(THEME_OBJ)LookAndFeel.o : \
     $(THEME_DIR)/Theme_LookAndFeel.cpp

@@ -34,7 +34,7 @@ juce::String Input::Key::ConfigFile::getKeyName
 
 
 // Gets a single key character that may be used to represent the bound key.
-unsigned int Input::Key::ConfigFile::getKeyChar
+Text::CharValue Input::Key::ConfigFile::getKeyChar
 (const juce::Identifier& bindingID)
         const
 {

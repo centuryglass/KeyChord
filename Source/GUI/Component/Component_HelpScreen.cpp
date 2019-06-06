@@ -2,11 +2,12 @@
 #include "Component_ChordPreview.h"
 #include "Component_ColourIds.h"
 #include "Input_Key_JSONKeys.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "Text_Painter.h"
 
-// Localized Text keys:
+// Localized text class key:
 static const juce::Identifier localeKey("Component_HelpScreen");
+// Localized text value keys:
 static const juce::Identifier helpTitle("helpTitle");
 static const juce::Identifier chordKeys("chordKeys");
 
@@ -30,7 +31,7 @@ static Text::CharString toCharString(const juce::String inputStr)
     {
         const juce::String juceString(inputStr.substring(i, i + 1));
         const Text::CharValue charValue 
-                = Text::CharSet::Values::getCharValue(juceString);
+                = Text::Values::getCharValue(juceString);
         if (charValue != 0)
         {
             charString.add(charValue);
@@ -48,7 +49,7 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
     using juce::Array;
     using Text::CharString;
     using Text::CharLineArray;
-    namespace CharValues = Text::CharSet::Values;
+    namespace CharValues = Text::Values;
     namespace InputKeys = Input::Key::JSONKeys;
 
     // Load all chord key info together:
@@ -109,7 +110,7 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
 void Component::HelpScreen::paint(juce::Graphics& g)
 {
     using juce::Array;
-    namespace TextValues = Text::CharSet::Values;
+    namespace TextValues = Text::Values;
 
     const int xMargin = getWidth() / 30;
     const int yMargin = getHeight() / 30;
@@ -141,7 +142,7 @@ void Component::HelpScreen::paint(juce::Graphics& g)
             (const Text::CharString charString)
     {
         return Text::Painter::paintString(g, charString, xPos, yPos,
-                getWidth() - xPos, rowHeight, rowHeight);//drawnCharSize);
+                getWidth() - xPos, rowHeight, rowHeight);
     };
 
     // Draw title:

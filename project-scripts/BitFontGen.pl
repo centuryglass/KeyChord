@@ -1,29 +1,37 @@
 #!/usr/bin/perl
+# Reads in a pixel font from a black and white image file, saving its data to
+# Text_BinaryFont.cpp.
+
 use strict;
 use warnings;
 use Image::Magick;
 use File::Slurp;
+use File::Basename;
 
 use constant IMG_WIDTH => 160;
 use constant IMG_HEIGHT => 160;
+use constant RELATIVE_OUTPATH => '../Source/GUI/Text/Text_BinaryFont.cpp';
+
+my $mapVarName = 'const juce::uint32 fontMap';
 
 my $path = $ARGV[0];
-my $outPath = $ARGV[1];
+
+my $dirname = dirname(__FILE__);
+my $outPath = $dirname."/".RELATIVE_OUTPATH;
 
 if (! -f $path)
 {
     die("No valid input path!\n");
 }
-if (! defined($outPath))
+if (! -f $outPath)
 {
-    die("No valid output path!\n");
+    die("No valid output path!\n Path tried: \"$outPath\"");
 }
 
 my $image = new Image::Magick;
 $image->Read($path);
 
-my $output = "juce::uint32 fontMap [".( (IMG_WIDTH / 32) * IMG_HEIGHT)
-        ."] = \n{";
+my $output = "$mapVarName [".( (IMG_WIDTH / 32) * IMG_HEIGHT)."] = \n{";
 
 my ($width, $height) = $image->Get('width', 'height');
 if ($width != IMG_WIDTH || $height != IMG_HEIGHT)
@@ -65,4 +73,7 @@ foreach my $row (0 ... (IMG_HEIGHT - 1))
     }
 }
 $output = "$output\n};\n";
-write_file($outPath, $output);
+
+my $updatedFile = read_file($outPath);
+$updatedFile =~ s/\v$mapVarName.*?;/\n$output/s;
+write_file($outPath, $updatedFile);

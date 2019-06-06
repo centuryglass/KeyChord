@@ -2,8 +2,9 @@
 /**
  * @file  Component_CharsetDisplay.h
  *
- * @brief  Draws all characters in the active character set, showing which ones
- *         are currently selected or nearly selected.
+ * @brief  Draws all characters in the active character set, outlining the
+ *         selected character, and highlighting all characters that could be
+ *         selected by holding down additional chord keys.
  */
 
 namespace Component { class CharsetDisplay; }

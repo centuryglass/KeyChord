@@ -1,7 +1,7 @@
 #include "Input_Buffer.h"
 #include "Util_ConditionChecker.h"
 #include "Windows_FocusControl.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "Text_ModTracker.h"
 
 #ifdef JUCE_DEBUG
@@ -18,9 +18,8 @@ static const juce::String typeCommand("xdotool type ");
 // Maximum time in milliseconds to wait for the target window to focus:
 static const constexpr int focusTimeout = 5000;
 
-// Saves all necessary window IDs on construction.
-Input::Buffer::Buffer(const int targetWindow, const int keyChordWindow) :
-    targetWindow(targetWindow), keyChordWindow(keyChordWindow) { }
+// Saves the target window ID on construction.
+Input::Buffer::Buffer(const int targetWindow) : targetWindow(targetWindow) { }
 
 
 // If the input string isn't empty, send it to the target window before
@@ -32,7 +31,7 @@ Input::Buffer::~Buffer()
 
 
 // Gets the cached input string.
-juce::Array<unsigned int> Input::Buffer::getInputText() const
+Text::CharString Input::Buffer::getInputText() const
 {
     return inputText;
 }
@@ -86,7 +85,7 @@ void Input::Buffer::sendAndClearInput()
 
     for (int cIndex = 0; cIndex < inputText.size(); cIndex++)
     {
-        juce::String charString = Text::CharSet::Values::getCharString(
+        juce::String charString = Text::Values::getXString(
                 inputText[cIndex]);
         if (charString.isEmpty())
         {
@@ -95,16 +94,7 @@ void Input::Buffer::sendAndClearInput()
                     << " at index " << cIndex);
             continue;
         }
-        juce::String commandString;
-        if (inputText[cIndex] >= Text::CharSet::Values::extraPrintMin)
-        {
-            // Extended characters need to be sent as text, not key events.
-            commandString = typeCommand + "'";
-        }
-        else
-        {
-            commandString = keyCommand + "'" + modPrefix;
-        }
+        juce::String commandString = keyCommand + "'" + modPrefix;
         commandString += ((charString == "'") ? "\'" : charString) + "'";
         DBG("running input command: " << commandString);
         system(commandString.toRawUTF8());
@@ -118,7 +108,7 @@ void Input::Buffer::sendAndClearInput()
 
 
 // Adds a character to the end of the cached input string.
-void Input::Buffer::appendCharacter(const unsigned int inputChar)
+void Input::Buffer::appendCharacter(const Text::CharValue inputChar)
 {
     inputText.add(inputChar);
 }
@@ -142,4 +132,11 @@ void Input::Buffer::clearInput()
 bool Input::Buffer::isEmpty() const
 {
     return inputText.isEmpty();
+}
+
+
+// Gets the cached input string, without including modifiers.
+Text::CharString Input::Buffer::getRawInput() const
+{
+    return inputText;
 }

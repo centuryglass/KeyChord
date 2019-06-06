@@ -102,14 +102,14 @@ bool Text::CharSet::JSONResource::isValidKey
 (const juce::Identifier& key) const 
 {
     using namespace JSONKeys;
-    static const juce::Array<const juce::Identifier*> keyList =
+    const juce::Array<juce::Identifier> keyList =
     {
-        &mainSetName.key,
-        &altSetName.key,
-        &specialSetName.key,
-        &mainCharSet,
-        &altCharSet,
-        &specialCharSet
+        mainSetName.key,
+        altSetName.key,
+        specialSetName.key,
+        mainCharSet,
+        altCharSet,
+        specialCharSet
     };
-    return keyList.contains(&key);
+    return keyList.contains(key);
 }

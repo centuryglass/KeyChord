@@ -5,16 +5,30 @@
  * @brief  Shows a preview of buffered input text.
  */
 
+#include "Text_CharTypes.h"
 #include "JuceHeader.h"
 
 namespace Component { class InputView; }
 
+/**
+ * @brief  Shows a preview of buffered input text.
+ *
+ *  User entered text that has not yet been sent to the target window is
+ * displayed in the InputView. This includes active modifiers, always printed
+ * before all other text. If immediate mode is enabled and all normal keys
+ * are sent immediately to the target window, InputView will instead show any
+ * active modifiers, followed by "(Immediate input mode)", or the localized
+ * equivalent.
+ */
 class Component::InputView : public juce::Component
 {
 public:
     InputView() { }
     virtual ~InputView() { }
 
+    /**
+     * @brief  Custom input preview colors:
+     */
     enum ColourIds
     {
         // Color used to draw text:
@@ -30,10 +44,9 @@ public:
     /**
      * @brief  Updates the array of character indices the InputView will draw.
      *
-     * @param updatedInput  Buffered input text, as an array of character code
-     *                      values as defined in Text::CharSet::Values.
+     * @param updatedInput  The buffered input text string.
      */
-    void updateInputText(const juce::Array<unsigned int> updatedInput);
+    void updateInputText(const Text::CharString updatedInput);
 
 private:
     /**
@@ -43,5 +56,6 @@ private:
      */
     void paint(juce::Graphics& g) override;
 
-    juce::Array<unsigned int> inputText;
+    // Cached input text:
+    Text::CharString inputText;
 };

@@ -11,13 +11,24 @@
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_ConfigFile.h"
 #include "Text_ModTracker.h"
+#include "Text_CharTypes.h"
+#include "Config_MainFile.h"
+#include "Locale_TextUser.h"
 #include "Component_MainView.h"
 #include "JuceHeader.h"
 
 namespace Input { class Controller; }
 namespace juce { class KeyPress; }
 
-class Input::Controller : public ChordReader::Listener
+/**
+ * @brief  Catches and handles all user input.
+ *
+ *  All chord entry events and key events are passed to the Controller, and the
+ * controller is completely responsible for deciding how they are handled.
+ * The Controller uses the Input::Key::ConfigFile to determine which key events
+ * control specific actions.
+ */
+class Input::Controller : public ChordReader::Listener, public Locale::TextUser
 {
 public:
     /**
@@ -29,14 +40,20 @@ public:
      * @param targetWindow    The ID of the window where chord input text should
      *                        be sent.
      *
-     * @param keyChordWindow  The ID of this application's single window.
      */
-    Controller(Component::MainView* mainView, const int targetWindow,
-            const int keyChordWindow);
+    Controller(Component::MainView* mainView, const int targetWindow);
 
     virtual ~Controller() { }
 
 private:
+    /**
+     * @brief  Gets a CharString displaying appropriate input preview text.
+     *
+     * @return  A string listing all active modifiers, along with either the
+     *          buffered input text or a message that immediate mode is enabled.
+     */
+    Text::CharString getInputPreview() const;
+
     /**
      * @brief  Updates the MainView when the current held chord changes.
      *
@@ -66,10 +83,21 @@ private:
      */
     void keyReleased() override { }
 
+    /**
+     * @brief  Restarts the application, preserving settings and input buffer
+     *         contents across application instances. 
+     *
+     *  This exists as a workaround for the way the Gameshell loses keyboard
+     * focus when the window edge or minimized state change.
+     */
+    void restartApplication();
+
     // Loads key bindings:
     Input::Key::ConfigFile keyConfig;
     // Loads configurable character set:
     Text::CharSet::ConfigFile charsetConfig;
+    // Loads saved application state:
+    Config::MainFile mainConfig;
 
     // Captures keyboard input and draws the chord entry state:
     Component::MainView* mainView;
@@ -77,10 +105,6 @@ private:
     ChordReader chordReader;
     // Buffers text input and sends it out to the target window:
     Buffer inputBuffer;
-
-    // When immediate mode is active, input is immediately forwarded to the 
-    // target window without buffering.
-    bool immediateMode = false;
 
     // Tracks held modifiers, and ensures modifier state is preserved and
     // shared:

@@ -1,9 +1,13 @@
 #include "Input_Controller.h"
 #include "Input_Key_JSONKeys.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "MainWindow.h"
 #include "JuceHeader.h"
+#include "Application.h"
 #include <map>
+
+static const juce::Identifier localeKey("Input_Controller");
+static const juce::Identifier immediateModeKey("immediateMode");
 
 #ifdef JUCE_DEBUG
 // Print the full class name before all debug output:
@@ -12,21 +16,52 @@ static const constexpr char* dbgPrefix = "Input::Controller::";
 
 
 // Sets up all keyboard input handling.
-Input::Controller::Controller(Component::MainView* mainView,
-        const int targetWindow, const int keyChordWindow) :
+Input::Controller::Controller
+(Component::MainView* mainView, const int targetWindow) :
+    Locale::TextUser(localeKey),
     chordReader(mainView),
     mainView(mainView),
-    inputBuffer(targetWindow, keyChordWindow)
+    inputBuffer(targetWindow)
 {
-    mainView->updateChordState(&charsetConfig.getActiveSet(), 0, {});
     chordReader.addListener(this);
+    const bool immediateMode = mainConfig.getImmediateMode();
+    Text::CharString cachedInput = mainConfig.takeCachedBuffer();
+    for (const Text::CharValue& charValue : cachedInput)
+    {
+        inputBuffer.appendCharacter(charValue);
+        if (immediateMode)
+        {
+            inputBuffer.sendAndClearInput();
+        }
+    }
+    mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
+            getInputPreview());
 }
+
+
+// Gets a CharString displaying appropriate input preview text.
+Text::CharString Input::Controller::getInputPreview() const
+{
+    using juce::String;
+    Text::CharString inputText = inputBuffer.getInputText();
+    if (mainConfig.getImmediateMode())
+    {
+        String immediateModeText = localeText(immediateModeKey);
+        for (int i = 0; i < immediateModeText.length(); i++)
+        {
+            inputText.add(Text::Values::getCharValue(
+                    immediateModeText.substring(i, i + 1)));
+        }
+    }
+    return inputText;
+}
+
 
 // Updates the ChordComponent when the current held chord changes.
 void Input::Controller::selectedChordChanged(const Chord selectedChord)
 {
     mainView->updateChordState(&charsetConfig.getActiveSet(), 
-            selectedChord, inputBuffer.getInputText());
+            selectedChord, getInputPreview());
 }
 
 
@@ -44,7 +79,7 @@ void Input::Controller::chordEntered(const Chord selected)
         MainWindow::getOpenWindow()->setHeight(height);
         return;
     }
-    unsigned int enteredChar = charsetConfig.getActiveSet()
+    Text::CharValue enteredChar = charsetConfig.getActiveSet()
             .getChordCharacter(selected, charsetConfig.getShifted());
     /*
     DBG(dbgPrefix << __func__ << ": Entered character "
@@ -52,21 +87,21 @@ void Input::Controller::chordEntered(const Chord selected)
             << juce::String::toHexString((int) enteredChar) << ", "
             << (int) enteredChar << ")");
     */
-    if (Text::CharSet::Values::isModifier(enteredChar))
+    if (Text::Values::isModifier(enteredChar))
     {
         Text::ModTracker::ModKey modKey;
         switch (enteredChar)
         {
-            case Text::CharSet::Values::ctrl:
+            case Text::Values::ctrl:
                 modKey = Text::ModTracker::ModKey::control;
                 break;
-            case Text::CharSet::Values::alt:
+            case Text::Values::alt:
                 modKey = Text::ModTracker::ModKey::alt;
                 break;
-            case Text::CharSet::Values::shift:
+            case Text::Values::shift:
                 modKey = Text::ModTracker::ModKey::shift;
                 break;
-            case Text::CharSet::Values::cmd:
+            case Text::Values::cmd:
                 modKey = Text::ModTracker::ModKey::command;
                 break;
             default:
@@ -82,12 +117,12 @@ void Input::Controller::chordEntered(const Chord selected)
     {
         inputBuffer.appendCharacter(enteredChar);
     }
-    if (immediateMode)
+    if (mainConfig.getImmediateMode())
     {
         inputBuffer.sendAndClearInput();
     }
     mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
-            inputBuffer.getInputText());
+            getInputPreview());
 }
 
 
@@ -204,7 +239,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             [this, &sendUpdate]() 
             { 
                 // inputBuffer will send its text on destruction.
-                juce::JUCEApplication::getInstance()->quit();
+                juce::JUCEApplication::getInstance()->systemRequestedQuit();
             }
         },
         { 
@@ -212,19 +247,20 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             [this, &sendUpdate]() 
             {
                 inputBuffer.clearInput();
-                juce::JUCEApplication::getInstance()->quit();
+                juce::JUCEApplication::getInstance()->systemRequestedQuit();
             } 
         },
         {
             &Keys::toggleImmediate,
             [this, &sendUpdate]() 
             {
-                immediateMode = ! immediateMode;
+                const bool immediateMode = ! mainConfig.getImmediateMode();
+                mainConfig.setImmediateMode(immediateMode);
                 if (immediateMode && ! inputBuffer.isEmpty())
                 {
                     inputBuffer.sendAndClearInput();
-                    sendUpdate = true;
                 }
+                sendUpdate = true;
             } 
         },
         {
@@ -239,25 +275,22 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
         },
         {
             &Keys::toggleWindowEdge,
-            []() 
+            [this]() 
             { 
-                MainWindow* window = MainWindow::getOpenWindow();
-                if (window != nullptr)
-                {
-                    window->toggleEdge();
-                }
+                mainConfig.setSnapToBottom(! mainConfig.getSnapToBottom());
+                restartApplication();
             } 
         },
         {
             &Keys::toggleMinimize,
             [this, &sendUpdate]()
             {
-                DBG(dbgPrefix << __func__ << ": minimize not implemented.");
+                mainConfig.setMinimised(! mainConfig.getMinimized());
+                restartApplication();
             } 
         },
     };
     juce::KeyPress unmoddedKey(key.getKeyCode());
-    DBG("unmodded =" << unmoddedKey.getTextDescription());
     for (const juce::Identifier* binding : Keys::allKeys)
     {
         juce::KeyPress boundKey = keyConfig.getBoundKey(*binding);
@@ -273,6 +306,22 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
     {
         mainView->updateChordState(&charsetConfig.getActiveSet(),
                 chordReader.getSelectedChord(),
-                inputBuffer.getInputText());
+                getInputPreview());
     }
+}
+
+
+// Restarts the application, preserving settings and input buffer contents
+// across application instances. 
+void Input::Controller::restartApplication()
+{
+    Config::MainFile mainConfig;
+    mainConfig.cacheInputBuffer(inputBuffer.getRawInput());
+    inputBuffer.clearInput();
+    DBG(dbgPrefix << __func__ << ": Restarting application object");
+    juce::MessageManager::callAsync([]()
+    {
+        static_cast<Application*>(juce::JUCEApplication::getInstance())
+                ->restart();
+    });
 }

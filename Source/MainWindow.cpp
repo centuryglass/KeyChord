@@ -4,24 +4,31 @@
 #ifdef JUCE_DEBUG
 // Print the full class name before all debug output:
 static const constexpr char* dbgPrefix = "MainWindow::";
+
 // Make the window the size of the GameShell display on debug builds:
 static const constexpr int dbgWidth = 320;
 static const constexpr int dbgHeight = 240;
 #endif
+
+// Used to determine how much of the screen height to use:
+static const constexpr int standardHeightDivisor = 2;
+static const constexpr int minimizedHeightDivisor = 10;
 
 // Creates and shows the main application window.
 MainWindow::MainWindow(juce::String windowName) :
 juce::DocumentWindow(windowName, juce::Colours::darkgrey,
         juce::DocumentWindow::allButtons)
 {
+    const int heightDivisor = (mainConfig.getMinimized()
+            ? minimizedHeightDivisor : standardHeightDivisor);
     juce::Rectangle<int> screenSize = juce::Desktop::getInstance()
             .getDisplays().getMainDisplay().userArea;
-#ifdef JUCE_DEBUG
-    setHeight(dbgHeight / 2);
-#else
-    setHeight(screenSize.getHeight() / 2);
-#endif
-    setUsingNativeTitleBar(true);
+//#ifdef JUCE_DEBUG
+//    setHeight(dbgHeight / heightDivisor);
+//#else
+    setHeight(screenSize.getHeight() / heightDivisor);
+//#endif
+    setUsingNativeTitleBar(false);
     setResizable(false, false);
     setLookAndFeel(&juce::LookAndFeel::getDefaultLookAndFeel());
     setVisible(true);
@@ -40,12 +47,6 @@ MainWindow* MainWindow::getOpenWindow()
     return dynamic_cast<MainWindow*>(rootComponent);
 }
 
-// Toggles window placement between the top and bottom of the display.
-void MainWindow::toggleEdge()
-{
-    bottomEdge = ! bottomEdge;
-    setHeight(getHeight());
-}
 
 // Updates the window's height, while keeping the window snapped to the selected
 // display edge.
@@ -53,6 +54,7 @@ void MainWindow::setHeight(const int newHeight)
 {
     juce::Rectangle<int> screenSize = juce::Desktop::getInstance()
             .getDisplays().getMainDisplay().userArea;
+    const bool bottomEdge = mainConfig.getSnapToBottom();
 #ifdef JUCE_DEBUG
     int adjustedHeight = newHeight;
     if (adjustedHeight > dbgHeight)
@@ -66,12 +68,8 @@ void MainWindow::setHeight(const int newHeight)
     int yPos = bottomEdge ? screenSize.getHeight() - newHeight : 0;
     setBounds(0, yPos, screenSize.getWidth(), newHeight);
 #endif
-
-    // The GameShell keeps losing focus when the window switches screen sides.
-    // Make sure that doesn't happen here.
-    Windows::FocusControl focusControl;
-    focusControl.takeFocus();
 }
+
 
 // Closes the application normally when the window closes.
 void MainWindow::closeButtonPressed()

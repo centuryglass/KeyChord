@@ -2,9 +2,11 @@
 #include "Component_ColourIds.h"
 #include "Input_Key_ConfigFile.h"
 #include "Input_Key_JSONKeys.h"
-#include "Text_CharSet_Values.h"
+#include "Text_Values.h"
 #include "Text_Painter.h"
 
+
+// Loads and saves chord key bindings on construction.
 Component::ChordKeyDisplay::ChordKeyDisplay()
 {
     Input::Key::ConfigFile keyConfig;
@@ -32,7 +34,7 @@ int Component::ChordKeyDisplay::getRowCount() const
 // Paints the chord keys.
 void Component::ChordKeyDisplay::paint(juce::Graphics& g)
 {
-    using namespace Text::CharSet;
+    using namespace Text;
     // Calculate layout values:
     const int paddedRowHeight = getPaddedRowHeight();
     const int paddedCharWidth = getPaddedCharWidth();
@@ -42,7 +44,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
     const int rowHeight = paddedRowHeight - yPadding;
     const int charWidth = paddedCharWidth - xPadding;
     int yPos = yPadding;
-    int xPos = 0;
+    int xPos = xPadding;
 
     // A convenience function to more easily request character drawing 
     // operations:
@@ -51,12 +53,12 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
         (const unsigned int toDraw)
     {
         bool wideDrawChar = Values::isWideValue(toDraw);
-        Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
+        Text::Painter::paintChar(g, toDraw, xPos, yPos,
                 (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
     };
     for(int keyIdx = 0; keyIdx < chordKeys.size(); keyIdx++)
     {
-        const unsigned int toDraw = chordKeys[keyIdx];
+        const CharValue toDraw = chordKeys[keyIdx];
         bool wideDrawChar = Values::isWideValue(toDraw);
         juce::Colour chordColour = findColour(chord1Selected + keyIdx, true);
         g.setColour(chordColour);

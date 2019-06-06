@@ -1,6 +1,6 @@
 #pragma once
 #ifndef INPUT_KEY_CONFIG_IMPLEMENTATION
-    #error "Input_Key_JSONResource included outside of Input::Key::ConfigFile!"
+    #error "Private JSONResource included outside of Key::ConfigFile!"
 #endif
 /**
  * @file  Input_Key_JSONResource.h
@@ -11,7 +11,6 @@
 #include "Input_Key_Binding.h"
 #include "Config_FileResource.h"
 #include "JuceHeader.h"
-#include <map>
 
 namespace Input { namespace Key { class JSONResource; } }
 

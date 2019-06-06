@@ -6,7 +6,7 @@
 // Milliseconds to wait between key releases before assuming the user isn't 
 // releasing keys to enter a chord value, and is instead changing the selected
 // chord:
-static const constexpr int keyReleaseChordUpdateDelay = 100;
+static const constexpr int keyReleaseChordUpdateDelay = 300;
 
 
 // Create the ChordReader, assigning it to listen to key events from a
@@ -161,6 +161,7 @@ Input::ChordReader::ReleaseTimer::ReleaseTimer(ChordReader& chordReader) :
 // enter the chord.
 void Input::ChordReader::ReleaseTimer::timerCallback()
 {
+    DBG("Chord release timer finished");
     const juce::MessageManagerLock mmLock;
     if (chordReader.heldChord != chordReader.selectedChord)
     {

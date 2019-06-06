@@ -2,6 +2,8 @@
 
 #include "Input_Key_JSONResource.h"
 #include "Input_Key_JSONKeys.h"
+#include "Text_CharTypes.h"
+#include "Text_Values.h"
 
 // Filename of the JSON configuration file:
 static const constexpr char * configFilename = "keyBindings.json";
@@ -50,8 +52,9 @@ Config::FileResource(resourceKey, configFilename)
         const String description(bindingInfo[keyValue].operator String());
         const String displayName(bindingInfo.getProperty(keyName,
                 description).operator String());
-        const unsigned int displayChar(bindingInfo.getProperty(charName,
-                displayName).operator String()[0]);
+        const Text::CharValue displayChar(Text::Values::getCharValue(
+                bindingInfo.getProperty(charName, displayName)
+                .operator String()));
         keyBindings.add(new Binding(*key, description, displayName,
                     displayChar));
     }
