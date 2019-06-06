@@ -1,0 +1,103 @@
+{
+  "Chord1": {
+    "key": "cursor right",
+    "name": "",
+    "charName": "right"
+  },
+  "Chord2": {
+    "key": "U",
+    "name": "",
+    "charName": "Y"
+  },
+  "Chord3": {
+    "key": "I",
+    "name": "",
+    "charName": "X"
+  },
+  "Chord4": {
+    "key": "K",
+    "name": "",
+    "charName": "A"
+  },
+  "Chord5": {
+    "key": "J",
+    "name": "",
+    "charName": "B"
+  },
+  "Select next character set": {
+    "key": "spacebar",
+    "name": "Select",
+    "charName": "S"
+  },
+  "Toggle shifted characters": {
+    "key": "-",
+    "name": "Shift + Select",
+    "charName": "-"
+  },
+  "Select main character set": {
+    "key": "O",
+    "name": "Shift + X",
+    "charName": "X"
+  },
+  "Select alternate character set": {
+    "key": "U",
+    "name": "Shift + Y",
+    "charName": "Y"
+  },
+  "Select special character set": {
+    "key": "K",
+    "name": "Shift + A",
+    "charName": "A"
+  },
+  "Select modifier set": {
+    "key": "J",
+    "name": "Shift + B",
+    "charName": "B"
+  },
+  "Backspace": {
+    "key": "cursor left",
+    "name": "DPad left",
+    "charName": "left"
+  },
+  "Clear all": {
+    "key": "cursor down",
+    "name": "DPad down",
+    "charName": "down"
+  },
+  "Send text": {
+    "key": "return",
+    "name": "Start",
+    "charName": "enter"
+  },
+  "Close and send": {
+    "key": "+",
+    "name": "Shift + Start",
+    "charName": "+"
+  },
+  "Close": {
+    "key": "escape",
+    "name": "Menu",
+    "charName": "M"
+  },
+  "Toggle immediate mode": {
+    "key": "cursor up",
+    "name": "DPad up",
+    "charName": "right"
+  },
+  "Show help": {
+    "key": "backspace",
+    "name": "Shift + Menu",
+    "charName": "backspace"
+  },
+  "Toggle window edge": 
+  { 
+      "key" : "",
+      "name" : "",
+      "charName" : ""  },
+  "Toggle minimize":
+  { 
+      "key" : "",
+      "name" : "",
+      "charName" : ""
+  }
+}

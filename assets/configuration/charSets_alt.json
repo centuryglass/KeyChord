@@ -1,8 +1,9 @@
 {
-  "main character set name": "letter",
-  "alternate character set name": "number",
-  "special character set name": "special",
   "main character set": [
+    {
+      "character": " ",
+      "chord priority": 5
+    },
     {
       "character": "a",
       "shifted": "A",
@@ -134,8 +135,19 @@
       "chord priority": 2
     },
     {
-      "character": " ",
-      "chord priority": 5
+      "character": 230,
+      "shifted": 198,
+      "chord priority": 3
+    },
+    {
+      "character": 248,
+      "shifted": 216,
+      "chord priority": 3
+    },
+    {
+      "character": 229,
+      "shifted": 197,
+      "chord priority": 3
     }
   ],
   "alternate character set": [
@@ -247,23 +259,16 @@
   ],
   "special character set": [
     {
-      "character": "Enter",
-      "shifted":   "left"
+      "character": "Enter"
     },
     {
-      "character": "Backspace",
-      "shifted":   "down"
-
+      "character": "Backspace"
     },
     {
-      "character": "Escape",
-      "shifted":   "up"
-
+      "character": "Escape"
     },
     {
-      "character": "Tab",
-      "shifted":   "right"
-
+      "character": "Tab"
     },
     {
       "character": "F1"
@@ -301,5 +306,8 @@
     {
       "character": "F12"
     }
-  ]
+  ],
+  "main character set name": "Letters",
+  "alternate character set name": "Numbers",
+  "special character set name": "Special characters"
 }

@@ -171,7 +171,7 @@ bool Application::moreThanOneInstanceAllowed()
 void Application::anotherInstanceStarted(const juce::String& commandLine)
 {
     DBG(dbgPrefix << __func__ << ": New instance launching, closing this one.");
-    quit();
+    systemRequestedQuit();
 }
 
 

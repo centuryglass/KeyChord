@@ -1,97 +1,104 @@
 {
-    "Chord1" : { "key" : "A", "name" : "A", "charName" : "A" },
-    "Chord2" : { "key" : "S", "name" : "S", "charName" : "S" },
-    "Chord3" : { "key" : "D", "name" : "D", "charName" : "D" },
-    "Chord4" : { "key" : "F", "name" : "F", "charName" : "F" },
-    "Chord5" : { "key" : "G", "name" : "G", "charName" : "G" },
-    "Select next character set" :
-    {
-        "key"      : "H",
-        "name"     : "H",
-        "charName" : "H"
-    },
-    "Select main character set" :
-    {
-        "key"      : "J",
-        "name"     : "J",
-        "charName" : "J"
-    },
-    "Select alternate character set" :
-    {
-        "key"      : "K",
-        "name"     : "K",
-        "charName" : "K"
-    },
-    "Select special character set" :
-    {
-        "key"      : "L",
-        "name"     : "L",
-        "charName" : "L"
-    },
-    "Select modifier set" : 
-    { 
-        "key" : ";",
-        "name" : "semicolon",
-        "charName" : ";" 
-    },
-    "Toggle shifted characters"  : 
-    { 
-        "key" : "'",
-        "name" : "apostrophe",
-        "charName" : "'"
-    },
-    "Backspace" :
-    {
-        "key"      : "backspace",
-        "name"     : "Shift + Menu",
-        "charName" : "<"
-    },
-    "Clear all" :
-    {
-        "key"      : "-",
-        "name"     : "Minus",
-        "charName" : "-"
-    },
-    "Send text" :
-    {
-        "key"      : "+",
-        "name"     : "Plus",
-        "charName" : "+"
-    },
-    "Close and send" :
-    {
-        "key"      : "enter",
-        "name"     : "Enter",
-        "charName" : ">"
-    },
-    "Close" :
-    {
-        "key"      : "escape",
-        "name"     : "Escape",
-        "charName" : "0x18"
-    },
-    "Toggle immediate mode" :
-    {
-        "key"      : "I",
-        "name"     : "I",
-        "charName" : "I"
-    },
-    "Show help" :
-    {
-        "key"      : "home",
-        "name"     : "Home",
-        "charName" : "H"
-    },
-    "Toggle window edge" :
-    {
-        "key"      : "W",
-        "name"     : "W",
-        "charName" : "W"
-    },
-    "Toggle minimize" :
-    {
-        "key"      : "M",
-        "name"     : "M",
-        "charName" : "M"
-    }
+  "Chord1": {
+    "key": "H",
+    "name": "LK1",
+    "charName": "1"
+  },
+  "Chord2": {
+    "key": "Y",
+    "name": "LK2",
+    "charName": "2"
+  },
+  "Chord3": {
+    "key": "Z",
+    "name": "LK3",
+    "charName": "3"
+  },
+  "Chord4": {
+    "key": "O",
+    "name": "LK4",
+    "charName": "4"
+  },
+  "Chord5": {
+    "key": "L",
+    "name": "LK5",
+    "charName": "5"
+  },
+  "Select next character set": {
+    "key": "I",
+    "name": "",
+    "charName": "X"
+  },
+  "Toggle shifted characters": {
+    "key": "U",
+    "name": "",
+    "charName": "Y"
+  },
+  "Select main character set": {
+    "key": "home",
+    "name": "Shift + LK1",
+    "charName": "f1"
+  },
+  "Select alternate character set": {
+    "key": "page up",
+    "name": "Shift + LK2",
+    "charName": "f2"
+  },
+  "Select special character set": {
+    "key": "page down",
+    "name": "Shift + LK4",
+    "charName": "f4"
+  },
+  "Select modifier set": {
+    "key": "end",
+    "name": "Shift + LK5",
+    "charName": "f5"
+  },
+  "Backspace": {
+    "key": "J",
+    "name": "B",
+    "charName": "B"
+  },
+  "Clear all": {
+    "key": "backspace",
+    "name": "Shift + Menu",
+    "charName": "backspace"
+  },
+  "Send text": {
+    "key": "K",
+    "name": "A",
+    "charName": "A"
+  },
+  "Close and send": {
+    "key": "return",
+    "name": "Start",
+    "charName": "+"
+  },
+  "Close": {
+    "key": "escape",
+    "name": "Menu",
+    "charName": "M"
+  },
+  "Toggle immediate mode": {
+    "key": "cursor right",
+    "name": "DPad right",
+    "charName": "right"
+  },
+  "Show help": {
+    "key": "spacebar",
+    "name": "Select",
+    "charName": "-"
+  },
+  "Toggle window edge": 
+  { 
+      "key" : "cursor up",
+      "name" : "DPad up",
+      "charName" : "up"
+  },
+  "Toggle minimize":
+  { 
+      "key" : "cursor down",
+      "name" : "DPad down",
+      "charName" : "down"
+  }
 }

@@ -16,7 +16,7 @@
     "Main Window Background"   : "",
 
     "Active chord key text"    : "0xffffffff",
-    "Inactive Chord Text"      : "0xff5c5c5c",
+    "Inactive Chord Text"      : "0xff9c9c9c",
     "Chord1 (Selected)"        : "0xff00ff33",
     "Chord2 (Selected)"        : "0xffff0000",
     "Chord3 (Selected)"        : "0xffeeff00",

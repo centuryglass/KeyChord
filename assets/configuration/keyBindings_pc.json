@@ -1,0 +1,127 @@
+{
+  "Chord1": {
+    "key": "A",
+    "name": "A",
+    "charName": "f1"
+  },
+  "Chord2": {
+    "key": "S",
+    "name": "S",
+    "charName": "f2"
+  },
+  "Chord3": {
+    "key": "D",
+    "name": "D",
+    "charName": "f3"
+  },
+  "Chord4": {
+    "key": "F",
+    "name": "F",
+    "charName": "f4"
+  },
+  "Chord5": {
+    "key": "G",
+    "name": "G",
+    "charName": "f5"
+  },
+  "Select main character set": {
+    "key": "J",
+    "name": "J",
+    "charName": "J"
+  },
+  "Select alternate character set": {
+    "key": "K",
+    "name": "K",
+    "charName": "K"
+  },
+  "Select special character set": {
+    "key": "L",
+    "name": "L",
+    "charName": "L"
+  },
+  "Select next character set": {
+    "key": "H",
+    "name": "H",
+    "charName": "H"
+  },
+  "Show modifier selector": {
+    "key": ";",
+    "name": "Semicolon",
+    "charName": ";"
+  },
+  "Toggle shift modifier": {
+    "key": "U",
+    "name": "U",
+    "charName": "U"
+  },
+  "Toggle ctrl modifier": {
+    "key": "Y",
+    "name": "Y",
+    "charName": "Y"
+  },
+  "Toggle alt modifier": {
+    "key": "T",
+    "name": "T",
+    "charName": "T"
+  },
+  "Toggle cmd modifier": {
+    "key": "R",
+    "name": "R",
+    "charName": "R"
+  },
+  "Backspace": {
+    "key": "backspace",
+    "name": "backspace",
+    "charName": "\b"
+  },
+  "Clear all": {
+    "key": "tab",
+    "name": "tab",
+    "charName": "\t"
+  },
+  "Send text": {
+    "key": "spacebar",
+    "name": "space",
+    "charName": " "
+  },
+  "Close and send": {
+    "key": "return",
+    "name": "Start",
+    "charName": "\n"
+  },
+  "Close": {
+    "key": "escape",
+    "name": "Menu",
+    "charName": "e"
+  },
+  "Toggle immediate mode": {
+    "key": "I",
+    "name": "I",
+    "charName": "I"
+  },
+  "Show help": {
+    "key": "?",
+    "name": "?",
+    "charName": "?"
+  },
+  "Toggle window edge": {
+    "key": "W",
+    "name": "W",
+    "charName": "W"
+  },
+  "Toggle minimize": {
+    "key": "M",
+    "name": "M",
+    "charName": "M"
+  },
+  "Select modifier set": {
+    "key": ";",
+    "name": "semicolon",
+    "charName": ";"
+  },
+  "Toggle shifted characters": {
+    "key": "'",
+    "name": "apostrophe",
+    "charName": "'"
+  }
+}
