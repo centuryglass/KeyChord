@@ -18,7 +18,6 @@ OBJECTS_TEXT_CHARSET := \
 OBJECTS_TEXT := \
   $(TEXT_OBJ)BinaryFont.o \
   $(TEXT_OBJ)Painter.o \
-  $(TEXT_OBJ)ModTracker.o \
   $(TEXT_OBJ)Values.o \
   $(OBJECTS_TEXT_CHARSET)
 
@@ -48,7 +47,5 @@ $(TEXT_OBJ)BinaryFont.o: \
 	$(TEXT_DIR)/$(TEXT_PREFIX)BinaryFont.cpp
 $(TEXT_OBJ)Painter.o: \
 	$(TEXT_DIR)/$(TEXT_PREFIX)Painter.cpp
-$(TEXT_OBJ)ModTracker.o: \
-	$(TEXT_DIR)/$(TEXT_PREFIX)ModTracker.cpp
 $(TEXT_OBJ)Values.o: \
 	$(TEXT_DIR)/$(TEXT_PREFIX)Values.cpp

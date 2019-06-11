@@ -71,8 +71,9 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
         {
             drawChar(Values::outline);
         }
-        Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
-                (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
+        drawChar(toDraw);
+        //Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
+        //        (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
         yPos += paddedRowHeight;
     }
 }

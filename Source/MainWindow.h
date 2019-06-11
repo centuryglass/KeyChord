@@ -2,19 +2,15 @@
 /**
  * @file  MainWindow.h
  *
- * @brief  Creates the main application window.
+ * @brief  Creates the main application window, and makes sure the application
+ *         is closed if the window is blocked.
  */
 
 #include "JuceHeader.h"
-#include "Config_MainFile.h"
 
 /**
  * @brief  The sole application window object and the root component in the
  *         component display tree.
- *
- *  The open window object can be accessed statically using
- * MainWindow::getOpenWindow(). Use this when you need to check or adjust the
- * bounds of the window, or see if the window is currently open.
  */
 class MainWindow : public juce::DocumentWindow
 {
@@ -28,22 +24,6 @@ public:
 
     virtual ~MainWindow() { }
 
-    /**
-     * @brief  Gets a pointer to the current open window object.
-     *
-     * @return  The application window pointer, or nullptr if the window is not
-     *          currently open.
-     */
-    static MainWindow* getOpenWindow();
-
-    /**
-     * @brief  Updates the window's height, while keeping the window snapped
-     *         to the selected display edge.
-     *
-     * @param newHeight  Desired window height in pixels.
-     */
-    void setHeight(const int newHeight);
-
 private:
     /**
      * @brief  Closes the application normally when the window closes.
@@ -55,8 +35,22 @@ private:
      */
     virtual void resized() override;
 
-    // Keeps the main configuration file loaded.
-    Config::MainFile mainConfig;
+    /**
+     * @brief  Starts the exit timer when the window loses focus, and stops
+     *         if if the window gains focus again.
+     */
+    void activeWindowStatusChanged() override;
+
+    /**
+     * @brief  Shuts down the application if the window loses focus and doesn't
+     *         regain it.
+     */
+    class ExitTimer : public juce::Timer
+    {
+    private:
+        virtual void timerCallback() override;
+    };
+    ExitTimer exitTimer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

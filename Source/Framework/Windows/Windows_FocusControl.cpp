@@ -13,7 +13,7 @@ static const constexpr int focusWaitMs = 100;
 // before the next test. Wait time multiplier:
 static const constexpr float focusWaitMultiplier = 1.1;
 // Milliseconds to wait before abandoning window focus attempts:
-static const constexpr int focusTimeout = 20000;
+static const constexpr int focusTimeout = 2000;
 
 Windows::FocusControl::FocusControl() 
 {
@@ -30,19 +30,24 @@ void Windows::FocusControl::focusWindow
     xInterface.activateWindow(windowID);
     focusChecker.startCheck([&xInterface, windowID]()
     {
-        return xInterface.isActiveWindow(windowID);        
+        const bool isActive = xInterface.isActiveWindow(windowID);        
+        if (! isActive)
+        {
+            xInterface.activateWindow(windowID);
+        }
+        return isActive;
     },
     [windowID]()
     {
-        DBG(dbgPrefix << "::focusWindow: Focused window " << windowID);
+        DBG(dbgPrefix << "focusWindow: Focused window " << windowID);
     }, focusTimeout);
-    focusChecker.waitForUpdate(false);
+    focusChecker.waitForUpdate(true);
 }
 
 
 // Refocuses this application's window, and ensures the main component has
 // keyboard focus.
-void Windows::FocusControl::takeFocus()
+void Windows::FocusControl::takeFocus(juce::Component* mainComponent)
 {
     Windows::XInterface xInterface;
     int appWindowID = xInterface.getMainAppWindow();
@@ -51,8 +56,6 @@ void Windows::FocusControl::takeFocus()
         DBG(dbgPrefix << __func__ << ": Application window not found!");
         return;
     }
-    juce::Component* mainComponent = MainWindow::getOpenWindow()
-            ->getChildComponent(0);
     xInterface.activateWindow(appWindowID);
     focusChecker.startCheck([&xInterface, appWindowID, mainComponent]()
     {
@@ -83,5 +86,5 @@ void Windows::FocusControl::takeFocus()
     {
         DBG(dbgPrefix << "::takeFocus: Failed to focus window!");
     });
-    focusChecker.waitForUpdate(false);
+    focusChecker.waitForUpdate(true);
 }

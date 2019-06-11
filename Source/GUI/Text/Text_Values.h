@@ -92,7 +92,7 @@ namespace Text
         static const constexpr CharValue ctrl        = 0x10;
         static const constexpr CharValue alt         = 0x12;
         static const constexpr CharValue shift       = 0x14;
-        static const constexpr CharValue cmd         = 0x16;
+        static const constexpr CharValue super       = 0x16;
         static const constexpr CharValue escape      = 0x18;
         static const constexpr CharValue del         = 0x1a;
         static const constexpr CharValue wideFill    = 0x1c;

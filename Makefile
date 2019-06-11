@@ -220,6 +220,8 @@ include $(shell pwd)/makefiles/*.mk
 
 OBJECTS_MAIN := \
   $(JUCE_OBJDIR)/Main.o \
+  $(JUCE_OBJDIR)/Modifiers.o \
+  $(JUCE_OBJDIR)/KeySending.o \
   $(JUCE_OBJDIR)/Application.o \
   $(JUCE_OBJDIR)/MainWindow.o \
   $(JUCE_OBJDIR)/Chord.o
@@ -315,6 +317,10 @@ help:
 
 $(JUCE_OBJDIR)/Main.o: \
 	Source/Main.cpp
+$(JUCE_OBJDIR)/Modifiers.o: \
+	Source/Modifiers.cpp
+$(JUCE_OBJDIR)/KeySending.o: \
+	Source/KeySending.cpp
 $(JUCE_OBJDIR)/Application.o: \
 	Source/Application.cpp
 $(JUCE_OBJDIR)/MainWindow.o: \

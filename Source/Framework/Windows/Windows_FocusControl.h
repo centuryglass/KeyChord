@@ -31,8 +31,11 @@ public:
     /**
      * @brief  Refocuses this application's window, and ensures the main
      *         component has keyboard focus.
+     *
+     * @param mainComponent  A pointer to the component object that should be
+     *                       given keyboard focus.
      */
-    void takeFocus();
+    void takeFocus(juce::Component* mainComponent);
 
 private:
     // Handles the process of regularly checking for window focus conditions to

@@ -10,7 +10,7 @@ static const constexpr int charSize = 10;
 // Number of (scaled) blank pixels to insert between characters:
 static const constexpr int charPixelPadding = 1;
 // Number of (scaled) blank pixels to represent whitespace characters:
-static const constexpr int whitespaceWidth = 1;
+static const constexpr int whitespaceWidth = 2;
 
 
 #ifdef JUCE_DEBUG

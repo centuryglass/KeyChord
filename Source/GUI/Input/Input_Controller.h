@@ -10,7 +10,6 @@
 #include "Input_Buffer.h"
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_ConfigFile.h"
-#include "Text_ModTracker.h"
 #include "Text_CharTypes.h"
 #include "Config_MainFile.h"
 #include "Locale_TextUser.h"
@@ -40,8 +39,12 @@ public:
      * @param targetWindow    The ID of the window where chord input text should
      *                        be sent.
      *
+     * @param inputBuffer     Buffer object used to store text input before
+     *                        sending it.
+     *
      */
-    Controller(Component::MainView* mainView, const int targetWindow);
+    Controller(Component::MainView* mainView, const int targetWindow,
+            Input::Buffer& inputBuffer);
 
     virtual ~Controller() { }
 
@@ -70,12 +73,17 @@ private:
     void chordEntered(const Chord selected) override;
 
     /**
-     * @brief  Handles key commands used to send buffered text, delete buffered
-     *         text, or close the application.
+     * @brief  Handles all key commands defined in the key input configuration
+     *         file.
      *
      * @param key  The registered key description for the key press event.
      */
     void keyPressed(const juce::KeyPress key) override;
+
+    /**
+     * @brief  Ensures the help screen is currently closed.
+     */
+    void closeHelpScreen();
 
     /**
      * @brief  Currently does nothing, but may later be used to handle key
@@ -83,14 +91,6 @@ private:
      */
     void keyReleased() override { }
 
-    /**
-     * @brief  Restarts the application, preserving settings and input buffer
-     *         contents across application instances. 
-     *
-     *  This exists as a workaround for the way the Gameshell loses keyboard
-     * focus when the window edge or minimized state change.
-     */
-    void restartApplication();
 
     // Loads key bindings:
     Input::Key::ConfigFile keyConfig;
@@ -99,14 +99,15 @@ private:
     // Loads saved application state:
     Config::MainFile mainConfig;
 
+    // Prevents new input events from triggering before old events finish:
+    juce::CriticalSection inputGuard;
+
     // Captures keyboard input and draws the chord entry state:
     Component::MainView* mainView;
     // Converts generic keyboard events to chord input events:
     ChordReader chordReader;
-    // Buffers text input and sends it out to the target window:
-    Buffer inputBuffer;
-
-    // Tracks held modifiers, and ensures modifier state is preserved and
-    // shared:
-    Text::ModTracker modTracker;
+    // Buffers text input waiting to be sent to the target window:
+    Buffer& inputBuffer;
+    // Stores the target window ID:
+    const int targetWindow;
 };

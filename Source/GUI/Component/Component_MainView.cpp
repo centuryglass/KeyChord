@@ -2,7 +2,6 @@
 #include "Input_Key_JSONKeys.h"
 #include "Text_BinaryFont.h"
 #include "Text_Painter.h"
-#include "Text_ModTracker.h"
 #include "Text_Values.h"
 #include "MainWindow.h"
 #include "Config_MainFile.h"
@@ -34,11 +33,8 @@ Component::MainView::MainView()
         keyGrid->updateCharacterSet(&activeSet);
     }
     addAndMakeVisible(charsetDisplay);
-    if (! mainConfig.getMinimized())
-    {
-        addAndMakeVisible(chordPreview);
-        addAndMakeVisible(chordKeyDisplay);
-    }
+    addAndMakeVisible(chordPreview);
+    addAndMakeVisible(chordKeyDisplay);
     addAndMakeVisible(inputView);
     addChildComponent(helpScreen);
 }
@@ -95,14 +91,24 @@ void Component::MainView::resized()
     helpScreen.setBounds(getLocalBounds());
     const Text::CharSet::Cache& charSet = charsetConfig.getActiveSet();
 
+    const bool minimized = mainConfig.getMinimized();
+    const bool showHelpScreen = helpScreen.isVisible();
+
+    chordKeyDisplay.setVisible(! showHelpScreen && ! minimized);
+    chordPreview.setVisible(! showHelpScreen && ! minimized);
+
     // Only display the character set and input buffer if minimized:
-    if (mainConfig.getMinimized())
+    if (minimized)
     {
         const int rowHeight = getHeight() / 2;
         charsetDisplay.setBounds(getLocalBounds().withHeight(rowHeight));
-        const int inputMargin = (rowHeight * inputMargin) / (inputMargin + 1);
-        inputView.setBounds(0, rowHeight + inputMargin,
-                getWidth() - 2 * inputMargin, rowHeight - 2 * inputMargin);
+        juce::Rectangle<int> inputBounds = getLocalBounds().withTop(
+                charsetDisplay.getBottom());
+        int marginSize = (inputBounds.getHeight() * inputMargin)
+                / (inputMargin + 1);
+        inputView.setBounds(inputBounds.reduced(marginSize, marginSize));
+        DBG("Minimized input view bounds: " << inputView.getBounds().toString()
+                << ", rowHeight=" << rowHeight << ", marginSize=" << marginSize);
         return;
     }
 

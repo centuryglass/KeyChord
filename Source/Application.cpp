@@ -8,10 +8,15 @@
 #endif
 
 #ifdef JUCE_DEBUG
+#include <map>
 // Print the full class name before all debug output:
 static const constexpr char* dbgPrefix = "Application::";
-#endif
 
+
+// Make the window the size of the GameShell display on debug builds:
+static const constexpr int dbgWidth = 320;
+static const constexpr int dbgHeight = 240;
+#endif
 
 #ifdef INCLUDE_TESTING
 // Sets if tests should run after the window is created and focused.
@@ -24,34 +29,152 @@ static bool verboseTesting = false;
 static juce::StringArray testCategories;
 #endif
 
+// Used to determine how much of the screen height to use:
+static const constexpr int standardHeightDivisor = 2;
+static const constexpr int minimizedHeightDivisor = 9;
+
+// Window where input will be sent, saved on launch.
 static Window targetWindow = BadWindow;
 
-// Cleans up all application resources, then sets them up again.
-void Application::restart()
-{
-    inputController.reset(nullptr);
-    mainView.reset(nullptr);
 
+// Gets the active application instance.
+Application* Application::getInstance()
+{
+    return static_cast<Application*>(juce::JUCEApplication::getInstance());
+}
+
+/**
+ * @brief  Gets the bounds of the primary display's user area.
+ *
+ * @return  The display bounds, or the bounds of the ClockworkPi GameShell 
+ *          display in debug builds.
+ */
+static juce::Rectangle<int> getDisplayBounds()
+{
+#ifdef JUCE_DEBUG
+    return juce::Rectangle<int>(0, 0, dbgWidth, dbgHeight);
+#else
+    return juce::Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+#endif
+}
+
+
+// Gets the set of window flags currently applied to the application window.
+int Application::getWindowFlags()
+{
+    int flags = 0;
+    if (homeWindow != nullptr)
+    {
+        const juce::Rectangle<int> windowBounds = homeWindow->getLocalBounds();
+        const juce::Rectangle<int> displayBounds = getDisplayBounds();
+        if (displayBounds.getHeight() == windowBounds.getHeight())
+        {
+            flags |= (int) WindowFlag::showingHelp;
+        }
+    }
+    if (mainConfig.getSnapToBottom())
+    {
+        flags |= (int) WindowFlag::snapToBottom;
+    }
+    if (mainConfig.getMinimized())
+    {
+        flags |= (int) WindowFlag::minimized;
+    }
+    return flags;
+}
+
+#ifdef JUCE_DEBUG
+/**
+ * @brief  Lists the full names of all window flags present in a combination
+ *         of flags.
+ *
+ * @param windowFlags  Some combination of window flag values.
+ *
+ * @return             A string naming the selected flags.
+ */
+static juce::String getFlagNames(const int windowFlags)
+{
+    std::map<int, juce::String> flagNames =
+    {
+        { (int) Application::WindowFlag::showingHelp,  "showingHelp" },
+        { (int) Application::WindowFlag::snapToBottom, "snapToBottom" },
+        { (int) Application::WindowFlag::minimized,    "minimized" }
+    };
+    juce::String names("(");
+    for (const auto& iter : flagNames)
+    {
+        if ((windowFlags & iter.first) != 0)
+        {
+            if (names.length() > 1)
+            {
+                names += ", ";
+            }
+            names += iter.second;
+        }
+    }
+    if (names.length() == 1)
+    {
+        names += "none)";
+    }
+    else
+    {
+        names += ")";
+    }
+    return names;
+}
+#endif
+
+// Recreates the MainWindow bounds to suit the current circumstances.
+void Application::resetWindow(const int windowFlags)
+{
+    const juce::Rectangle<int> displayBounds = getDisplayBounds();
+    juce::Rectangle<int> targetBounds = displayBounds;
+    if ((windowFlags & (int) WindowFlag::showingHelp) == 0)
+    {
+        if ((windowFlags & (int) WindowFlag::minimized) != 0)
+        {
+            targetBounds.setHeight(targetBounds.getHeight() 
+                    / minimizedHeightDivisor);
+        }
+        else
+        {
+            targetBounds.setHeight(targetBounds.getHeight()
+                    / standardHeightDivisor);
+        }
+        if ((windowFlags & (int) WindowFlag::snapToBottom) != 0)
+        {
+            targetBounds.setY(displayBounds.getHeight()
+                    - targetBounds.getHeight());
+        }
+    }
+    DBG(dbgPrefix << __func__ << ": refreshing window with bounds "
+            << targetBounds.toString() << ", window flags = " 
+            << getFlagNames(windowFlags));
+
+    // Create the new window, applying the target bounds:
     homeWindow.reset(new MainWindow(getApplicationName()));
-    mainView.reset(new Component::MainView);
-    inputController.reset(new Input::Controller(mainView.get(), targetWindow));
     homeWindow->setContentNonOwned(mainView.get(), false);
     homeWindow->setVisible(true);
+    homeWindow->setBounds(targetBounds);
     homeWindow->addToDesktop();
+
+    // Ensure the application window is active and has keyboard focus:
+    Windows::FocusControl focusControl;
+    focusControl.takeFocus(mainView.get());
 }
+
+
+// Recreates the MainWindow, updating window flags to match the current selected
+// configuration.
+void Application::resetUpdatingFlags()
+{
+    resetWindow(getWindowFlags());
+}
+
+
 // Performs all required initialization when the application is first launched.
 void Application::initialise(const juce::String &commandLine)
 {
-    // Save the window that will receive input:
-
-    Windows::XInterface xWindows;
-    if (targetWindow == BadWindow)
-    {
-        targetWindow = xWindows.getActiveWindow();
-        DBG("Saving target window " << (int) targetWindow << " with name "
-                << xWindows.getWindowName(targetWindow));
-    }
-
     // Extract and process arguments:
     using juce::StringArray;
     StringArray args;
@@ -99,30 +222,22 @@ void Application::initialise(const juce::String &commandLine)
     }
     #endif
 
-    // Create the UI appearance management object and initialize the window
-    // normally:
+    // Save the window that will receive input:
+    Windows::XInterface xWindows;
+    if (targetWindow == BadWindow)
+    {
+        targetWindow = xWindows.getActiveWindow();
+        DBG("Saving target window " << (int) targetWindow << " with name "
+                << xWindows.getWindowName(targetWindow));
+    }
+
+    // Setup UI theme object:
     lookAndFeel.reset(new Theme::LookAndFeel);
     juce::LookAndFeel::setDefaultLookAndFeel(lookAndFeel.get());
-    homeWindow.reset(new MainWindow(getApplicationName()));
-    homeWindow->setLookAndFeel(lookAndFeel.get());
-
-    // Initialize and apply the chord component and input handler:
     mainView.reset(new Component::MainView);
-    homeWindow->setContentNonOwned(mainView.get(), false);
-    homeWindow->setVisible(true);
-    homeWindow->addToDesktop();
-    mainView->setBounds(homeWindow->getLocalBounds());
-    inputController.reset(new Input::Controller(mainView.get(), targetWindow));
-
-    // Ensure the application window is active and has keyboard focus:
-    Windows::FocusControl focusControl;
-    focusControl.takeFocus();
-    #ifdef INCLUDE_TESTING
-    if (runTests)
-    {
-        runApplicationTests();
-    }
-    #endif
+    inputController.reset(new Input::Controller(mainView.get(), targetWindow,
+                inputBuffer));
+    resetWindow(getWindowFlags());
 }
 
 
@@ -162,7 +277,7 @@ const juce::String Application::getApplicationVersion()
 // Checks if multiple versions of this application may run simultaneously.
 bool Application::moreThanOneInstanceAllowed()
 {
-    return true;
+    return false;
 }
 
 

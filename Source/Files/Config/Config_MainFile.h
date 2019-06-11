@@ -6,7 +6,6 @@
  */
 
 #include "Config_FileHandler.h"
-#include "Text_CharTypes.h"
 
 namespace Config
 {
@@ -18,6 +17,7 @@ class Config::MainFile : public Config::FileHandler<MainResource>
 {
 public:
     MainFile();
+
     virtual ~MainFile() { }
 
     /**
@@ -46,17 +46,6 @@ public:
     bool getImmediateMode() const;
 
     /**
-     * @brief  Takes any input buffer contents cached in the configuration file,
-     *         removing it from disk.
-     *
-     *  This should only be used to preserve input buffer text when restarting
-     * the application.
-     *
-     * @return  Any cached text input.
-     */
-    Text::CharString takeCachedBuffer();
-
-    /**
      * @brief  Sets whether the application should start up in minimized mode.
      *
      * @param minimized  Whether the application window will be reduced in size,
@@ -82,13 +71,4 @@ public:
      *                       decides to send it.
      */
     void setImmediateMode(const bool immediateMode);
-
-    /**
-     * @brief  Temporarily saves an input buffer string to the configuration
-     *         file. This should only be used to preserve text input when
-     *         restarting the application.
-     *
-     * @param inputBuffer  A Text::CharString containing the text input buffer.
-     */
-    void cacheInputBuffer(const Text::CharString inputBuffer);
 };

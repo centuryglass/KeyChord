@@ -1,9 +1,10 @@
 #include "Input_Controller.h"
 #include "Input_Key_JSONKeys.h"
 #include "Text_Values.h"
-#include "MainWindow.h"
-#include "JuceHeader.h"
+#include "KeySending.h"
+#include "Modifiers.h"
 #include "Application.h"
+#include "JuceHeader.h"
 #include <map>
 
 static const juce::Identifier localeKey("Input_Controller");
@@ -16,24 +17,15 @@ static const constexpr char* dbgPrefix = "Input::Controller::";
 
 
 // Sets up all keyboard input handling.
-Input::Controller::Controller
-(Component::MainView* mainView, const int targetWindow) :
+Input::Controller::Controller(Component::MainView* mainView,
+        const int targetWindow, Input::Buffer& inputBuffer) :
     Locale::TextUser(localeKey),
     chordReader(mainView),
     mainView(mainView),
-    inputBuffer(targetWindow)
+    targetWindow(targetWindow),
+    inputBuffer(inputBuffer)
 {
     chordReader.addListener(this);
-    const bool immediateMode = mainConfig.getImmediateMode();
-    Text::CharString cachedInput = mainConfig.takeCachedBuffer();
-    for (const Text::CharValue& charValue : cachedInput)
-    {
-        inputBuffer.appendCharacter(charValue);
-        if (immediateMode)
-        {
-            inputBuffer.sendAndClearInput();
-        }
-    }
     mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
             getInputPreview());
 }
@@ -43,15 +35,38 @@ Input::Controller::Controller
 Text::CharString Input::Controller::getInputPreview() const
 {
     using juce::String;
-    Text::CharString inputText = inputBuffer.getInputText();
+    Text::CharString inputText;
+    // Add active modifiers to drawn text:
+    const int modifierFlags = inputBuffer.getModifierFlags();
+    const std::pair<Modifiers::TypeFlag, Text::CharValue> modMappings [] =
+    {
+        { Modifiers::control, Text::Values::ctrl },
+        { Modifiers::alt    , Text::Values::alt },
+        { Modifiers::shift  , Text::Values::shift },
+        { Modifiers::super  , Text::Values::super }
+    };
+    for (const auto& mapping : modMappings)
+    {
+        if ((modifierFlags & (int) mapping.first) != 0)
+        {
+            inputText.add(mapping.second);
+            inputText.add((Text::CharValue) '+');
+        }
+    }
     if (mainConfig.getImmediateMode())
     {
+        // Remove the last '+' if modifiers were set.
+        inputText.removeLast();
         String immediateModeText = localeText(immediateModeKey);
         for (int i = 0; i < immediateModeText.length(); i++)
         {
             inputText.add(Text::Values::getCharValue(
                     immediateModeText.substring(i, i + 1)));
         }
+    }
+    else
+    {
+        inputText.addArray(inputBuffer.getInputText());
     }
     return inputText;
 }
@@ -69,14 +84,18 @@ void Input::Controller::selectedChordChanged(const Chord selectedChord)
 // ChordComponent when a chord character is entered.
 void Input::Controller::chordEntered(const Chord selected)
 {
+    const juce::ScopedTryLock inputLock(inputGuard);
+    if (!inputLock.isLocked())
+    {
+        DBG(dbgPrefix << __func__ 
+                << ": Still busy doing something else, ignoring input.");
+        return;
+    }
     if (mainView->isHelpScreenShowing())
     {
         // When the help screen is open, all input events just close the help
         // screen.
-        mainView->toggleHelpScreen();
-        const int height = juce::Desktop::getInstance().getDisplays()
-            .getMainDisplay().userArea.getHeight() / 2;
-        MainWindow::getOpenWindow()->setHeight(height);
+        closeHelpScreen();
         return;
     }
     Text::CharValue enteredChar = charsetConfig.getActiveSet()
@@ -89,20 +108,20 @@ void Input::Controller::chordEntered(const Chord selected)
     */
     if (Text::Values::isModifier(enteredChar))
     {
-        Text::ModTracker::ModKey modKey;
+        int modFlags = 0;
         switch (enteredChar)
         {
             case Text::Values::ctrl:
-                modKey = Text::ModTracker::ModKey::control;
+                modFlags = Modifiers::control;
                 break;
             case Text::Values::alt:
-                modKey = Text::ModTracker::ModKey::alt;
+                modFlags = Modifiers::alt;
                 break;
             case Text::Values::shift:
-                modKey = Text::ModTracker::ModKey::shift;
+                modFlags = Modifiers::shift;
                 break;
-            case Text::Values::cmd:
-                modKey = Text::ModTracker::ModKey::command;
+            case Text::Values::super:
+                modFlags = Modifiers::super;
                 break;
             default:
                 DBG(dbgPrefix << __func__ << ": Unexpected key value "
@@ -110,16 +129,26 @@ void Input::Controller::chordEntered(const Chord selected)
                         << " incorrectly evaluated as modifier.");
                 jassertfalse;
         }
-        modTracker.toggleKey(modKey);
+        const int currentFlags = inputBuffer.getModifierFlags();
+        if ((currentFlags & modFlags) != 0)
+        {
+            modFlags = currentFlags & ~modFlags;
+        }
+        else
+        {
+            modFlags |= currentFlags;
+        }
+        inputBuffer.setModifiers(modFlags);
         mainView->repaint();
+    }
+    else if (mainConfig.getImmediateMode())
+    {
+        KeySending::sendKey(enteredChar, inputBuffer.getModifierFlags(),
+                targetWindow);
     }
     else
     {
         inputBuffer.appendCharacter(enteredChar);
-    }
-    if (mainConfig.getImmediateMode())
-    {
-        inputBuffer.sendAndClearInput();
     }
     mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
             getInputPreview());
@@ -130,14 +159,18 @@ void Input::Controller::chordEntered(const Chord selected)
 // close the application.
 void Input::Controller::keyPressed(const juce::KeyPress key)
 {
+    const juce::ScopedTryLock inputLock(inputGuard);
+    if (!inputLock.isLocked())
+    {
+        DBG(dbgPrefix << __func__ 
+                << ": Still busy doing something else, ignoring input.");
+        return;
+    }
     if (mainView->isHelpScreenShowing())
     {
         // When the help screen is open, all input events just close the help
         // screen.
-        mainView->toggleHelpScreen();
-        const int height = juce::Desktop::getInstance().getDisplays()
-            .getMainDisplay().userArea.getHeight() / 2;
-        MainWindow::getOpenWindow()->setHeight(height);
+        closeHelpScreen();
         return;
     }
     namespace Keys = Input::Key::JSONKeys;
@@ -213,7 +246,16 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::backspace,
             [this, &sendUpdate]() 
             {
-                inputBuffer.deleteLastChar();
+                // In immediate mode, actually send a backspace character
+                if (mainConfig.getImmediateMode())
+                {
+                    KeySending::sendKey(Text::Values::backspace, 0,
+                            targetWindow);
+                }
+                else
+                {
+                    inputBuffer.deleteLastChar();
+                }
                 sendUpdate = true;
             }
         },
@@ -229,8 +271,16 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::sendText,
             [this, &sendUpdate]() 
             { 
-                DBG("Attempting to send text:");
-                inputBuffer.sendAndClearInput();
+                // In immediate mode, send a return character instead
+                if (mainConfig.getImmediateMode())
+                {
+                    KeySending::sendKey(Text::Values::enter, 0, targetWindow);
+                }
+                else
+                {
+                    DBG("Attempting to send text:");
+                    KeySending::sendBufferedInput(inputBuffer, targetWindow);
+                }
                 sendUpdate = true;
             }
         },
@@ -238,7 +288,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::closeAndSend,
             [this, &sendUpdate]() 
             { 
-                // inputBuffer will send its text on destruction.
+                KeySending::sendBufferedInput(inputBuffer, targetWindow);
                 juce::JUCEApplication::getInstance()->systemRequestedQuit();
             }
         },
@@ -246,7 +296,6 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::close,
             [this, &sendUpdate]() 
             {
-                inputBuffer.clearInput();
                 juce::JUCEApplication::getInstance()->systemRequestedQuit();
             } 
         },
@@ -258,7 +307,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 mainConfig.setImmediateMode(immediateMode);
                 if (immediateMode && ! inputBuffer.isEmpty())
                 {
-                    inputBuffer.sendAndClearInput();
+                    KeySending::sendBufferedInput(inputBuffer, targetWindow);
                 }
                 sendUpdate = true;
             } 
@@ -268,9 +317,10 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             [this, &sendUpdate]()
             {
                 mainView->toggleHelpScreen();
-                const int height = juce::Desktop::getInstance().getDisplays()
-                    .getMainDisplay().userArea.getHeight();
-                MainWindow::getOpenWindow()->setHeight(height);
+                DBG(dbgPrefix << __func__ << ": Showing help screen.");
+                Application* application = Application::getInstance();
+                application->resetWindow(application->getWindowFlags()
+                        | (int) Application::WindowFlag::showingHelp);
             } 
         },
         {
@@ -278,7 +328,10 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             [this]() 
             { 
                 mainConfig.setSnapToBottom(! mainConfig.getSnapToBottom());
-                restartApplication();
+                DBG(dbgPrefix << __func__ << ": Setting windowEdge = "
+                        << (mainConfig.getSnapToBottom() ? "bottom" : "top"));
+                Application* application = Application::getInstance();
+                application->resetUpdatingFlags();
             } 
         },
         {
@@ -286,7 +339,10 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             [this, &sendUpdate]()
             {
                 mainConfig.setMinimised(! mainConfig.getMinimized());
-                restartApplication();
+                DBG(dbgPrefix << __func__ << ": Setting minimized = "
+                        << (mainConfig.getMinimized() ? "true" : "false"));
+                Application* application = Application::getInstance();
+                application->resetUpdatingFlags();
             } 
         },
     };
@@ -311,17 +367,14 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
 }
 
 
-// Restarts the application, preserving settings and input buffer contents
-// across application instances. 
-void Input::Controller::restartApplication()
+// Ensures the help screen is currently closed.
+void Input::Controller::closeHelpScreen()
 {
-    Config::MainFile mainConfig;
-    mainConfig.cacheInputBuffer(inputBuffer.getRawInput());
-    inputBuffer.clearInput();
-    DBG(dbgPrefix << __func__ << ": Restarting application object");
-    juce::MessageManager::callAsync([]()
-    {
-        static_cast<Application*>(juce::JUCEApplication::getInstance())
-                ->restart();
-    });
+    jassert(mainView->isHelpScreenShowing());
+    DBG(dbgPrefix << __func__ << ": Closing help screen.");
+    mainView->toggleHelpScreen();
+    Application* application = Application::getInstance();
+    jassert(application != nullptr);
+    application->resetWindow(application->getWindowFlags() 
+            & ~ (int) Application::WindowFlag::showingHelp);
 }

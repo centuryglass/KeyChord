@@ -1,6 +1,5 @@
 #include "Component_ChordPreview.h"
 #include "Component_ColourIds.h"
-#include "Text_ModTracker.h"
 #include "Text_Painter.h"
 #include "Text_Values.h"
 #include "Text_CharSet_ConfigFile.h"

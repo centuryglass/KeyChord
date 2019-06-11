@@ -21,9 +21,5 @@ namespace Config
         // Whether the application should start in immediate text entry mode:
         static const DataKey immediateMode("immediateMode",
                 DataKey::DataType::boolType);
-
-        // Cached input buffer text key, only stored temporarily when restarting
-        // the application:
-        static const juce::Identifier cachedBuffer("cachedBuffer");
     }
 }

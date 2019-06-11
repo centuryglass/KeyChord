@@ -141,5 +141,5 @@ bool Text::Values::isWideValue(const unsigned int& value)
 // character.
 bool Text::Values::isModifier(const unsigned int& value)
 {
-    return value >= ctrl && value <= cmd;
+    return value >= ctrl && value <= super;
 }

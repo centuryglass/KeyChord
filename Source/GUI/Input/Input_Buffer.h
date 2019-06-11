@@ -18,31 +18,23 @@ namespace Input { class Buffer; }
 class Input::Buffer
 {
 public:
-    /**
-     * @brief  Saves the target window ID on construction.
-     *
-     * @param targetWindow    The ID of the window where input will be sent.
-     */
-    Buffer(const int targetWindow);
+    Buffer() { }
+
+    virtual ~Buffer() { }
 
     /**
-     * @brief  If the input string isn't empty, send it to the target window
-     *         before destruction.
-     */
-    virtual ~Buffer();
-
-    /**
-     * @brief  Gets the cached input string.
+     * @brief  Gets the cached input string, not including modifiers.
      *
      * @return  All text waiting to be sent to the target window.
      */
     Text::CharString getInputText() const;
 
     /**
-     * @brief  Sends all cached input to the target window and clears the cached
-     *         input string.
+     * @brief  Gets the modifier key flags that will be applied to the input.
+     *
+     * @return  All combined modifier flags, as defined in Modifiers.h.
      */
-    void sendAndClearInput();
+    int getModifierFlags() const;
 
     /**
      * @brief  Adds a character to the end of the cached input string.
@@ -58,9 +50,20 @@ public:
     void deleteLastChar();
 
     /**
-     * @brief  Removes all saved input.
+     * @brief  Sets the modifier keys that will be applied to the buffered
+     *         input.
+     *
+     * @param modifierFlags  All combined modifier flags, as defined in
+     *                       Modifiers.h.
      */
-    void clearInput();
+    void setModifiers(const int modifierFlags);
+
+    /**
+     * @brief  Removes all saved input.
+     *
+     * @param clearModifiers  Whether the modifier flags should also be cleared.
+     */
+    void clearInput(const bool clearModifiers = true);
 
     /**
      * @brief  Checks if the input buffer currently contains any input.
@@ -69,17 +72,9 @@ public:
      */
     bool isEmpty() const;
 
-    /**
-     * @brief  Gets the cached input string, without including modifiers.
-     *
-     * @return  All text waiting to be sent to the target window, not including
-     *          modifiers.
-     */
-    Text::CharString getRawInput() const;
-
 private:
     // Cached input text:
     Text::CharString inputText;
-    // ID of the window where text will be sent:
-    const int targetWindow;
+    // Combined key modifier flags, as defined in Modifiers.h
+    int keyModifiers = 0;
 };

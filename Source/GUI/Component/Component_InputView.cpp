@@ -1,7 +1,6 @@
 #include "Component_InputView.h"
 #include "Text_Values.h"
 #include "Text_Painter.h"
-#include "Text_ModTracker.h"
 
 // Layout constants:
 
@@ -40,30 +39,8 @@ void Component::InputView::paint(juce::Graphics& g)
     g.drawRect(bounds, outlineSize);
     bounds.reduce(outlineSize * 2, outlineSize * 2);
 
-    // Add active modifiers to drawn text:
-    using ModKey = Text::ModTracker::ModKey;
-    namespace CharValue = Text::Values;
-    Text::ModTracker modTracker;
-    const std::pair<ModKey, Text::CharValue> modMappings [] =
-    {
-        { ModKey::control , CharValue::ctrl },
-        { ModKey::alt     , CharValue::alt },
-        { ModKey::shift   , CharValue::shift },
-        { ModKey::command , CharValue::cmd }
-    };
-    juce::Array<unsigned int> drawnText;
-    for (const auto& mapping : modMappings)
-    {
-        if (modTracker.isKeyHeld(mapping.first))
-        {
-            drawnText.add(mapping.second);
-            drawnText.add((Text::CharValue) '+');
-        }
-    }
-    drawnText.addArray(inputText);
-
     g.setColour(findColour(inputHighlight));
-    const int rightEdge = Text::Painter::paintString(g, drawnText,
+    const int rightEdge = Text::Painter::paintString(g, inputText,
             bounds.getX(), bounds.getY(),
             bounds.getWidth(), bounds.getHeight(),
             bounds.getHeight() * maxCharSize);
@@ -71,7 +48,7 @@ void Component::InputView::paint(juce::Graphics& g)
             rightEdge - bounds.getX(), bounds.getHeight());
 
     g.setColour(findColour(text));
-    Text::Painter::paintString(g, drawnText, bounds.getX(), bounds.getY(),
+    Text::Painter::paintString(g, inputText, bounds.getX(), bounds.getY(),
             bounds.getWidth(), bounds.getHeight(),
             bounds.getHeight() * maxCharSize);
 

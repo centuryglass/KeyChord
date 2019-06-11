@@ -27,16 +27,6 @@ bool Config::MainFile::getImmediateMode() const
 }
 
 
-// Takes any input buffer contents cached in the configuration file, removing
-// it from disk.
-Text::CharString Config::MainFile::takeCachedBuffer()
-{
-    SharedResource::LockedPtr<MainResource> mainResource
-            = getWriteLockedResource();
-    return mainResource->takeCachedBuffer();
-}
-
-
 // Sets whether the application should start up in minimized mode.
 void Config::MainFile::setMinimised(const bool minimized)
 {
@@ -55,14 +45,4 @@ void Config::MainFile::setSnapToBottom(const bool snapToBottom)
 void Config::MainFile::setImmediateMode(const bool immediateMode)
 {
     setConfigValue<bool>(MainKeys::immediateMode, immediateMode);
-}
-
-
-// Temporarily saves an input buffer string to the configuration file. This
-// should only be used to preserve text input when restarting the application.
-void Config::MainFile::cacheInputBuffer(const Text::CharString inputBuffer)
-{
-    SharedResource::LockedPtr<MainResource> mainResource
-            = getWriteLockedResource();
-    mainResource->cacheInputBuffer(inputBuffer);
 }

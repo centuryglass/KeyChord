@@ -214,7 +214,7 @@ Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
         Values::shift,
         Values::ctrl,
         Values::alt,
-        Values::cmd
+        Values::super
     };
     for (int i = 0; i < modKeys.size(); i++)
     {

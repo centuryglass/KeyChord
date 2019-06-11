@@ -1,6 +1,5 @@
 {
     "minimized"     : false,
     "snapToBottom"  : true,
-    "immediateMode" : true,
-    "cachedBuffer"  : []
+    "immediateMode" : true
 }

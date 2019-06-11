@@ -2,14 +2,19 @@
 /**
  * @file  Application.h
  *
- * @brief  Initializes and shuts down the JUCE application.
+ * @brief  Initializes and shuts down the JUCE application, and manages the
+ *         application window.
  */
 
 #include "JuceHeader.h"
 #include "Theme_LookAndFeel.h"
-#include "Theme_Colour_ConfigFile.h"
 #include "Component_MainView.h"
 #include "Input_Controller.h"
+#include "Input_Buffer.h"
+#include "Theme_Colour_ConfigFile.h"
+#include "Input_Key_ConfigFile.h"
+#include "Text_CharSet_ConfigFile.h"
+#include "Config_MainFile.h"
 
 
 /**
@@ -24,9 +29,54 @@ public:
     virtual ~Application() { }
 
     /**
-     * @brief  Cleans up all application resources, then sets them up again.
+     * @brief  Gets the active application instance.
+     *
+     * @return  The single Application object that is created when the program
+     *          starts.
      */
-    void restart();
+    static Application* getInstance();
+
+    enum class WindowFlag
+    {
+        // Window is temporarily fullscreen to show help text:
+        showingHelp = 0b001,
+        // Chord previews are hidden so the window uses less space:
+        minimized = 0b010,
+        // Window should snap to the bottom edge of the display instead of the
+        // top:
+        snapToBottom = 0b100
+    };
+
+    /**
+     * @brief  Gets the set of window flags currently applied to the application
+     *         window.
+     *
+     * @return  The combination of window flags that are currently applied.
+     */
+    int getWindowFlags();
+
+    /**
+     * @brief  Recreates the MainWindow with bounds to suit the current
+     *         circumstances.
+     *
+     * @param windowFlags  Any combination of values defined in the 
+     *                     Application::WindowFlag enum. When omitted, the
+     *                     window is returned to its default placement, filling
+     *                     the bottom half of the display.
+     */
+    void resetWindow(const int windowFlags = 0);
+
+    /**
+     * @brief  Recreates the MainWindow, updating window flags to match the
+     *         current selected configuration.
+     */
+    void resetUpdatingFlags();
+
+    /**
+     * @brief  Closes and recreates the application window.
+     */
+    void resetWindow();
+
 private:
     /**
      * @brief  Performs all required initialization when the application is
@@ -89,8 +139,20 @@ private:
     void runApplicationTests();
     #endif
 
-    // Holds UI colour settings:
+    // Configuration files should remain loaded as long as the application still
+    // exists:
+    
+    // Loads saved application state:
+    Config::MainFile mainConfig;
+    // Loads UI colour settings:
     Theme::Colour::ConfigFile colourConfig;
+    // Loads custom character sets:
+    Text::CharSet::ConfigFile charSetConfig;
+    // Loads custom keybindings:
+    Input::Key::ConfigFile inputConfig;
+
+    // Stores buffered keyboard input:
+    Input::Buffer inputBuffer;
 
     // These resources are dynamically allocated because they should be created
     // in the order listed here, and destroyed in the opposite order.

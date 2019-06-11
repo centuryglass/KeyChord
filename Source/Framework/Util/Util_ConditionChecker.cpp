@@ -7,6 +7,11 @@ static const constexpr int defaultInterval = 300;
 // Minimum interval between tests:
 static const constexpr int minInterval = 10;
 
+// Print the full class name before all debug output:
+#ifdef JUCE_DEBUG
+static const constexpr char* dbgPrefix = "Util::ConditionChecker::";
+#endif
+
 // Initializes the internal timer and loads the default interval value on
 // construction.
 Util::ConditionChecker::ConditionChecker() : timer(*this),
@@ -78,7 +83,6 @@ void Util::ConditionChecker::waitForUpdate(const bool runEventLoop)
         {
             juce::Thread::sleep(checkInterval);
         }
-        return;
     }
 }
 
