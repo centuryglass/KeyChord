@@ -20,7 +20,7 @@ int Component::ChordPreview::getColumnCount() const
 // Gets the number of character rows the KeyGrid contains.
 int Component::ChordPreview::getRowCount() const
 {
-    return Chord::numChordKeys();
+    return Input::Chord::numChordKeys();
 }
 
 
@@ -76,7 +76,8 @@ void Component::ChordPreview::paint(juce::Graphics& g)
         // Whether the character needs double the normal width:
         const bool wideDrawChar = Text::Values::isWideValue(charIndex);
         // The chord used to type the character:
-        const Chord characterChord = activeSet->getCharacterChord(charIndex);
+        const Input::Chord characterChord 
+                = activeSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
         const bool charSelected = (characterChord == getHeldChord());
         // Whether all held chord keys are in this character's chord:
@@ -84,7 +85,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
                 characterChord);
 
         // Draw each chord key under the character:
-        for(int keyIdx = 0; keyIdx < Chord::numChordKeys(); keyIdx++)
+        for(int keyIdx = 0; keyIdx < Input::Chord::numChordKeys(); keyIdx++)
         {
             // Check if this chord key is currently held down:
             const bool keyIsHeld = getHeldChord().usesChordKey(keyIdx);

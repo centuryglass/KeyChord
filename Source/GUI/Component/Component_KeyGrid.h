@@ -5,7 +5,7 @@
  * @brief  An abstract basis for classes that draw a grid of key values.
  */
 
-#include "Chord.h"
+#include "Input_Chord.h"
 #include "JuceHeader.h"
 
 namespace Component { class KeyGrid; }
@@ -34,7 +34,7 @@ public:
      *
      * @param heldChord  The current held Chord value.
      */
-    virtual void updateChordState(const Chord heldChord);
+    virtual void updateChordState(const Input::Chord heldChord);
 
     /**
      * @brief  Handles changes to the active character set. This should ensure
@@ -106,11 +106,11 @@ protected:
     int getYPadding() const;
 
     /**
-     * @brief  Gets the current held key entry chord.
+     * @brief  Gets the key entry chord that's currently held down.
      *
      * @return  A chord value matching the current chord entry state.
      */
-    const Chord& getHeldChord() const;
+    const Input::Chord& getHeldChord() const;
 
     /**
      * @brief  Gets the current active character set.
@@ -121,7 +121,7 @@ protected:
 
 private:
     // The current held input chord:
-    Chord lastHeldChord;
+    Input::Chord lastHeldChord;
     // The active character set:
     const Text::CharSet::Cache* activeSet = nullptr;
     // Saved key padding values:

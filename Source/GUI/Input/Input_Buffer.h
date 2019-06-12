@@ -32,7 +32,7 @@ public:
     /**
      * @brief  Gets the modifier key flags that will be applied to the input.
      *
-     * @return  All combined modifier flags, as defined in Modifiers.h.
+     * @return  All combined modifier flags, as defined in Input::Modifiers.
      */
     int getModifierFlags() const;
 
@@ -54,7 +54,7 @@ public:
      *         input.
      *
      * @param modifierFlags  All combined modifier flags, as defined in
-     *                       Modifiers.h.
+     *                       Input::Modifiers.
      */
     void setModifiers(const int modifierFlags);
 
@@ -75,6 +75,6 @@ public:
 private:
     // Cached input text:
     Text::CharString inputText;
-    // Combined key modifier flags, as defined in Modifiers.h
+    // Combined key modifier flags, as defined in Input::Modifiers.
     int keyModifiers = 0;
 };

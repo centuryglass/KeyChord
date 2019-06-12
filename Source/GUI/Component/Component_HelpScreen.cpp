@@ -54,9 +54,12 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
 
     // Load all chord key info together:
     const CharString chordDivider = toCharString(", ");
-    chordNames.addArray(toCharString(" ("));
     for (const juce::Identifier* chordID : InputKeys::chordKeys)
     {
+        if (chordNames.isEmpty())
+        {
+            chordNames.addArray(toCharString(" ("));
+        }
         chordChars.add(keyConfig.getKeyChar(*chordID));
 
         const CharString nameValue
@@ -67,7 +70,10 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
         }
         chordNames.addArray(nameValue);
     }
-    chordNames.addArray(toCharString("): "));
+    if (! chordNames.isEmpty())
+    {
+        chordNames.addArray(toCharString("): "));
+    }
     chordDescription = toCharString(localeText(chordKeys));
     
     // Load all bound remaining keys as new lines:
@@ -153,7 +159,7 @@ void Component::HelpScreen::paint(juce::Graphics& g)
     yPos += rowHeight;
 
     // Draw chord key guide:
-    for (int i = 0; i < Chord::numChordKeys(); i++)
+    for (int i = 0; i < Input::Chord::numChordKeys(); i++)
     {
         g.setColour(findColour((int) chord1Active + i));
         Text::CharValue chordKey = chordChars[i];

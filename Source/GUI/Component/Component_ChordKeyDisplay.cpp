@@ -10,7 +10,7 @@
 Component::ChordKeyDisplay::ChordKeyDisplay()
 {
     Input::Key::ConfigFile keyConfig;
-    for (int i = 0; i < Chord::numChordKeys(); i++)
+    for (int i = 0; i < Input::Chord::numChordKeys(); i++)
     {
         const juce::Identifier& key = *Input::Key::JSONKeys::chordKeys[i];
         chordKeys.add(keyConfig.getKeyChar(key));
@@ -28,7 +28,7 @@ int Component::ChordKeyDisplay::getColumnCount() const
 // Gets the number of character rows the KeyGrid contains.
 int Component::ChordKeyDisplay::getRowCount() const
 {
-    return Chord::numChordKeys();
+    return Input::Chord::numChordKeys();
 }
 
 // Paints the chord keys.
@@ -38,7 +38,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
     // Calculate layout values:
     const int paddedRowHeight = getPaddedRowHeight();
     const int paddedCharWidth = getPaddedCharWidth();
-    const Chord currentChord = getHeldChord();
+    const Input::Chord currentChord = getHeldChord();
     const int xPadding = getXPadding();
     const int yPadding = getYPadding();
     const int rowHeight = paddedRowHeight - yPadding;

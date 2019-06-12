@@ -6,7 +6,7 @@ Component::KeyGrid::KeyGrid() { }
 
 // Handles changes to the active held chord and character set. This should
 // ensure the component is redrawn whenever it has new information to display.
-void Component::KeyGrid::updateChordState(const Chord heldChord)
+void Component::KeyGrid::updateChordState(const Input::Chord heldChord)
 {
     if (lastHeldChord != heldChord)
     {
@@ -81,8 +81,8 @@ int Component::KeyGrid::getYPadding() const
 }
 
 
-// Gets the current held key entry chord.
-const Chord& Component::KeyGrid::getHeldChord() const
+// Gets the key entry chord that's currently held down.
+const Input::Chord& Component::KeyGrid::getHeldChord() const
 {
     return lastHeldChord;
 }

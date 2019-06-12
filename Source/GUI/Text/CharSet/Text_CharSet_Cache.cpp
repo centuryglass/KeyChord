@@ -54,6 +54,8 @@ static const juce::uint8 chordConvenienceOrder [] =
     // All zero (invalid)
     0b00000,
 };
+
+
 // Extracts an ordered character set from juce::var configuration data, saves
 // the set, and assigns chord mappings.
 Text::CharSet::Cache::Cache(const juce::var setData)
@@ -61,6 +63,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
     using juce::var;
     using juce::Identifier;
     using juce::Array;
+    using Text::CharValue;
     if (! setData.isArray())
     {
         DBG(dbgPrefix << __func__ << ": Error, character set value not array");
@@ -120,22 +123,22 @@ Text::CharSet::Cache::Cache(const juce::var setData)
         PrioritizedCharPair newPair;
 
         // Load a character as either a string or a character code:
-        const std::function<unsigned int(var&, const Identifier&)> getVarChar = 
+        const std::function<CharValue(var&, const Identifier&)> getVarChar = 
         [](var& varCharPair, const Identifier& key)
         {
             var varChar = varCharPair[key];
-            unsigned int charIndex = 0;
+            CharValue charValue = 0;
             if (varChar.isInt())
             {
-                int index = varChar.operator int();
-                charIndex = index;
+                int value = varChar.operator int();
+                charValue = value;
             }
             else
             {
-                charIndex = Values::getCharValue(
+                charValue = Values::getCharValue(
                         varChar.operator juce::String());
             }
-            return charIndex;
+            return charValue;
         };
         var mainCharVar = charVar[charKey];
         if (mainCharVar.isInt())
@@ -196,10 +199,10 @@ Text::CharSet::Cache::Cache(const juce::var setData)
     chordOrderedSet.sort(priorityComparator, true);
     for (int i = 0; i < chordOrderedSet.size(); i++)
     {
-        Chord nextChord(chordConvenienceOrder[i]);
+        Input::Chord nextChord(chordConvenienceOrder[i]);
         const CharPair& nextPair = chordOrderedSet.getReference(i).charPair;
-        chordMap[(unsigned int) nextPair.charValue] = nextChord;
-        chordMap[(unsigned int) nextPair.shiftedValue] = nextChord;
+        chordMap[nextPair.charValue] = nextChord;
+        chordMap[nextPair.shiftedValue] = nextChord;
         charPairMap[nextChord] = nextPair;
     }
 }
@@ -209,7 +212,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
 Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
 {
     Cache modCache;
-    juce::Array<unsigned int> modKeys =
+    juce::Array<Text::CharValue> modKeys =
     {
         Values::shift,
         Values::ctrl,
@@ -220,7 +223,7 @@ Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
     {
         CharPair modPair = { modKeys[i], modKeys[i] };
         modCache.charSet.add(modPair);
-        Chord modChord(chordConvenienceOrder[i]);
+        Input::Chord modChord(chordConvenienceOrder[i]);
         modCache.chordMap[modKeys[i]] = modChord;
         modCache.charPairMap[modChord] = modPair;
         if (Values::isWideValue(modKeys[i]))
@@ -232,7 +235,7 @@ Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
 }
 
 // Gets the character in the alphabet with a particular index value.
-unsigned int Text::CharSet::Cache::getCharAtIndex
+Text::CharValue Text::CharSet::Cache::getCharAtIndex
 (const unsigned int index, const bool shifted) const
 {
     if (index > charSet.size())
@@ -244,8 +247,8 @@ unsigned int Text::CharSet::Cache::getCharAtIndex
 
 
 // Finds the character created by a particular chord.
-unsigned int Text::CharSet::Cache::getChordCharacter
-(const Chord chord, const bool shifted) const
+Text::CharValue Text::CharSet::Cache::getChordCharacter
+(const Input::Chord chord, const bool shifted) const
 {
     try
     {
@@ -260,8 +263,8 @@ unsigned int Text::CharSet::Cache::getChordCharacter
 
 
 // Finds the chord used to type a particular character.
-Chord Text::CharSet::Cache::getCharacterChord
-(const unsigned int character) const
+Input::Chord Text::CharSet::Cache::getCharacterChord
+(const Text::CharValue character) const
 {
     try
     {
@@ -270,9 +273,9 @@ Chord Text::CharSet::Cache::getCharacterChord
     catch (const std::out_of_range& e)
     {
         DBG(dbgPrefix << __func__ << ": Couldn't find chord for char value 0x"
-                << juce::String::toHexString((unsigned int) character)
-                << " (" << juce::String((unsigned int) character) << ")");
-        return Chord();
+                << juce::String::toHexString((Text::CharValue) character)
+                << " (" << juce::String((Text::CharValue) character) << ")");
+        return Input::Chord();
     }
 }
 

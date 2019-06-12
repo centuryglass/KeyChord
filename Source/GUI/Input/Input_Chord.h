@@ -1,11 +1,13 @@
 #pragma once
 /**
- * @file  Chord.h
+ * @file  Input_Chord.h
  *
  * @brief  Represents an input event created by releasing several keys at once.
  */
 
 #include "JuceHeader.h"
+
+namespace Input { class Chord; }
 
 /**
  * @brief  Represents a key combination that, when released, may be used to
@@ -16,7 +18,7 @@
  * once. When all keys are released, the combination of keys that was held down
  * last selects the input character.
  */
-class Chord
+class Input::Chord
 {
 public:
     typedef unsigned char uint8;

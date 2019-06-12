@@ -1,8 +1,8 @@
 #include "Input_Controller.h"
 #include "Input_Key_JSONKeys.h"
 #include "Text_Values.h"
-#include "KeySending.h"
-#include "Modifiers.h"
+#include "Input_Sending.h"
+#include "Input_Modifiers.h"
 #include "Application.h"
 #include "JuceHeader.h"
 #include <map>
@@ -143,7 +143,7 @@ void Input::Controller::chordEntered(const Chord selected)
     }
     else if (mainConfig.getImmediateMode())
     {
-        KeySending::sendKey(enteredChar, inputBuffer.getModifierFlags(),
+        Sending::sendKey(enteredChar, inputBuffer.getModifierFlags(),
                 targetWindow);
     }
     else
@@ -249,7 +249,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 // In immediate mode, actually send a backspace character
                 if (mainConfig.getImmediateMode())
                 {
-                    KeySending::sendKey(Text::Values::backspace, 0,
+                    Sending::sendKey(Text::Values::backspace, 0,
                             targetWindow);
                 }
                 else
@@ -274,12 +274,12 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 // In immediate mode, send a return character instead
                 if (mainConfig.getImmediateMode())
                 {
-                    KeySending::sendKey(Text::Values::enter, 0, targetWindow);
+                    Sending::sendKey(Text::Values::enter, 0, targetWindow);
                 }
                 else
                 {
                     DBG("Attempting to send text:");
-                    KeySending::sendBufferedInput(inputBuffer, targetWindow);
+                    Sending::sendBufferedInput(inputBuffer, targetWindow);
                 }
                 sendUpdate = true;
             }
@@ -288,7 +288,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::closeAndSend,
             [this, &sendUpdate]() 
             { 
-                KeySending::sendBufferedInput(inputBuffer, targetWindow);
+                Sending::sendBufferedInput(inputBuffer, targetWindow);
                 juce::JUCEApplication::getInstance()->systemRequestedQuit();
             }
         },
@@ -307,7 +307,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 mainConfig.setImmediateMode(immediateMode);
                 if (immediateMode && ! inputBuffer.isEmpty())
                 {
-                    KeySending::sendBufferedInput(inputBuffer, targetWindow);
+                    Sending::sendBufferedInput(inputBuffer, targetWindow);
                 }
                 sendUpdate = true;
             } 

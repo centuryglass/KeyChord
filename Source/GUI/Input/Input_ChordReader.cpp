@@ -23,7 +23,7 @@ Input::ChordReader::ChordReader(juce::Component* keyComponent) :
 
 
 // Gets the current Chord that will be used if all keys are released.
-Chord Input::ChordReader::getSelectedChord() const
+Input::Chord Input::ChordReader::getSelectedChord() const
 {
     return selectedChord;
 }

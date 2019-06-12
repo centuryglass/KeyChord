@@ -6,6 +6,7 @@
  */
 
 #include "Text_CharSet_Cache.h"
+#include "Text_CharTypes.h"
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_ConfigFile.h"
 #include "Component_CharsetDisplay.h"
@@ -14,7 +15,7 @@
 #include "Component_InputView.h"
 #include "Component_HelpScreen.h"
 #include "Config_MainFile.h"
-#include "Chord.h"
+#include "Input_Chord.h"
 #include "JuceHeader.h"
 
 namespace Component { class MainView; }
@@ -50,8 +51,8 @@ public:
      * @param input           The current cached character index list.
      */
     void updateChordState(const Text::CharSet::Cache* activeSet, 
-            const Chord heldChord, 
-            const juce::Array<unsigned int> input);
+            const Input::Chord heldChord, 
+            const Text::CharString input);
 
     /**
      * @brief  Shows the help screen if it's not currently visible, or hides it

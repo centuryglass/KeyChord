@@ -6,7 +6,7 @@
  */
 
 #include "JuceHeader.h"
-#include "Chord.h"
+#include "Input_Chord.h"
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_Cache.h"
 #include "Text_CharSet_ConfigFile.h"

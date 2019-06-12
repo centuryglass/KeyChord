@@ -44,8 +44,8 @@ Component::MainView::MainView()
 // component if the state changes.
 void Component::MainView::updateChordState(
         const Text::CharSet::Cache* activeSet, 
-        const Chord heldChord,
-        const juce::Array<unsigned int> input)
+        const Input::Chord heldChord,
+        const Text::CharString input)
 {
     KeyGrid* keyGrids [] =
     {
@@ -115,7 +115,7 @@ void Component::MainView::resized()
     // Calculate row and column counts and sizes:
     // One row for each chord key, one for the list of chord characters, and
     // one for the input text preview.
-    const int rowCount = Chord::numChordKeys() + 2;
+    const int rowCount = Input::Chord::numChordKeys() + 2;
     const int rowHeight = getHeight() / rowCount;
 
     // One column for each character in the current set, an extra column for

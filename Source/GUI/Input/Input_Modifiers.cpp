@@ -1,9 +1,9 @@
-#include "Modifiers.h"
+#include "Input_Modifiers.h"
 #include <map>
 
 
 // Gets the string representation of any combination of modifier types.
-juce::String Modifiers::getModString(const int modifierFlags)
+juce::String Input::Modifiers::getModString(const int modifierFlags)
 {
     using juce::String;
     const std::map<int, String> modNames =

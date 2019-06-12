@@ -11,7 +11,7 @@ namespace Component { class ChordPreview; }
 
 #include "Component_KeyGrid.h"
 #include "Component_ChordKeyDisplay.h"
-#include "Chord.h"
+#include "Input_Chord.h"
 #include "Text_CharSet_Cache.h"
 #include "Input_Key_ConfigFile.h"
 #include "JuceHeader.h"

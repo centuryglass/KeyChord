@@ -6,7 +6,8 @@
  *         chord value.
  */
 
-#include "Chord.h"
+#include "Input_Chord.h"
+#include "Text_CharTypes.h"
 #include <map>
 
 namespace Text { namespace CharSet { class Cache; } }
@@ -15,6 +16,7 @@ class Text::CharSet::Cache
 {
 public:
     typedef unsigned char uint8;
+
     /**
      * @brief  Extracts an ordered character set from juce::var configuration
      *         data, saves the set, and assigns chord mappings.
@@ -46,7 +48,7 @@ public:
      * @return         The character value at that index, or 0 if the index was
      *                 invalid.
      */
-    unsigned int getCharAtIndex(const unsigned int index,
+    Text::CharValue getCharAtIndex(const unsigned int index,
             const bool shifted) const;
 
     /**
@@ -60,8 +62,8 @@ public:
      * @return         The character that chord should create, or 0 if the
      *                 alphabet does not use that chord.
      */
-    unsigned int getChordCharacter
-    (const Chord chord, const bool shifted) const;
+    Text::CharValue getChordCharacter
+    (const Input::Chord chord, const bool shifted) const;
 
     /**
      * @brief  Finds the chord used to type a particular character.
@@ -71,7 +73,7 @@ public:
      * @return           The chord bitmask used to create that character, or 0
      *                   if that character is not in the alphabet.
      */
-    Chord getCharacterChord(const unsigned int character) const;
+    Input::Chord getCharacterChord(const Text::CharValue character) const;
 
     /**
      * @brief  Gets the number of characters in the alphabet.
@@ -93,16 +95,16 @@ private:
     // Stores a character with its shifted value:
     struct CharPair
     {
-        unsigned int charValue = 0;
-        unsigned int shiftedValue = 0;
+        Text::CharValue charValue = 0;
+        Text::CharValue shiftedValue = 0;
     };
 
     // All characters in the Alphabet, in order:
     juce::Array<CharPair> charSet;
     // Map of each individual character to its chord value:
-    std::map<unsigned int, Chord> chordMap;
+    std::map<Text::CharValue, Input::Chord> chordMap;
     // Map of each chord to its character set:
-    std::map<Chord, CharPair> charPairMap;
+    std::map<Input::Chord, CharPair> charPairMap;
     // Number of wide-draw characters:
     int wideDrawCharacters = 0;
 };

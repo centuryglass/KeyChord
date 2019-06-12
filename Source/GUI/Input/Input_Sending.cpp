@@ -1,6 +1,6 @@
-#include "KeySending.h"
+#include "Input_Sending.h"
 #include "Application.h"
-#include "Modifiers.h"
+#include "Input_Modifiers.h"
 #include "Windows_XInterface.h"
 #include "Windows_FocusControl.h"
 #include "Text_Values.h"
@@ -24,7 +24,7 @@ static const juce::String keyCommand("xdotool key ");
 
 // Print the full namespace name before all debug output:
 #ifdef JUCE_DEBUG
-static const constexpr char* dbgPrefix = "KeySending::";
+static const constexpr char* dbgPrefix = "Input::Sending::";
 #endif
 
 /**
@@ -150,7 +150,7 @@ static void runXCommand(const juce::String keyString)
 
 
 // Sends a single key press event to a window.
-void KeySending::sendKey(
+void Input::Sending::sendKey(
         const Text::CharValue keyValue,
         const int modifierFlags,
         const int targetWindow)
@@ -174,7 +174,7 @@ void KeySending::sendKey(
 
 
 // Take all input from a buffer object, and send it to a window.
-void KeySending::sendBufferedInput
+void Input::Sending::sendBufferedInput
 (Input::Buffer& inputBuffer, const int targetWindow)
 {
     const int previousState = prepareAppWindow();

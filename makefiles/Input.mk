@@ -15,8 +15,11 @@ OBJECTS_INPUT_KEY := \
   $(INPUT_KEY_OBJ)ConfigFile.o
 
 OBJECTS_INPUT := \
+  $(INPUT_OBJ)Chord.o \
   $(INPUT_OBJ)ChordReader.o \
   $(INPUT_OBJ)Buffer.o \
+  $(INPUT_OBJ)Modifiers.o \
+  $(INPUT_OBJ)Sending.o \
   $(INPUT_OBJ)Controller.o \
   $(OBJECTS_INPUT_KEY)
 
@@ -42,9 +45,15 @@ $(INPUT_KEY_OBJ)JSONResource.o: \
 $(INPUT_KEY_OBJ)ConfigFile.o: \
 	$(INPUT_KEY_DIR)/$(INPUT_KEY_PREFIX)ConfigFile.cpp
 
-$(INPUT_OBJ)Buffer.o: \
-	$(INPUT_DIR)/$(INPUT_PREFIX)Buffer.cpp
+$(INPUT_OBJ)Chord.o: \
+	$(INPUT_DIR)/$(INPUT_PREFIX)Chord.cpp
 $(INPUT_OBJ)ChordReader.o: \
 	$(INPUT_DIR)/$(INPUT_PREFIX)ChordReader.cpp
+$(INPUT_OBJ)Buffer.o: \
+	$(INPUT_DIR)/$(INPUT_PREFIX)Buffer.cpp
+$(INPUT_OBJ)Modifiers.o: \
+	$(INPUT_DIR)/$(INPUT_PREFIX)Modifiers.cpp
+$(INPUT_OBJ)Sending.o: \
+	$(INPUT_DIR)/$(INPUT_PREFIX)Sending.cpp
 $(INPUT_OBJ)Controller.o: \
 	$(INPUT_DIR)/$(INPUT_PREFIX)Controller.cpp

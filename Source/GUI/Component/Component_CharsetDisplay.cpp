@@ -79,7 +79,8 @@ void Component::CharsetDisplay::paint(juce::Graphics& g)
         // Whether the character needs double the normal width:
         const bool wideDrawChar = Text::Values::isWideValue(charIndex);
         // Binary mask for the chord used to type the character:
-        const Chord characterChord = activeSet->getCharacterChord(charIndex);
+        const Input::Chord characterChord 
+                = activeSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
         const bool charSelected = (characterChord == getHeldChord());
         // Whether no chord keys are held that aren't in this character's chord:
