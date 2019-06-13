@@ -1,13 +1,13 @@
 #pragma once
 /**
- * @file  Input_Modifiers.h
+ * @file  Output_Modifiers.h
  *
  * @brief  Defines all modifier key types.
  */
 
 #include "JuceHeader.h"
 
-namespace Input
+namespace Output
 {
     namespace Modifiers
     {

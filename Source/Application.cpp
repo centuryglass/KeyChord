@@ -236,7 +236,7 @@ void Application::initialise(const juce::String &commandLine)
     juce::LookAndFeel::setDefaultLookAndFeel(lookAndFeel.get());
     mainView.reset(new Component::MainView);
     inputController.reset(new Input::Controller(mainView.get(), targetWindow,
-                inputBuffer));
+                outputBuffer));
     resetWindow(getWindowFlags());
 }
 

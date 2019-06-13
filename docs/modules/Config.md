@@ -23,6 +23,17 @@ Listener is an abstract basis for classes that listen for changes to JSON file r
 #### [Config\::ValueListener](../../Source/Files/Config/Config_ValueListener.h)
 ValueListener is a template wrapper for Listener subclasses. ValueListener tracks changes to a single value within a single JSON resource.
 
+## Main Configuration File
+
+#### [Config\::MainResource](../../Source/Files/Config/Config_MainResource.h)
+MainResource is a FileResource class used to save the application's window placement and input mode between sessions. Main configuration data is stored in the config.json file in the configuration directory.
+
+#### [Config\::MainFile](../../Source/Files/Config/Config_MainFile.h)
+MainFile is the FileHandler class used to safely access the MainResource to read and update settings. 
+
+#### [Config\::MainKeys](../../Source/Files/Config/Config_MainKeys.h)
+MainKeys defines the JSON key strings used by the MainResource and MainFile to access data in the config.json file.
+
 ## Private Implementation Classes
 
 #### [Config\::ListenerInterface](../../Source/Files/Config/Implementation/Config_ListenerInterface.h)

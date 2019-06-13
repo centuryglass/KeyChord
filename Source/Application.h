@@ -10,7 +10,7 @@
 #include "Theme_LookAndFeel.h"
 #include "Component_MainView.h"
 #include "Input_Controller.h"
-#include "Input_Buffer.h"
+#include "Output_Buffer.h"
 #include "Theme_Colour_ConfigFile.h"
 #include "Input_Key_ConfigFile.h"
 #include "Text_CharSet_ConfigFile.h"
@@ -151,8 +151,8 @@ private:
     // Loads custom keybindings:
     Input::Key::ConfigFile inputConfig;
 
-    // Stores buffered keyboard input:
-    Input::Buffer inputBuffer;
+    // Stores buffered keyboard output:
+    Output::Buffer outputBuffer;
 
     // These resources are dynamically allocated because they should be created
     // in the order listed here, and destroyed in the opposite order.

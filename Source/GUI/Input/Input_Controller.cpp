@@ -1,8 +1,8 @@
 #include "Input_Controller.h"
 #include "Input_Key_JSONKeys.h"
 #include "Text_Values.h"
-#include "Input_Sending.h"
-#include "Input_Modifiers.h"
+#include "Output_Sending.h"
+#include "Output_Modifiers.h"
 #include "Application.h"
 #include "JuceHeader.h"
 #include <map>
@@ -18,12 +18,12 @@ static const constexpr char* dbgPrefix = "Input::Controller::";
 
 // Sets up all keyboard input handling.
 Input::Controller::Controller(Component::MainView* mainView,
-        const int targetWindow, Input::Buffer& inputBuffer) :
+        const int targetWindow, Output::Buffer& outputBuffer) :
     Locale::TextUser(localeKey),
     chordReader(mainView),
     mainView(mainView),
     targetWindow(targetWindow),
-    inputBuffer(inputBuffer)
+    outputBuffer(outputBuffer)
 {
     chordReader.addListener(this);
     mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
@@ -35,9 +35,10 @@ Input::Controller::Controller(Component::MainView* mainView,
 Text::CharString Input::Controller::getInputPreview() const
 {
     using juce::String;
+    namespace Modifiers = Output::Modifiers;
     Text::CharString inputText;
     // Add active modifiers to drawn text:
-    const int modifierFlags = inputBuffer.getModifierFlags();
+    const int modifierFlags = outputBuffer.getModifierFlags();
     const std::pair<Modifiers::TypeFlag, Text::CharValue> modMappings [] =
     {
         { Modifiers::control, Text::Values::ctrl },
@@ -66,7 +67,7 @@ Text::CharString Input::Controller::getInputPreview() const
     }
     else
     {
-        inputText.addArray(inputBuffer.getInputText());
+        inputText.addArray(outputBuffer.getBufferedText());
     }
     return inputText;
 }
@@ -84,6 +85,7 @@ void Input::Controller::selectedChordChanged(const Chord selectedChord)
 // ChordComponent when a chord character is entered.
 void Input::Controller::chordEntered(const Chord selected)
 {
+    namespace Modifiers = Output::Modifiers;
     const juce::ScopedTryLock inputLock(inputGuard);
     if (!inputLock.isLocked())
     {
@@ -129,7 +131,7 @@ void Input::Controller::chordEntered(const Chord selected)
                         << " incorrectly evaluated as modifier.");
                 jassertfalse;
         }
-        const int currentFlags = inputBuffer.getModifierFlags();
+        const int currentFlags = outputBuffer.getModifierFlags();
         if ((currentFlags & modFlags) != 0)
         {
             modFlags = currentFlags & ~modFlags;
@@ -138,17 +140,17 @@ void Input::Controller::chordEntered(const Chord selected)
         {
             modFlags |= currentFlags;
         }
-        inputBuffer.setModifiers(modFlags);
+        outputBuffer.setModifiers(modFlags);
         mainView->repaint();
     }
     else if (mainConfig.getImmediateMode())
     {
-        Sending::sendKey(enteredChar, inputBuffer.getModifierFlags(),
+        Output::Sending::sendKey(enteredChar, outputBuffer.getModifierFlags(),
                 targetWindow);
     }
     else
     {
-        inputBuffer.appendCharacter(enteredChar);
+        outputBuffer.appendCharacter(enteredChar);
     }
     mainView->updateChordState(&charsetConfig.getActiveSet(), 0,
             getInputPreview());
@@ -249,12 +251,12 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 // In immediate mode, actually send a backspace character
                 if (mainConfig.getImmediateMode())
                 {
-                    Sending::sendKey(Text::Values::backspace, 0,
+                    Output::Sending::sendKey(Text::Values::backspace, 0,
                             targetWindow);
                 }
                 else
                 {
-                    inputBuffer.deleteLastChar();
+                    outputBuffer.deleteLastChar();
                 }
                 sendUpdate = true;
             }
@@ -263,7 +265,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::clearAll,
             [this, &sendUpdate]() 
             {
-                inputBuffer.clearInput();
+                outputBuffer.clear();
                 sendUpdate = true;
             } 
         },
@@ -274,12 +276,13 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 // In immediate mode, send a return character instead
                 if (mainConfig.getImmediateMode())
                 {
-                    Sending::sendKey(Text::Values::enter, 0, targetWindow);
+                    Output::Sending::sendKey(Text::Values::enter, 0,
+                            targetWindow);
                 }
                 else
                 {
-                    DBG("Attempting to send text:");
-                    Sending::sendBufferedInput(inputBuffer, targetWindow);
+                    Output::Sending::sendBufferedOutput(outputBuffer,
+                            targetWindow);
                 }
                 sendUpdate = true;
             }
@@ -288,7 +291,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             &Keys::closeAndSend,
             [this, &sendUpdate]() 
             { 
-                Sending::sendBufferedInput(inputBuffer, targetWindow);
+                Output::Sending::sendBufferedOutput(outputBuffer, targetWindow);
                 juce::JUCEApplication::getInstance()->systemRequestedQuit();
             }
         },
@@ -305,9 +308,10 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             {
                 const bool immediateMode = ! mainConfig.getImmediateMode();
                 mainConfig.setImmediateMode(immediateMode);
-                if (immediateMode && ! inputBuffer.isEmpty())
+                if (immediateMode && ! outputBuffer.isEmpty())
                 {
-                    Sending::sendBufferedInput(inputBuffer, targetWindow);
+                    Output::Sending::sendBufferedOutput(outputBuffer,
+                            targetWindow);
                 }
                 sendUpdate = true;
             } 

@@ -7,8 +7,8 @@
  */
 
 #include "Input_ChordReader.h"
-#include "Input_Buffer.h"
 #include "Input_Key_ConfigFile.h"
+#include "Output_Buffer.h"
 #include "Text_CharSet_ConfigFile.h"
 #include "Text_CharTypes.h"
 #include "Config_MainFile.h"
@@ -39,12 +39,12 @@ public:
      * @param targetWindow    The ID of the window where chord input text should
      *                        be sent.
      *
-     * @param inputBuffer     Buffer object used to store text input before
-     *                        sending it.
+     * @param outputBuffer    Buffer object used to store text before sending
+     *                        it to the target application.
      *
      */
     Controller(Component::MainView* mainView, const int targetWindow,
-            Input::Buffer& inputBuffer);
+            Output::Buffer& buffer);
 
     virtual ~Controller() { }
 
@@ -106,8 +106,8 @@ private:
     Component::MainView* mainView;
     // Converts generic keyboard events to chord input events:
     ChordReader chordReader;
-    // Buffers text input waiting to be sent to the target window:
-    Buffer& inputBuffer;
+    // Buffers text waiting to be sent to the target window:
+    Output::Buffer& outputBuffer;
     // Stores the target window ID:
     const int targetWindow;
 };

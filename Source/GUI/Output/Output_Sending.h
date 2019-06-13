@@ -1,13 +1,13 @@
 #pragma once
 /**
- * @file  Input_Sending.h
+ * @file  Output_Sending.h
  *
  * @brief  Creates artificial key events to send to another window.
  */
 
-#include "Input_Buffer.h"
+#include "Output_Buffer.h"
 
-namespace Input 
+namespace Output 
 {
     namespace Sending
     {
@@ -26,13 +26,14 @@ namespace Input
                 const int targetWindow);
 
         /**
-         * @brief  Take all input from a buffer object, and send it to a window.
+         * @brief  Take all text from a buffer object, and sends it to a window.
          *
-         * @param inputBuffer   The input buffer object.
+         * @param outputBuffer  The buffer object.
          *
-         * @param targetWindow  The ID of the window where input will be sent.
+         * @param targetWindow  The ID of the window where the text will be
+         *                      sent.
          */
-        void sendBufferedInput(Input::Buffer& inputBuffer,
+        void sendBufferedOutput(Buffer& outputBuffer,
                 const int targetWindow);
 
 

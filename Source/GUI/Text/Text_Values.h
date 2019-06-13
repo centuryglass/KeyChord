@@ -31,7 +31,7 @@ namespace Text
          * @param charValue  An ISO 8859 character code, or a replacement
          *                   value defined in Text::Values.
          *
-         * @return           An Xqq string representation of the character, or
+         * @return           An X11 string representation of the character, or
          *                   the empty string if the character value is
          *                   not valid.
          */

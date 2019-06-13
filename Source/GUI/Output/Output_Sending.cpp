@@ -1,6 +1,6 @@
-#include "Input_Sending.h"
+#include "Output_Sending.h"
 #include "Application.h"
-#include "Input_Modifiers.h"
+#include "Output_Modifiers.h"
 #include "Windows_XInterface.h"
 #include "Windows_FocusControl.h"
 #include "Text_Values.h"
@@ -150,7 +150,7 @@ static void runXCommand(const juce::String keyString)
 
 
 // Sends a single key press event to a window.
-void Input::Sending::sendKey(
+void Output::Sending::sendKey(
         const Text::CharValue keyValue,
         const int modifierFlags,
         const int targetWindow)
@@ -174,8 +174,8 @@ void Input::Sending::sendKey(
 
 
 // Take all input from a buffer object, and send it to a window.
-void Input::Sending::sendBufferedInput
-(Input::Buffer& inputBuffer, const int targetWindow)
+void Output::Sending::sendBufferedOutput
+(Buffer& outputBuffer, const int targetWindow)
 {
     const int previousState = prepareAppWindow();
     const bool focusedTarget = focusTarget(targetWindow);
@@ -185,13 +185,13 @@ void Input::Sending::sendBufferedInput
         jassertfalse;
     }
     const juce::String modifiers 
-            = Modifiers::getModString(inputBuffer.getModifierFlags());
-    const Text::CharString inputText = inputBuffer.getInputText();
+            = Modifiers::getModString(outputBuffer.getModifierFlags());
+    const Text::CharString inputText = outputBuffer.getBufferedText();
     for (const Text::CharValue& keyValue : inputText)
     {
         runXCommand(getKeyString(keyValue, modifiers));
     }
-    inputBuffer.clearInput();
+    outputBuffer.clear();
     const bool restoreFocus = focusAppWindow(previousState);
     if (! restoreFocus)
     {
