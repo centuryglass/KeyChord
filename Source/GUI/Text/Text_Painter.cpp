@@ -2,7 +2,6 @@
 #include "Text_BinaryFont.h"
 #include "Text_Values.h"
 #include "Util_Math.h"
-#include <iostream>
 #include <map>
 
 // Character width in bits/pixels
@@ -144,7 +143,7 @@ int Text::Painter::paintString(juce::Graphics& g,
     // Map character widths:
     std::map<CharValue, int> drawnWidths;
     std::map<CharValue, std::pair<int, int>> borders;
-    int widthSum;
+    int widthSum = 0;
     for (const CharValue& charIndex : toPrint)
     {
         try
@@ -170,7 +169,6 @@ int Text::Painter::paintString(juce::Graphics& g,
             (float) width / (float) widthSum,
             (float) maxCharSize / (float) charSize);
     pixelSize = std::min(pixelSize, (float) height / float(charSize));
-    std::cout << "PixelSize = " << pixelSize << "\n";
             
     int xPos = x + pixelSize;
     for (int i = 0; i < toPrint.size(); i++)

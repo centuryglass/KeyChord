@@ -43,7 +43,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
     const int yPadding = getYPadding();
     const int rowHeight = paddedRowHeight - yPadding;
     const int charWidth = paddedCharWidth - xPadding;
-    int yPos = yPadding;
+    int yPos = 0;
     int xPos = xPadding;
 
     // A convenience function to more easily request character drawing 
