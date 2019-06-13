@@ -27,27 +27,3 @@ ConfigListener objects may track any number of ColourId values. Whenever a value
 
 #### [Theme\::Colour\::ListenerInterface](../../Source/GUI/Theme/Colour/Theme_Colour_ListenerInterface.h)
 ListenerInterface is an abstract interface inherited by ConfigListener, used by the JSONResource to send updates to relevant listener objects when the colour values it stores are updated.
-
-#### [Theme\::Colour\::ConfigPage](../../Source/GUI/Theme/Colour/Theme_Colour_ConfigPage.h)
-ConfigPage provides UI controls for updating application colour values within a page component.
-
-## Theme Images
-The Image submodule loads image assets with optional customized colours from the imageAssets.json configuration file.
-
-#### [Theme\::Image\::JSONResource](../../Source/GUI/Theme/Image/Theme_Image_JSONResource.h)
-JSONResource defines the [SharedResource](./SharedResource.md) class instance used to manage the imageAssets.json file.
-
-#### [Theme\::Image\::AssetList](../../Source/GUI/Theme/Image/Theme_Image_AssetList.h)
-AssetList objects store a set of image paths and custom image colours loaded from the JSON configuration file. Each AssetList object stores image paths and colours for a single UI component.
-
-#### [Theme\::Image\::JSONKeys](../../Source/GUI/Theme/Image/Theme_Image_JSONKeys.h)
-JSONKeys provides all JSON key values used to load individual image files and component image asset lists from the imageAssets.json file.
-
-#### [Theme\::Image\::ConfigFile](../../Source/GUI/Theme/Image/Theme_Image_ConfigFile.h)
-ConfigFile objects connect to the JSONResource to load AssetList objects for specific components, get individual image paths defined in the imageAssets file, or to change the image path values saved for specific images.
-
-#### [Theme\::Image\::ConfigListener](../../Source/GUI/Theme/Image/Theme_Image_ConfigListener.h)
-ConfigListener objects track any number of individual image keys defined in JSONKeys. These objects are notified by the JSONResource whenever an image path they track is updated.
-
-#### [Theme\::Image\::Component](../../Source/GUI/Theme/Image/Theme_Image_Component.h)
-Component is a template class used to create subclasses of [Widgets\::DrawableImage](../../Source/GUI/Widgets/Widgets_DrawableImage.h) that use image assets and colours provided by an Image\::AssetList.

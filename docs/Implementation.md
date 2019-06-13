@@ -9,9 +9,6 @@ How to add new classes to application modules.
 #### [Creating Test Classes](./implementation/NewTests.md):
 How to extend juce::UnitTest to create application test classes.
 
-#### [Creating UI Page Classes](./implementation/NewPages.md):
-How to extend Page::Component to create and use a new UI page.
-
 #### [Declaring Component ColourId values](./implementation/AddColourIds.md):
 How to add configurable colours to UI component classes.
 

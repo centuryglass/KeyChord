@@ -18,43 +18,6 @@ The Handler class provides an abstract basis for classes that safely access a si
 #### [SharedResource\::LockedPtr](../../Source/Framework/SharedResource/SharedResource_LockedPtr.h)
 LockedPtr objects are used by Handler objects to access their resource. As long as the LockedPtr object is in scope, the resource it accesses will remain locked. LockedPtr objects may be created to lock the resource for either reading or writing.
 
-## Modular Resources
-Some system resources need to be shared within the application, but are too complex to reasonably manage from within a single Resource class. Modular resources allow one Resource object to divide its data and responsibilities between any number of unique, specialized Module objects. Module objects may freely access other Module objects that belong to the same resource. Handler objects may be created that may only access a specific Module of a resource.
-
-#### [SharedResource\::Modular\::Resource](../../Source/Framework/SharedResource/Modular/SharedResource_Modular_Resource.h)
-Modular\::Resource is an abstract Resource subclass that holds a predetermined set of Module objects. Modular resources must create all of their modules on construction, and destroy all of their modules only on their own destruction. Modular resource classes must implement normal and const specializations of the getModule template function for each Module subclass they manage.
-
-#### [SharedResource\::Modular\::Module](../../Source/Framework/SharedResource/Modular/SharedResource_Modular_Module.h)
-Module objects handle a set of specialized responsibilities for a modular resource. Each module should be a distinct subclass of the Module class. Each module is associated with a single Resource subclass, and may only be created by that specific resource's object instance. Modules may freely access their own resource, or any of the other modules held by the same resource.
-
-#### [SharedResource\::Modular\::Handler](../../Source/Framework/SharedResource/Modular/SharedResource_Modular_Handler.h)
-The modular Handler class provides a basis for Handler objects that treat a single resource module as if it was an independant resource. Each modular Handler subclass may only access a single Module instance within a single Resource instance. Modular Handlers otherwise function identically to typical resource Handlers.
-
-#### [SharedResource\::Modular\::LockedPtr](../../Source/Framework/SharedResource/Modular/SharedResource_Modular_LockedPtr.h)
-The modular LockedPtr class allows modular Handler objects to securely access their Module the same way SharedResource\::LockedPtr objects provide secure access to a Resource.
-
-
-## Resource Threads
-Dedicated worker threads that take responsibility for a single task can be implemented as shared resources. The Thread submodule provides tools that allow these resources to safely control access to their stored data.
-
-#### [SharedResource\::Thread\::Thread](../../Source/Framework/SharedResource/Thread/SharedResource_Thread_Thread.h)
-The Thread class is the basis used to provide juce\::Thread functionality to Resource subclasses. Thread objects may lock themselves while running to prevent concurrent data access, and automatically stop their thread when the application starts to shut down. When inactive, Thread object threads may be configured to either sleep until notified, or to shut down entirely.
-
-#### [SharedResource\::Thread\::Resource](../../Source/Framework/SharedResource/Thread/SharedResource_Thread_Resource.h)
-The thread Resource class is an abstract basis for Thread classes that are also Resource classes. All of their functionality is inherited from the Thread and Resource classes.
-
-#### [SharedResource\::Thread\::Module](../../Source/Framework/SharedResource/Thread/SharedResource_Thread_Module.h)
-The thread Module class is an abstract basis for Thread classes that are also resource Module classes. All of their functionality is inherited from the Thread and Module classes.
-
-#### [SharedResource\::Thread\::Lock](../../Source/Framework/SharedResource/Thread/SharedResource_Thread_Lock.h)
-Lock objects are specialized handler objects created by Resource and Module threads to access their content lock, and prevent themselves from being destroyed while their thread is executing.
-
-#### [SharedResource\::Thread\::ScopedWriteLock](../../Source/Framework/SharedResource/Thread/SharedResource_Thread_ScopedWriteLock.h)
-ScopedWriteLock objects prevent any threads from accessing a thread Resource or Module besides the one that holds the write lock. They are identical to juce\::ScopedWriteLock objects, except that they're created to control a Thread\::Lock instead of a juce\::ReadWriteLock.
-
-#### [SharedResource\::Thread\::ScopedReadLock](../../Source/Framework/SharedResource/Thread/SharedResource_Thread_ScopedReadLock.h)
-ScopedReadLock objects prevent other threads from locking a thread Resource or Module for writing. They are identical to juce\::ScopedReadLock objects, except that they're created to control a Thread\::Lock instead of a juce\::ReadWriteLock.
-
 ## Private Implementation Classes
 
 #### [SharedResource\::Instance](../../Source/Framework/SharedResource/Implementation/SharedResource_Instance.h)
