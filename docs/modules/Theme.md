@@ -21,9 +21,3 @@ JSONKeys provides the list of all colour keys that should be present in the colo
 
 #### [Theme\::Colour\::ConfigFile](../../Source/GUI/Theme/Colour/Theme_Colour_ConfigFile.h)
 ConfigFile objects connect to the JSONResource to lookup or change colour values by ColourId value or JSON key.
-
-#### [Theme\::Colour\::ConfigListener](../../Source/GUI/Theme/Colour/Theme_Colour_ConfigListener.h)
-ConfigListener objects may track any number of ColourId values. Whenever a value a ConfigListener tracks is updated by the JSONResource, the listener will be notified via the ConfigListener\::colourChanged function.
-
-#### [Theme\::Colour\::ListenerInterface](../../Source/GUI/Theme/Colour/Theme_Colour_ListenerInterface.h)
-ListenerInterface is an abstract interface inherited by ConfigListener, used by the JSONResource to send updates to relevant listener objects when the colour values it stores are updated.
