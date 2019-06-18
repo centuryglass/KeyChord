@@ -3,6 +3,18 @@
 KeyChord divides its functionality into modules. Each Module has its own source directory, makefile, and namespace.
 
 ---
+### Main
+The main application code files responsible for starting up and shutting down KeyChord.
+
+#### [Main](../Source/Main.cpp)
+Immediately starts up the JUCE Application object when the program is started.
+
+#### [Application](../Source/Application.cpp)
+Initializes the program on launch, shuts everything down on program termination, and provides interfaces for controlling the main application window or closing the application.
+
+#### [MainWindow](../Source/MainWindow.cpp)
+Initializes and represents the application's window.
+
 ### GUI
 Modules that create the application's user interface.
 

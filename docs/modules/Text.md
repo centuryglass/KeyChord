@@ -32,7 +32,7 @@ CharSet::Type defines the four types of available character set.
 ConfigFile objects access the character set configuration resource to read character set names and get CharSet\::Cache objects.
 
 #### [Text\::CharSet\::JSONResource](../../Source/GUI/Text/CharSet/Text_CharSet_JSONResource.h)
-JSONResource handles all direct access to the JSON character set configuration file.
+JSONResource handles all direct access to the JSON character set configuration file, and stores loaded character set data for as long as it is needed.
 
 #### [Text\::CharSet\::JSONKeys](../../Source/GUI/Text/CharSet/Text_CharSet_JSONKeys.h)
 JSONKeys defines all key strings used to store data in the JSON character set configuration file.
