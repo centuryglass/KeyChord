@@ -41,9 +41,8 @@ Text::CharValue Input::Key::ConfigFile::getKeyChar
     return getKeyBinding(bindingID)->getCharName();
 }
 
-/*
- * Loads all key binding information for an action from the configuration file.
- */
+
+// Loads all key binding information for an action from the configuration file.
 const Input::Key::Binding* Input::Key::ConfigFile::getKeyBinding
 (const juce::Identifier& bindingID) const
 {

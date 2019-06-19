@@ -73,7 +73,7 @@ namespace Text
         static const constexpr CharValue down        = 0x7;
         static const constexpr CharValue left        = 0x8;
         static const constexpr CharValue right       = 0x9;
-        
+
         // Function keys:
         static const constexpr CharValue f1          = 0x80;
         static const constexpr CharValue f2          = 0x81;
@@ -99,8 +99,8 @@ namespace Text
         static const constexpr CharValue wideOutline = 0x1e;
 
         // Bounds to use when recognizing normal ASCII printable characters:
-        static const constexpr CharValue normalPrintMin = 0x20; 
-        static const constexpr CharValue normalPrintMax = 0x7f; 
+        static const constexpr CharValue normalPrintMin = 0x20;
+        static const constexpr CharValue normalPrintMax = 0x7f;
 
         // Bounds to use when recognizing extended printable characters:
         static const constexpr CharValue extraPrintMin = 0xa0;

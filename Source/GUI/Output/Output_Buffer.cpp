@@ -16,7 +16,6 @@ Text::CharString Output::Buffer::getBufferedText() const
 }
 
 
-
 // Gets the modifier key flags that will be applied to the output.
 int Output::Buffer::getModifierFlags() const
 {
@@ -55,7 +54,7 @@ void Output::Buffer::clear(const bool clearModifiers)
     }
 }
 
-    
+
 // Checks if the buffer currently contains any text or key values.
 bool Output::Buffer::isEmpty() const
 {

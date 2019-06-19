@@ -54,7 +54,7 @@ namespace Input { namespace Key { namespace JSONKeys
             "Select special character set");
     static const juce::Identifier selectModSet(
             "Select modifier set");
-    
+
     const juce::Array<const juce::Identifier*> allKeys =
     {
         &chord1,

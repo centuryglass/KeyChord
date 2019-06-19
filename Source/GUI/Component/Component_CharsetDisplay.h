@@ -30,7 +30,7 @@ public:
      *
      * @return  One, the component only contains a single row.
      */
-     int getRowCount() const override;
+    int getRowCount() const override;
 
 private:
     /**

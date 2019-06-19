@@ -8,7 +8,7 @@
 
 
 // Gets the number of character columns the KeyGrid contains.
-int Component::CharsetDisplay::getColumnCount() const 
+int Component::CharsetDisplay::getColumnCount() const
 {
     const Text::CharSet::Cache* activeSet = getActiveSet();
     if (activeSet == nullptr)
@@ -20,7 +20,7 @@ int Component::CharsetDisplay::getColumnCount() const
 
 
 // Gets the number of character rows the KeyGrid contains.
-int Component::CharsetDisplay::getRowCount() const 
+int Component::CharsetDisplay::getRowCount() const
 {
     return 1;
 }
@@ -57,10 +57,10 @@ void Component::CharsetDisplay::paint(juce::Graphics& g)
     const int xStart = (getWidth() % getColumnCount()) / 2;
     int xPos = xStart;
     int yPos = 0;
-    
-    // A convenience function to more easily request character drawing 
+
+    // A convenience function to more easily request character drawing
     // operations:
-    const auto drawChar = 
+    const auto drawChar =
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
         (const Text::CharValue toDraw)
     {
@@ -74,12 +74,12 @@ void Component::CharsetDisplay::paint(juce::Graphics& g)
     for (int i = 0; i < activeSet->getSize(); i++)
     {
         // Current character set index:
-        const Text::CharValue charIndex 
+        const Text::CharValue charIndex
                 = activeSet->getCharAtIndex(i, isShifted);
         // Whether the character needs double the normal width:
         const bool wideDrawChar = Text::Values::isWideValue(charIndex);
         // Binary mask for the chord used to type the character:
-        const Input::Chord characterChord 
+        const Input::Chord characterChord
                 = activeSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
         const bool charSelected = (characterChord == getHeldChord());

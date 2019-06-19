@@ -22,7 +22,7 @@ public:
     MainResource();
 
     virtual ~MainResource();
-    
+
 private:
     /**
      * @brief  Gets the set of all basic(non-array, non-object) properties

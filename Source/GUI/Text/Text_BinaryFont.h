@@ -7,9 +7,9 @@
 #include "Text_CharTypes.h"
 #include "JuceHeader.h"
 
-namespace Text 
-{ 
-    namespace BinaryFont 
+namespace Text
+{
+    namespace BinaryFont
     {
         // The width and height of each character:
         static const constexpr int charSize = 10;
@@ -23,7 +23,7 @@ namespace Text
          *
          * @param row        The index of a row of pixels in the character
          *                   image, ordered from top to bottom.
-         *                   
+         *
          * @return           A bitmap storing black and white image data for
          *                   that row.
          */
@@ -38,7 +38,7 @@ namespace Text
          *
          * @param row        The index of a row of pixels in the character
          *                   image, ordered from top to bottom.
-         *                   
+         *
          * @return           A bitmap storing black and white image data for
          *                   that row.
          */

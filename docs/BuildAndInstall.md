@@ -1,9 +1,9 @@
-# Building and Installing KeyChord for Gameshell
+# Building and Installing KeyChord for ClockworkPi GameShell
 These instructions will be improved shortly.
 
 ## 1. Remapping Light Keys:
 
-  To properly use the light keys for chorded keyboard entry, the key module needs to be remapped so that LK3 is no longer assigned as shift. Follow [these instructions](https://forum.clockworkpi.com/t/tutorial-how-to-compile-and-upload-code-to-the-keypad/1065) to get everything set up to update the keypad.  I've included my alternate keypad code in this project in the clockworkpi_Keypad directory. This will remap LK3 to 'z', and shift + LK3 to f12.
+  To properly use the light keys for chorded keyboard entry, the key module needs to be remapped so that LK3 is no longer assigned as shift. Follow [these instructions](https://forum.clockworkpi.com/t/tutorial-how-to-compile-and-upload-code-to-the-keypad/1065) to get everything set up to update the keypad.  I've included my alternate Arduino keypad code in the clockworkpi_Keypad directory. This will remap LK3 to 'z', and shift + LK3 to f12.
 
 All steps from this point on should be done on the Gameshell over SSH.
 

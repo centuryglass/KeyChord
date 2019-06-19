@@ -16,7 +16,7 @@
  * is doing something unusual, but I'm not really sure. For now, I'm just going
  * to move the window when sending input, and put it back afterwards.
  */
-static const constexpr int windowReadyForSending = 
+static const constexpr int windowReadyForSending =
         (int) Application::WindowFlag::snapToBottom;
 
 // Commmand prefix used to transmit key presses to the focused window.
@@ -32,7 +32,7 @@ static const constexpr char* dbgPrefix = "Input::Sending::";
  *         transferred to the target window, saving and returning the previous
  *         window state.
  *
- * @return  The combination of window flags describing the window's previous 
+ * @return  The combination of window flags describing the window's previous
  *          state.
  */
 static int prepareAppWindow()
@@ -77,7 +77,7 @@ static bool focusTarget(const int targetWindow)
  * @brief  Attempts to focus the KeyChord application window, restoring its
  *         previous state.
  *
- * @param restoredWindowFlags  A set of window flags that describe how the 
+ * @param restoredWindowFlags  A set of window flags that describe how the
  *                             window was placed.
  *
  * @return                     Whether focusing the window succeeded.
@@ -103,7 +103,7 @@ static bool focusAppWindow(const int restoredWindowFlags = 0)
 }
 
 /**
- * @brief  Gets the string used to represent a single key input value to 
+ * @brief  Gets the string used to represent a single key input value to
  *         xdotool.
  *
  * @param keyValue   The value of the key that should be typed.
@@ -184,7 +184,7 @@ void Output::Sending::sendBufferedOutput
         DBG(dbgPrefix << __func__ << ": Failed to focus target window!");
         jassertfalse;
     }
-    const juce::String modifiers 
+    const juce::String modifiers
             = Modifiers::getModString(outputBuffer.getModifierFlags());
     const Text::CharString inputText = outputBuffer.getBufferedText();
     for (const Text::CharValue& keyValue : inputText)

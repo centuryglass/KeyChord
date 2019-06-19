@@ -2,7 +2,7 @@
 
 // Encodes all font data. This array is generated from a 160x160 black and white
 // image file using project-scripts/ImageBin.pl.
-const juce::uint32 fontMap [800] = 
+const juce::uint32 fontMap [800] =
 {
     0b00000000001111111111111111111100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000000, 0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
     0b00000000001000000001111111111100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000000, 0b00000000000000000000000000000000, 0b00000000000000000000000000000000,
@@ -177,7 +177,7 @@ static const constexpr int arrayValSize = 32;
 // Largest valid character value:
 static const constexpr int maxChar = 255;
 
-template <typename RowType> 
+template <typename RowType>
 static RowType getVariableRow(const Text::CharValue character, const int row,
         const int rowSize)
 {
@@ -200,14 +200,12 @@ static RowType getVariableRow(const Text::CharValue character, const int row,
     const uint32 arrayIndex = bitIndex / (uint32) arrayValSize;
     const int indexBitOffset = bitIndex % arrayValSize;
     const int overflow = (indexBitOffset + rowSize) - arrayValSize;
-    
-    /*
-    DBG("Character value: " << (unsigned char ) character 
-            << ", arrayIndex: " 
-            << (int) arrayIndex << " bitX:" << (int) bitX << ", bitY:" 
-            << (int) bitY << " bitIndex:" << (int) bitIndex);
-    */
-   
+
+    // DBG("Character value: " << (unsigned char ) character
+    // << ", arrayIndex: "
+    // << (int) arrayIndex << " bitX:" << (int) bitX << ", bitY:"
+    // << (int) bitY << " bitIndex:" << (int) bitIndex);
+
 
     if (overflow > 0)
     {
@@ -224,12 +222,14 @@ static RowType getVariableRow(const Text::CharValue character, const int row,
     return fontMap[arrayIndex] >> rightShift;
 }
 
+
 // Gets one row of image data for a specific character.
 juce::uint16 Text::BinaryFont::getCharacterRow(const CharValue character,
         const int row)
 {
     return getVariableRow<juce::uint16>(character, row, charSize);
 }
+
 
 // Gets one row of image data for a double-wide character.
 juce::uint32 Text::BinaryFont::getDoubleCharRow

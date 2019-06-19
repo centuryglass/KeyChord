@@ -50,7 +50,7 @@ juce::String Input::Key::Binding::getActionDescription() const
     using juce::Identifier;
     using juce::String;
 
-    // Because the user can reassign and rename character sets freely (except
+    // Because the user can reassign and rename character sets freely(except
     // the modifier set), localized text for selecting a character set is loaded
     // differently.
     static const map<const Identifier, Text::CharSet::Type> setMap =
@@ -63,7 +63,7 @@ juce::String Input::Key::Binding::getActionDescription() const
     {
         const Text::CharSet::Type setType = setMap.at(jsonKey);
         Text::CharSet::ConfigFile charsetConfig;
-        return localeText(charSetPreKey) 
+        return localeText(charSetPreKey)
                 + charsetConfig.getSetName(setType)
                 + localeText(charSetPostKey);
     }

@@ -59,7 +59,7 @@ public:
     const juce::Identifier& getActionID() const;
 
     /**
-     * @brief  Gets the localized description of this binding's action. 
+     * @brief  Gets the localized description of this binding's action.
      *
      * @return  The localized action description, used when displaying key
      *          bindings to the user.

@@ -10,7 +10,7 @@ namespace Component
 {
     /**
      * @brief  The set of shared colors used by Component::KeyGrid classes.
-     *         
+     *
      */
     enum ColourIds
     {

@@ -2,13 +2,13 @@
 /**
  * @file  Text_Charset_Type.h
  *
- * @brief  Defines the types of available keyboard character sets. 
+ * @brief  Defines the types of available keyboard character sets.
  */
 
-namespace Text 
+namespace Text
 {
-    namespace CharSet 
-    { 
+    namespace CharSet
+    {
         enum class Type
         {
             main,         // main set, lowercase letters by default.
@@ -17,5 +17,5 @@ namespace Text
             modifier,     // modifier keys
         };
         static const constexpr int numCharacterSets = 4;
-    } 
+    }
 }

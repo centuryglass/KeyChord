@@ -20,7 +20,7 @@ Config::MainResource::~MainResource() { }
 
 // Gets the set of all basic(non-array, non-object) properties tracked by this
 // Resource.
-const std::vector<Config::DataKey>& Config::MainResource::getConfigKeys() const  
+const std::vector<Config::DataKey>& Config::MainResource::getConfigKeys() const
 {
     static const std::vector<Config::DataKey> keyList =
     {

@@ -16,7 +16,7 @@ static const constexpr char* dbgPrefix = "Text::CharSet::JSONResource::";
 #endif
 
 // Loads all character sets on construction.
-Text::CharSet::JSONResource::JSONResource() : 
+Text::CharSet::JSONResource::JSONResource() :
 Config::FileResource(resourceKey, configFilename)
 {
     using juce::var;
@@ -70,7 +70,7 @@ bool Text::CharSet::JSONResource::getShifted() const
 
 
 // Updates the active character set type
-void Text::CharSet::JSONResource::setActiveType(const Type newActiveType) 
+void Text::CharSet::JSONResource::setActiveType(const Type newActiveType)
 {
     activeType = newActiveType;
 }
@@ -82,10 +82,11 @@ void Text::CharSet::JSONResource::setShifted(const bool shifted)
     this->shifted = shifted;
 }
 
+
 // Gets the set of all basic(non-array, non-object) properties tracked by this
 // Resource.
 const std::vector<Config::DataKey>& Text::CharSet::JSONResource::getConfigKeys()
-    const  
+    const
 {
     static const std::vector<Config::DataKey> keyList =
     {
@@ -99,7 +100,7 @@ const std::vector<Config::DataKey>& Text::CharSet::JSONResource::getConfigKeys()
 
 // Checks if a key string is valid for this FileResource.
 bool Text::CharSet::JSONResource::isValidKey
-(const juce::Identifier& key) const 
+(const juce::Identifier& key) const
 {
     using namespace JSONKeys;
     const juce::Array<juce::Identifier> keyList =

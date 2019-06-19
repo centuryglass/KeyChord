@@ -41,7 +41,7 @@ public:
      *
      * @return  The number of chord input keys.
      */
-     int getRowCount() const override;
+    int getRowCount() const override;
 
 private:
     /**

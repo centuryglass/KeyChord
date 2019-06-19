@@ -45,6 +45,7 @@ namespace Text { namespace Values {
     };
 } }
 
+
 // Gets the character value stored in a string loaded from a configuration file.
 unsigned int Text::Values::getCharValue
 (const juce::String charString)
@@ -52,7 +53,7 @@ unsigned int Text::Values::getCharValue
     // Immediately recognize empty strings as invalid
     if (charString.length() == 0)
     {
-        DBG(dbgPrefix << __func__ 
+        DBG(dbgPrefix << __func__
                 << ": Tried to read a character value from an empty string.");
         return 0;
     }
@@ -68,14 +69,14 @@ unsigned int Text::Values::getCharValue
         CharValue specialChar = specialCharMap.at(charString.toLowerCase());
         if (specialChar == outline || specialChar == fill)
         {
-            DBG(dbgPrefix << __func__ 
+            DBG(dbgPrefix << __func__
                     << ": Invalid 'outline' or 'fill' character read.");
             return 0;
         }
         return specialChar;
 
     }
-    catch (const std::out_of_range& e)
+    catch(const std::out_of_range& e)
     {
         // Read numeric values:
         CharValue numericValue = 0;
@@ -97,9 +98,9 @@ unsigned int Text::Values::getCharValue
                 return specialValueMap.at(numericValue);
             }
             // Discard keys overwritten by special character codes:
-            if (numericValue < normalPrintMin 
-                    || (numericValue > normalPrintMax 
-                       && numericValue < extraPrintMin))
+            if (numericValue < normalPrintMin
+                    || (numericValue > normalPrintMax
+                        && numericValue < extraPrintMin))
             {
                 return 0;
             }
@@ -157,7 +158,7 @@ juce::String Text::Values::getXString(const CharValue charValue)
     {
         return keySymMap.at(charValue);
     }
-    catch (const std::out_of_range& e)
+    catch(const std::out_of_range& e)
     {
         // If it's not a typical special character, it's not out of bounds, and
         // it's not in the BinaryFont, something's gone wrong.

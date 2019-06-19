@@ -7,7 +7,7 @@
 
 #include "Output_Buffer.h"
 
-namespace Output 
+namespace Output
 {
     namespace Sending
     {

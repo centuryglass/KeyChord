@@ -45,13 +45,13 @@ public:
      *
      * @param activeSet       The character set mapping between characters and
      *                        chords.
-     *                        
+     *
      * @param heldChord       The current held Chord value.
      *
      * @param input           The current cached character index list.
      */
-    void updateChordState(const Text::CharSet::Cache* activeSet, 
-            const Input::Chord heldChord, 
+    void updateChordState(const Text::CharSet::Cache* activeSet,
+            const Input::Chord heldChord,
             const Text::CharString input);
 
     /**

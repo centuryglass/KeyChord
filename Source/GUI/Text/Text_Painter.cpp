@@ -6,9 +6,9 @@
 
 // Character width in bits/pixels
 static const constexpr int charSize = 10;
-// Number of (scaled) blank pixels to insert between characters:
+// Number of(scaled) blank pixels to insert between characters:
 static const constexpr int charPixelPadding = 1;
-// Number of (scaled) blank pixels to represent whitespace characters:
+// Number of(scaled) blank pixels to represent whitespace characters:
 static const constexpr int whitespaceWidth = 2;
 
 
@@ -24,7 +24,7 @@ static std::pair<int, int> charBounds(const Text::CharValue toMeasure)
 {
     const bool doubleWidth = Text::Values::isWideValue(toMeasure);
     const int charWidth = doubleWidth ? charSize * 2 : charSize;
-    
+
     std::pair<int, int> bounds = {-1, -1 };
 
     for (int row = 0; row < charSize; row++)
@@ -45,7 +45,7 @@ static std::pair<int, int> charBounds(const Text::CharValue toMeasure)
             {
                 continue;
             }
-            const bool pixelFound = ((1 << (charWidth - xPixel - 1)) 
+            const bool pixelFound = ((1 << (charWidth - xPixel - 1))
                     & rowPixels);
             if (pixelFound)
             {
@@ -91,7 +91,7 @@ int Text::Painter::paintChar(juce::Graphics& g, const CharValue toPrint,
     const int charWidth = doubleWidth ? charSize * 2 : charSize;
     const int pixelWidth = std::max(1, width / charWidth);
     const int pixelHeight = std::max(1, height / charSize);
-    
+
     int rightmost = x;
 
     for (int row = 0; row < charSize; row++)
@@ -108,13 +108,13 @@ int Text::Painter::paintChar(juce::Graphics& g, const CharValue toPrint,
         int pixelsToDraw = 0;
         for (int xPixel = 0; xPixel < charWidth; xPixel++)
         {
-            const bool pixelFound = ((1 << (charWidth - xPixel - 1)) 
+            const bool pixelFound = ((1 << (charWidth - xPixel - 1))
                     & rowPixels);
             if (pixelFound)
             {
                 pixelsToDraw++;
             }
-            if ((pixelsToDraw > 0) && (xPixel == (charWidth - 1) 
+            if ((pixelsToDraw > 0) && (xPixel == (charWidth - 1)
                         || !pixelFound))
             {
                 const int xPos = (xPixel - (pixelFound ? pixelsToDraw
@@ -150,10 +150,10 @@ int Text::Painter::paintString(juce::Graphics& g,
         {
             widthSum += drawnWidths.at(charIndex);
         }
-        catch (const std::out_of_range& e)
+        catch(const std::out_of_range& e)
         {
             const std::pair<CharValue, int> border = charBounds(charIndex);
-            int width = border.second - border.first; 
+            int width = border.second - border.first;
             if (width == 0)
             {
                 width = whitespaceWidth;
@@ -169,7 +169,7 @@ int Text::Painter::paintString(juce::Graphics& g,
             (float) width / (float) widthSum,
             (float) maxCharSize / (float) charSize);
     pixelSize = std::min(pixelSize, (float) height / float(charSize));
-            
+
     int xPos = x + pixelSize;
     for (int i = 0; i < toPrint.size(); i++)
     {

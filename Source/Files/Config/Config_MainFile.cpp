@@ -5,6 +5,7 @@
 
 Config::MainFile::MainFile() { }
 
+
 // Checks if the application should be displayed in minimized mode.
 bool Config::MainFile::getMinimized() const
 {

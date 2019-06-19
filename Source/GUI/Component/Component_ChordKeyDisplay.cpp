@@ -31,6 +31,7 @@ int Component::ChordKeyDisplay::getRowCount() const
     return Input::Chord::numChordKeys();
 }
 
+
 // Paints the chord keys.
 void Component::ChordKeyDisplay::paint(juce::Graphics& g)
 {
@@ -46,9 +47,9 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
     int yPos = 0;
     int xPos = xPadding;
 
-    // A convenience function to more easily request character drawing 
+    // A convenience function to more easily request character drawing
     // operations:
-    const auto drawChar = 
+    const auto drawChar =
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
         (const unsigned int toDraw)
     {
@@ -56,7 +57,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
         Text::Painter::paintChar(g, toDraw, xPos, yPos,
                 (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
     };
-    for(int keyIdx = 0; keyIdx < chordKeys.size(); keyIdx++)
+    for (int keyIdx = 0; keyIdx < chordKeys.size(); keyIdx++)
     {
         const CharValue toDraw = chordKeys[keyIdx];
         bool wideDrawChar = Values::isWideValue(toDraw);
@@ -73,7 +74,7 @@ void Component::ChordKeyDisplay::paint(juce::Graphics& g)
         }
         drawChar(toDraw);
         //Text::Painter::paintChar(g, toDraw, xPos + xPadding, yPos + yPadding,
-        //        (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
+        // (wideDrawChar ? charWidth * 2 : charWidth), rowHeight, true);
         yPos += paddedRowHeight;
     }
 }

@@ -35,7 +35,7 @@ Config::FileResource::FileResource(
 SharedResource::Resource(resourceKey),
 filename(configFilename),
 configJson(getFullConfigPath(configFilename)),
-defaultJson(defaultAssetPath + filename) 
+defaultJson(defaultAssetPath + filename)
 {
 #ifdef JUCE_DEBUG
     if (!defaultJson.isValidFile())

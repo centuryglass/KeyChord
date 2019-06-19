@@ -87,7 +87,7 @@ Input::Chord Input::Chord::withKeyReleased(const uint8 keyIndex) const
     {
         return Chord();
     }
-    return Chord(bitMap & ~(1 << keyIndex));
+    return Chord(bitMap & ~ (1 << keyIndex));
 }
 
 
@@ -99,28 +99,28 @@ Input::Chord::uint8 Input::Chord::getByteValue() const
 
 
 // Checks if two chords are equal.
-bool Input::Chord::operator==(const Chord& rhs) const
+bool Input::Chord::operator== (const Chord& rhs) const
 {
     return bitMap == rhs.bitMap;
 }
 
 
 // Checks if two chords are not equal.
-bool Input::Chord::operator!=(const Chord& rhs) const
+bool Input::Chord::operator!= (const Chord& rhs) const
 {
     return bitMap != rhs.bitMap;
 }
 
 
 // Checks if this Chord comes after another chord.
-bool Input::Chord::operator<(const Chord& rhs) const
+bool Input::Chord::operator< (const Chord& rhs) const
 {
     return bitMap < rhs.bitMap;
 }
 
 
 // Checks if this Chord comes before another chord
-bool Input::Chord::operator>(const Chord& rhs) const
+bool Input::Chord::operator> (const Chord& rhs) const
 {
     return bitMap > rhs.bitMap;
 }

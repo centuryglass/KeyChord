@@ -42,7 +42,7 @@ public:
     /**
      * @brief  Gets the JUCE KeyPress bound to a particular action.
      *
-     * @param bindingID  An Input::Key::JSONKeys ID value associated with the 
+     * @param bindingID  An Input::Key::JSONKeys ID value associated with the
      *                   key binding.
      *
      * @return           A KeyPress object that may be used to detect if the
@@ -53,7 +53,7 @@ public:
     /**
      * @brief  Gets a localized description of this key's action.
      *
-     * @param bindingID  An Input::Key::JSONKeys ID value associated with the 
+     * @param bindingID  An Input::Key::JSONKeys ID value associated with the
      *                   key binding.
      *
      * @return           The localized description text.
@@ -63,7 +63,7 @@ public:
     /**
      * @brief  Gets the name that should be used to describe the bound key.
      *
-     * @param bindingID  An Input::Key::JSONKeys ID value associated with the 
+     * @param bindingID  An Input::Key::JSONKeys ID value associated with the
      *                   key binding.
      *
      * @return           The key name defined in the configuration file.
@@ -74,7 +74,7 @@ public:
      * @brief  Gets a single key character that may be used to represent the
      *         bound key.
      *
-     * @param bindingID  An Input::Key::JSONKeys ID value associated with the 
+     * @param bindingID  An Input::Key::JSONKeys ID value associated with the
      *                   key binding.
      *
      * @return           The key character defined in the configuration file.
@@ -86,7 +86,7 @@ private:
      * @brief  Loads all key binding information for an action from the
      *         configuration file.
      *
-     * @param bindingID  An Input::Key::JSONKeys ID value associated with the 
+     * @param bindingID  An Input::Key::JSONKeys ID value associated with the
      *                   key binding.
      *
      * @return           A pointer to the key binding data object.

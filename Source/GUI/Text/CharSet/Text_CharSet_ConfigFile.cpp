@@ -11,6 +11,7 @@ static const constexpr char* dbgPrefix = "Text::CharSet::ConfigFile::";
 
 Text::CharSet::ConfigFile::ConfigFile() { }
 
+
 // Gets cached data for a configurable character set.
 const Text::CharSet::Cache& Text::CharSet::ConfigFile::getActiveSet() const
 {
@@ -26,7 +27,7 @@ juce::String Text::CharSet::ConfigFile::getSetName(const Type type) const
     using juce::String;
     const SharedResource::LockedPtr<const JSONResource> charsetConfig
             = getReadLockedResource();
-    switch (type)
+    switch(type)
     {
         case Type::main:
             return charsetConfig->getConfigValue<String>(JSONKeys::mainSetName);
@@ -38,10 +39,11 @@ juce::String Text::CharSet::ConfigFile::getSetName(const Type type) const
         case Type::modifier:
             return "modifier (TODO: localize)";
     }
-    DBG(dbgPrefix << __func__ << ": invalid set type \"" << (int) type 
+    DBG(dbgPrefix << __func__ << ": invalid set type \"" << (int) type
             << "\".");
     return String();
 }
+
 
 // Gets the character set type that is currently selected.
 const Text::CharSet::Type Text::CharSet::ConfigFile::getActiveType() const
@@ -53,7 +55,7 @@ const Text::CharSet::Type Text::CharSet::ConfigFile::getActiveType() const
 
 
 // Updates the active character set type
-void Text::CharSet::ConfigFile::setActiveType(const Type newActiveType) 
+void Text::CharSet::ConfigFile::setActiveType(const Type newActiveType)
 {
     const SharedResource::LockedPtr<JSONResource> charsetConfig
             = getWriteLockedResource();

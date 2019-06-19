@@ -15,7 +15,7 @@ namespace Text { namespace CharSet { class Cache; } }
 /**
  * @brief  An abstract basis for classes that draw a grid of key values.
  *
- *  KeyGrid is the basis for all classes that draw grids of values using 
+ *  KeyGrid is the basis for all classes that draw grids of values using
  * Text::Painter. It tracks the dimensions of the grid, the current held Chord
  * value, and the active character set, so that inheriting classes can access
  * and draw this information. It also tracks the size and padding space used
@@ -43,7 +43,7 @@ public:
      *
      * @param charSet  The character set mapping between characters and chords.
      */
-    virtual void updateCharacterSet(const Text::CharSet::Cache* charSet); 
+    virtual void updateCharacterSet(const Text::CharSet::Cache* charSet);
 
     /**
      * @brief  Gets the number of character columns the KeyGrid contains.
@@ -66,7 +66,7 @@ public:
      * @param xPadding  Fraction of key width to leave empty on the left and
      *                  right side of each key.
      *
-     * @param yPadding  Fraction of key height to leave empty on the top and 
+     * @param yPadding  Fraction of key height to leave empty on the top and
      *                  bottom side of each key.
      */
     virtual void setPaddingFractions

@@ -86,6 +86,7 @@ void Util::ConditionChecker::waitForUpdate(const bool runEventLoop)
     }
 }
 
+
 // Sets how frequently the object should check for its condition to be met.
 void Util::ConditionChecker::setCheckInterval
 (const int interval, const float multiplier)

@@ -16,7 +16,7 @@ public:
     FocusControl();
 
     /**
-     * @brief  Focuses the window with the given window ID, waiting until 
+     * @brief  Focuses the window with the given window ID, waiting until
      *         focus is gained successfully before doing anything else.
      *
      * @param windowID   The X11 window ID of the window that should be focused.

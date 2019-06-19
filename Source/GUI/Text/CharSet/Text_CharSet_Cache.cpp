@@ -51,7 +51,7 @@ static const juce::uint8 chordConvenienceOrder [] =
     0b11110,
     // All Keys:
     0b11111,
-    // All zero (invalid)
+    // All zero(invalid)
     0b00000,
 };
 
@@ -68,7 +68,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
     if (! setData.isArray())
     {
         DBG(dbgPrefix << __func__ << ": Error, character set value not array");
-        DBG(dbgPrefix << __func__ << ": Invalid set data: " 
+        DBG(dbgPrefix << __func__ << ": Invalid set data: "
                 << setData.toString());
         return;
     }
@@ -129,7 +129,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
                 = [](const var& varCharPair, const Identifier& key)
         {
             CharValue charValue = 0;
-            if(! varCharPair.hasProperty(key))
+            if (! varCharPair.hasProperty(key))
             {
                 return charValue;
             }
@@ -139,7 +139,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
                 // Convert integers to hex strings so they can't be
                 // misinterpreted as nonstandard character values:
                 int value = varChar.operator int();
-                charValue = Values::getCharValue(String("0x") 
+                charValue = Values::getCharValue(String("0x")
                         + String::toHexString(value));
             }
             else
@@ -153,7 +153,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
         if (newPair.charPair.charValue == 0)
         {
             DBG(dbgPrefix << __func__ << ": Warning: character value \""
-                    << charVar.toString() 
+                    << charVar.toString()
                     << "\" has an invalid primary character.");
             continue;
         }
@@ -181,12 +181,12 @@ Text::CharSet::Cache::Cache(const juce::var setData)
                         chordByte |= (1 << i);
                     }
                 }
-                jassert (chordByte > 0);
+                jassert(chordByte > 0);
                 Input::Chord explicitChord(chordByte);
                 if (assignChord(newPair.charPair, explicitChord))
                 {
                     newPair.priority = -1;
-                    DBG(dbgPrefix << __func__ 
+                    DBG(dbgPrefix << __func__
                             << ": Explicitly assigned chord \"" << chordString
                             << "\" to character value \""
                             << charVar.toString());
@@ -195,14 +195,14 @@ Text::CharSet::Cache::Cache(const juce::var setData)
                 {
                     DBG(dbgPrefix << __func__ << ": Couldn't assign chord \""
                             << chordString << "\" to character value \""
-                            << charVar.toString() 
+                            << charVar.toString()
                             << "\", chord priority will be used instead.");
                 }
             }
             else
             {
                 DBG(dbgPrefix << __func__ << ": Warning: character value \""
-                        << charVar.toString() 
+                        << charVar.toString()
                         << "\" uses invalid chord string \""
                         << chordString << "\"");
             }
@@ -219,7 +219,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
             else
             {
                 DBG(dbgPrefix << __func__ << ": Warning: character value \""
-                        << charVar.toString() 
+                        << charVar.toString()
                         << "\" has a non-integer priority value.");
             }
         }
@@ -249,8 +249,8 @@ Text::CharSet::Cache::Cache(const juce::var setData)
             chordIndex++;
             nextChord = Input::Chord(chordConvenienceOrder[chordIndex]);
         }
-        jassert (chordIndex < numChords);
-        
+        jassert(chordIndex < numChords);
+
         const CharPair& nextPair = chordOrderedSet.getReference(i).charPair;
         assignChord(nextPair, nextChord);
         chordIndex++;
@@ -258,7 +258,7 @@ Text::CharSet::Cache::Cache(const juce::var setData)
 }
 
 
- // Creates a character set cache for the modifier keys.
+// Creates a character set cache for the modifier keys.
 Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
 {
     Cache modCache;
@@ -284,6 +284,7 @@ Text::CharSet::Cache Text::CharSet::Cache::getModCharset()
     return modCache;
 }
 
+
 // Gets the character in the alphabet with a particular index value.
 Text::CharValue Text::CharSet::Cache::getCharAtIndex
 (const unsigned int index, const bool shifted) const
@@ -305,7 +306,7 @@ Text::CharValue Text::CharSet::Cache::getChordCharacter
         return shifted ? charPairMap.at(chord).shiftedValue :
             charPairMap.at(chord).charValue;
     }
-    catch (const std::out_of_range& e)
+    catch(const std::out_of_range& e)
     {
         return 0;
     }
@@ -320,7 +321,7 @@ Input::Chord Text::CharSet::Cache::getCharacterChord
     {
         return chordMap.at(character);
     }
-    catch (const std::out_of_range& e)
+    catch(const std::out_of_range& e)
     {
         DBG(dbgPrefix << __func__ << ": Couldn't find chord for char value 0x"
                 << juce::String::toHexString((Text::CharValue) character)
@@ -335,6 +336,7 @@ int Text::CharSet::Cache::getSize() const
 {
     return charSet.size();
 }
+
 
 // Gets how many characters in this set need twice as much width to draw.
 int Text::CharSet::Cache::wideDrawCharacterCount() const

@@ -43,7 +43,7 @@ Component::MainView::MainView()
 // Updates the current state of the chorded keyboard, immediately redrawing the
 // component if the state changes.
 void Component::MainView::updateChordState(
-        const Text::CharSet::Cache* activeSet, 
+        const Text::CharSet::Cache* activeSet,
         const Input::Chord heldChord,
         const Text::CharString input)
 {

@@ -13,7 +13,7 @@ namespace Input { class Chord; }
  * @brief  Represents a key combination that, when released, may be used to
  *         select a specific keyboard input event.
  *
- *  Chorded input allows 31 different characters to be typed using only five 
+ *  Chorded input allows 31 different characters to be typed using only five
  * keys. Any combination of chord keys is held down, and then are released at
  * once. When all keys are released, the combination of keys that was held down
  * last selects the input character.
@@ -122,7 +122,7 @@ public:
      *
      * @return     Whether this Chord and rhs use the same set of chord keys.
      */
-    bool operator==(const Chord& rhs) const;
+    bool operator== (const Chord& rhs) const;
 
     /**
      * @brief  Checks if two chords are not equal.
@@ -132,7 +132,7 @@ public:
      * @return     Whether this Chord and rhs do not use the same set of chord
      *             keys.
      */
-    bool operator!=(const Chord& rhs) const;
+    bool operator!= (const Chord& rhs) const;
 
     /**
      * @brief  Checks if this Chord comes after another Chord when sorting chord
@@ -140,9 +140,9 @@ public:
      *
      * @param rhs  The chord being compared with this chord.
      *
-     * @return     Whether this Chord should be placed after rhs. 
+     * @return     Whether this Chord should be placed after rhs.
      */
-    bool operator<(const Chord& rhs) const;
+    bool operator< (const Chord& rhs) const;
 
     /**
      * @brief  Checks if this Chord comes before another Chord when sorting
@@ -152,7 +152,7 @@ public:
      *
      * @return     Whether this Chord should be placed before rhs.
      */
-    bool operator>(const Chord& rhs) const;
+    bool operator> (const Chord& rhs) const;
 
 private:
     // Each of the first [numChordKeys()] bits in this value marks if a key is

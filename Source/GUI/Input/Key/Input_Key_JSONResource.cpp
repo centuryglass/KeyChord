@@ -9,7 +9,7 @@
 static const constexpr char * configFilename = "keyBindings.json";
 
 // SharedResource object key:
-const juce::Identifier Input::Key::JSONResource::resourceKey 
+const juce::Identifier Input::Key::JSONResource::resourceKey
         = "Input_Key_JSONResource";
 
 #ifdef JUCE_DEBUG
@@ -18,7 +18,7 @@ static const constexpr char* dbgPrefix = "Input::Key::JSONResource::";
 #endif
 
 // Loads the list of key bindings on construction.
-Input::Key::JSONResource::JSONResource() : 
+Input::Key::JSONResource::JSONResource() :
 Config::FileResource(resourceKey, configFilename)
 {
     using juce::var;
@@ -41,8 +41,8 @@ Config::FileResource(resourceKey, configFilename)
         static const Identifier charName("charName");
 
 
-        if (! bindingInfo.hasProperty(keyValue) 
-                || ! bindingInfo[keyValue].isString() 
+        if (! bindingInfo.hasProperty(keyValue)
+                || ! bindingInfo[keyValue].isString()
                 || bindingInfo.operator String().isEmpty())
         {
             DBG(dbgPrefix << __func__ << ": Warning: key " << key->toString()
@@ -57,7 +57,7 @@ Config::FileResource(resourceKey, configFilename)
         var charVar = bindingInfo[charName];
         if (charVar.isInt())
         {
-            charString = String("0x") 
+            charString = String("0x")
                 + String::toHexString(charVar.operator int());
         }
         else if (charVar.isString())
@@ -93,7 +93,7 @@ const Input::Key::Binding* Input::Key::JSONResource::getKeyBinding
 // Gets the set of all basic(non-array, non-object) properties tracked by this
 // Resource.
 const std::vector<Config::DataKey>& Input::Key::JSONResource::getConfigKeys()
-        const  
+        const
 {
     static const std::vector<Config::DataKey> emptyList;
     return emptyList;
@@ -101,7 +101,7 @@ const std::vector<Config::DataKey>& Input::Key::JSONResource::getConfigKeys()
 
 
 // Checks if a key string is valid for this FileResource.
-bool Input::Key::JSONResource::isValidKey(const juce::Identifier& key) const 
+bool Input::Key::JSONResource::isValidKey(const juce::Identifier& key) const
 {
     return JSONKeys::allKeys.contains(&key);
 }

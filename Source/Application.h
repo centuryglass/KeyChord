@@ -59,7 +59,7 @@ public:
      * @brief  Recreates the MainWindow with bounds to suit the current
      *         circumstances.
      *
-     * @param windowFlags  Any combination of values defined in the 
+     * @param windowFlags  Any combination of values defined in the
      *                     Application::WindowFlag enum. When omitted, the
      *                     window is returned to its default placement, filling
      *                     the bottom half of the display.
@@ -141,7 +141,7 @@ private:
 
     // Configuration files should remain loaded as long as the application still
     // exists:
-    
+
     // Loads saved application state:
     Config::MainFile mainConfig;
     // Loads UI colour settings:

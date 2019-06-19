@@ -48,5 +48,5 @@ private:
     Text::CharLineArray keyNames;
     // All key action descriptions, divided into lines.
     Text::CharLineArray descriptions;
-    
+
 };

@@ -23,7 +23,7 @@ namespace Output
          * @brief  Gets the string representation of any combination of modifier
          *         types.
          *
-         * @param modifierFlags  Any number of modifier values combined with the 
+         * @param modifierFlags  Any number of modifier values combined with the
          *                       binary OR operator.
          *
          * @return               The string representation of the given modifier

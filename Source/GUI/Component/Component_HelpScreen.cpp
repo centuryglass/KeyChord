@@ -30,7 +30,7 @@ static Text::CharString toCharString(const juce::String inputStr)
     for (int i = 0; i < inputStr.length(); i++)
     {
         const juce::String juceString(inputStr.substring(i, i + 1));
-        const Text::CharValue charValue 
+        const Text::CharValue charValue
                 = Text::Values::getCharValue(juceString);
         if (charValue != 0)
         {
@@ -75,12 +75,12 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
         chordNames.addArray(toCharString("): "));
     }
     chordDescription = toCharString(localeText(chordKeys));
-    
+
     // Load all bound remaining keys as new lines:
     int indexOffset = InputKeys::chordKeys.size();
     for (int i = 0; i < InputKeys::allKeys.size() - indexOffset; i++)
     {
-        const juce::Identifier& keyId 
+        const juce::Identifier& keyId
                 = *InputKeys::allKeys.getReference(i + indexOffset);
         // skip unbound keys:
         if (! keyConfig.getBoundKey(keyId).isValid())
@@ -93,7 +93,7 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
 
         CharString name = toCharString(juce::String(" (")
                 + keyConfig.getKeyName(keyId));
-        if (name.size() == 2 || (name.size() ==  3 
+        if (name.size() == 2 || (name.size() ==  3
                     && name.getLast() == symbolChars[i]))
         {
             name.clear();
@@ -111,6 +111,7 @@ Component::HelpScreen::HelpScreen() : Locale::TextUser(localeKey)
         descriptions.add(description);
     }
 }
+
 
 // Prints all help text.
 void Component::HelpScreen::paint(juce::Graphics& g)

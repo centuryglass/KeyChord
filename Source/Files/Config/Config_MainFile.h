@@ -55,14 +55,14 @@ public:
     void setMinimised(const bool minimized);
 
     /**
-     * @brief  Sets which edge of the display the window should snap to on 
+     * @brief  Sets which edge of the display the window should snap to on
      *         construction.
      *
      * @param snapToBottom  True if the window should use the bottom edge, false
      *                      if it should use the top edge.
      */
     void setSnapToBottom(const bool snapToBottom);
-    
+
     /**
      * @brief  Sets whether the application should start in immediate mode.
      *

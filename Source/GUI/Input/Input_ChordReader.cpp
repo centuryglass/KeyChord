@@ -3,7 +3,7 @@
 #include <map>
 
 
-// Milliseconds to wait between key releases before assuming the user isn't 
+// Milliseconds to wait between key releases before assuming the user isn't
 // releasing keys to enter a chord value, and is instead changing the selected
 // chord:
 static const constexpr int keyReleaseChordUpdateDelay = 300;
@@ -46,7 +46,7 @@ void Input::ChordReader::removeListener(Listener* listener)
 // Passes the current selected chord to all registered listeners.
 void Input::ChordReader::sendSelectionUpdate()
 {
-    for(Listener* listener : listeners)
+    for (Listener* listener : listeners)
     {
         listener->selectedChordChanged(selectedChord);
     }

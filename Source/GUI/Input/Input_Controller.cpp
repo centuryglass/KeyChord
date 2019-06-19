@@ -76,7 +76,7 @@ Text::CharString Input::Controller::getInputPreview() const
 // Updates the ChordComponent when the current held chord changes.
 void Input::Controller::selectedChordChanged(const Chord selectedChord)
 {
-    mainView->updateChordState(&charsetConfig.getActiveSet(), 
+    mainView->updateChordState(&charsetConfig.getActiveSet(),
             selectedChord, getInputPreview());
 }
 
@@ -89,7 +89,7 @@ void Input::Controller::chordEntered(const Chord selected)
     const juce::ScopedTryLock inputLock(inputGuard);
     if (!inputLock.isLocked())
     {
-        DBG(dbgPrefix << __func__ 
+        DBG(dbgPrefix << __func__
                 << ": Still busy doing something else, ignoring input.");
         return;
     }
@@ -102,16 +102,14 @@ void Input::Controller::chordEntered(const Chord selected)
     }
     Text::CharValue enteredChar = charsetConfig.getActiveSet()
             .getChordCharacter(selected, charsetConfig.getShifted());
-    /*
-    DBG(dbgPrefix << __func__ << ": Entered character "
-            << (char) enteredChar << "(0x" 
-            << juce::String::toHexString((int) enteredChar) << ", "
-            << (int) enteredChar << ")");
-    */
+    // DBG(dbgPrefix << __func__ << ": Entered character "
+    // << (char) enteredChar << " (0x"
+    // << juce::String::toHexString((int) enteredChar) << ", "
+    // << (int) enteredChar << ")");
     if (Text::Values::isModifier(enteredChar))
     {
         int modFlags = 0;
-        switch (enteredChar)
+        switch(enteredChar)
         {
             case Text::Values::ctrl:
                 modFlags = Modifiers::control;
@@ -127,7 +125,7 @@ void Input::Controller::chordEntered(const Chord selected)
                 break;
             default:
                 DBG(dbgPrefix << __func__ << ": Unexpected key value "
-                        << juce::String(enteredChar) 
+                        << juce::String(enteredChar)
                         << " incorrectly evaluated as modifier.");
                 jassertfalse;
         }
@@ -164,7 +162,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
     const juce::ScopedTryLock inputLock(inputGuard);
     if (!inputLock.isLocked())
     {
-        DBG(dbgPrefix << __func__ 
+        DBG(dbgPrefix << __func__
                 << ": Still busy doing something else, ignoring input.");
         return;
     }
@@ -184,7 +182,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
 
     // Attempts to update the character set, returning whether the active set
     // changed:
-    const std::function<bool(const Type)> charSetUpdate = 
+    const std::function<bool(const Type)> charSetUpdate =
     [this](const Type type)
     {
         if (charsetConfig.getActiveType() != type)
@@ -200,31 +198,31 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
     {
         {
             &Keys::selectMainSet,
-            [this, &sendUpdate, &charSetUpdate]() 
+            [this, &sendUpdate, &charSetUpdate]()
             {
                 sendUpdate = charSetUpdate(Type::main);
             }
         },
         {
             &Keys::selectAltSet,
-            [this, &sendUpdate, &charSetUpdate]() 
+            [this, &sendUpdate, &charSetUpdate]()
             {
                 sendUpdate = charSetUpdate(Type::alt);
             }
         },
         {
             &Keys::selectSpecialSet,
-            [this, &sendUpdate, &charSetUpdate]() 
+            [this, &sendUpdate, &charSetUpdate]()
             {
                 sendUpdate = charSetUpdate(Type::special);
             }
         },
         {
             &Keys::selectNextSet,
-            [this, &sendUpdate, &charSetUpdate]() 
+            [this, &sendUpdate, &charSetUpdate]()
             {
                 int currentSetIndex = (int) charsetConfig.getActiveType();
-                Type nextSet = (Type) ((currentSetIndex + 1)
+                Type nextSet = (Type)((currentSetIndex + 1)
                         % Text::CharSet::numCharacterSets);
                 sendUpdate = charSetUpdate(nextSet);
             }
@@ -234,7 +232,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             [this, &sendUpdate, &charSetUpdate]()
             {
                 sendUpdate = charSetUpdate(Type::modifier);
-            } 
+            }
         },
         {
             &Keys::toggleShift,
@@ -242,11 +240,11 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
             {
                 charsetConfig.setShifted(! charsetConfig.getShifted());
                 mainView->repaint();
-            } 
+            }
         },
         {
             &Keys::backspace,
-            [this, &sendUpdate]() 
+            [this, &sendUpdate]()
             {
                 // In immediate mode, actually send a backspace character
                 if (mainConfig.getImmediateMode())
@@ -263,16 +261,16 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
         },
         {
             &Keys::clearAll,
-            [this, &sendUpdate]() 
+            [this, &sendUpdate]()
             {
                 outputBuffer.clear();
                 sendUpdate = true;
-            } 
+            }
         },
         {
             &Keys::sendText,
-            [this, &sendUpdate]() 
-            { 
+            [this, &sendUpdate]()
+            {
                 // In immediate mode, send a return character instead
                 if (mainConfig.getImmediateMode())
                 {
@@ -287,24 +285,24 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 sendUpdate = true;
             }
         },
-        { 
+        {
             &Keys::closeAndSend,
-            [this, &sendUpdate]() 
-            { 
+            [this, &sendUpdate]()
+            {
                 Output::Sending::sendBufferedOutput(outputBuffer, targetWindow);
                 juce::JUCEApplication::getInstance()->systemRequestedQuit();
             }
         },
-        { 
+        {
             &Keys::close,
-            [this, &sendUpdate]() 
+            [this, &sendUpdate]()
             {
                 juce::JUCEApplication::getInstance()->systemRequestedQuit();
-            } 
+            }
         },
         {
             &Keys::toggleImmediate,
-            [this, &sendUpdate]() 
+            [this, &sendUpdate]()
             {
                 const bool immediateMode = ! mainConfig.getImmediateMode();
                 mainConfig.setImmediateMode(immediateMode);
@@ -314,7 +312,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                             targetWindow);
                 }
                 sendUpdate = true;
-            } 
+            }
         },
         {
             &Keys::showHelp,
@@ -325,18 +323,18 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                 Application* application = Application::getInstance();
                 application->resetWindow(application->getWindowFlags()
                         | (int) Application::WindowFlag::showingHelp);
-            } 
+            }
         },
         {
             &Keys::toggleWindowEdge,
-            [this]() 
-            { 
+            [this]()
+            {
                 mainConfig.setSnapToBottom(! mainConfig.getSnapToBottom());
                 DBG(dbgPrefix << __func__ << ": Setting windowEdge = "
                         << (mainConfig.getSnapToBottom() ? "bottom" : "top"));
                 Application* application = Application::getInstance();
                 application->resetUpdatingFlags();
-            } 
+            }
         },
         {
             &Keys::toggleMinimize,
@@ -347,7 +345,7 @@ void Input::Controller::keyPressed(const juce::KeyPress key)
                         << (mainConfig.getMinimized() ? "true" : "false"));
                 Application* application = Application::getInstance();
                 application->resetUpdatingFlags();
-            } 
+            }
         },
     };
     juce::KeyPress unmoddedKey(key.getKeyCode());
@@ -379,6 +377,6 @@ void Input::Controller::closeHelpScreen()
     mainView->toggleHelpScreen();
     Application* application = Application::getInstance();
     jassert(application != nullptr);
-    application->resetWindow(application->getWindowFlags() 
+    application->resetWindow(application->getWindowFlags()
             & ~ (int) Application::WindowFlag::showingHelp);
 }

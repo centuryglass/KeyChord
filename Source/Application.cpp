@@ -46,7 +46,7 @@ Application* Application::getInstance()
 /**
  * @brief  Gets the bounds of the primary display's user area.
  *
- * @return  The display bounds, or the bounds of the ClockworkPi GameShell 
+ * @return  The display bounds, or the bounds of the ClockworkPi GameShell
  *          display in debug builds.
  */
 static juce::Rectangle<int> getDisplayBounds()
@@ -96,9 +96,9 @@ static juce::String getFlagNames(const int windowFlags)
 {
     std::map<int, juce::String> flagNames =
     {
-        { (int) Application::WindowFlag::showingHelp,  "showingHelp" },
-        { (int) Application::WindowFlag::snapToBottom, "snapToBottom" },
-        { (int) Application::WindowFlag::minimized,    "minimized" }
+        {(int) Application::WindowFlag::showingHelp,  "showingHelp" },
+        {(int) Application::WindowFlag::snapToBottom, "snapToBottom" },
+        {(int) Application::WindowFlag::minimized,    "minimized" }
     };
     juce::String names("(");
     for (const auto& iter : flagNames)
@@ -133,7 +133,7 @@ void Application::resetWindow(const int windowFlags)
     {
         if ((windowFlags & (int) WindowFlag::minimized) != 0)
         {
-            targetBounds.setHeight(targetBounds.getHeight() 
+            targetBounds.setHeight(targetBounds.getHeight()
                     / minimizedHeightDivisor);
         }
         else
@@ -148,7 +148,7 @@ void Application::resetWindow(const int windowFlags)
         }
     }
     DBG(dbgPrefix << __func__ << ": refreshing window with bounds "
-            << targetBounds.toString() << ", window flags = " 
+            << targetBounds.toString() << ", window flags = "
             << getFlagNames(windowFlags));
 
     // Create the new window, applying the target bounds:

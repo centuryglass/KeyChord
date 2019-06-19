@@ -54,10 +54,10 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     const int yStart = (getHeight() % getRowCount()) / 2;
     int xPos = xStart;
     int yPos = yStart;
-    
-    // A convenience function to more easily request character drawing 
+
+    // A convenience function to more easily request character drawing
     // operations:
-    const auto drawChar = 
+    const auto drawChar =
         [&g, &xPos, &yPos, charWidth, rowHeight, xPadding, yPadding]
         (const Text::CharValue toDraw)
     {
@@ -71,12 +71,12 @@ void Component::ChordPreview::paint(juce::Graphics& g)
     for (int i = 0; i < activeSet->getSize(); i++)
     {
         // Current character set index:
-        const Text::CharValue charIndex 
+        const Text::CharValue charIndex
                 = activeSet->getCharAtIndex(i, isShifted);
         // Whether the character needs double the normal width:
         const bool wideDrawChar = Text::Values::isWideValue(charIndex);
         // The chord used to type the character:
-        const Input::Chord characterChord 
+        const Input::Chord characterChord
                 = activeSet->getCharacterChord(charIndex);
         // Whether this character is currently selected:
         const bool charSelected = (characterChord == getHeldChord());
@@ -85,7 +85,7 @@ void Component::ChordPreview::paint(juce::Graphics& g)
                 characterChord);
 
         // Draw each chord key under the character:
-        for(int keyIdx = 0; keyIdx < Input::Chord::numChordKeys(); keyIdx++)
+        for (int keyIdx = 0; keyIdx < Input::Chord::numChordKeys(); keyIdx++)
         {
             // Check if this chord key is currently held down:
             const bool keyIsHeld = getHeldChord().usesChordKey(keyIdx);
