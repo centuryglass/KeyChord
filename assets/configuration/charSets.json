@@ -4,6 +4,10 @@
   "special character set name": "special",
   "main character set": [
     {
+      "character": " ",
+      "chord priority": 5
+    },
+    {
       "character": "a",
       "shifted": "A",
       "chord priority": 6
@@ -132,10 +136,6 @@
       "character": "z",
       "shifted": "Z",
       "chord priority": 2
-    },
-    {
-      "character": " ",
-      "chord priority": 5
     }
   ],
   "alternate character set": [
@@ -248,22 +248,25 @@
   "special character set": [
     {
       "character": "Enter",
-      "shifted":   "left"
+      "shifted":   "left",
+      "chord":     "#____"
     },
     {
       "character": "Backspace",
-      "shifted":   "down"
+      "shifted":   "down",
+      "chord":     "_#___"
 
     },
     {
       "character": "Escape",
-      "shifted":   "up"
+      "shifted":   "up",
+      "chord":     "__#__"
 
     },
     {
       "character": "Tab",
-      "shifted":   "right"
-
+      "shifted":   "right",
+      "chord":     "___#_"
     },
     {
       "character": "F1"
