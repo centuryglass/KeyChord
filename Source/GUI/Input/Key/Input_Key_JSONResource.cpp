@@ -52,11 +52,23 @@ Config::FileResource(resourceKey, configFilename)
         const String description(bindingInfo[keyValue].operator String());
         const String displayName(bindingInfo.getProperty(keyName,
                 description).operator String());
+
+        String charString;
+        var charVar = bindingInfo[charName];
+        if (charVar.isInt())
+        {
+            charString = String("0x") 
+                + String::toHexString(charVar.operator int());
+        }
+        else if (charVar.isString())
+        {
+            charString = charVar.operator String();
+        }
+
         const Text::CharValue displayChar(Text::Values::getCharValue(
-                bindingInfo.getProperty(charName, displayName)
-                .operator String()));
+                charString));
         keyBindings.add(new Binding(*key, description, displayName,
-                    displayChar));
+                displayChar));
     }
     loadJSONData();
 }
