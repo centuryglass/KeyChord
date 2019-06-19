@@ -103,7 +103,7 @@ namespace Text
         static const constexpr CharValue normalPrintMax = 0x7f; 
 
         // Bounds to use when recognizing extended printable characters:
-        static const constexpr CharValue extraPrintMin = 0xa1;
+        static const constexpr CharValue extraPrintMin = 0xa0;
         static const constexpr CharValue extraPrintMax = 0xff;
     }
 }

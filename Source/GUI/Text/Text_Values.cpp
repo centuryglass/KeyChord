@@ -34,6 +34,15 @@ namespace Text { namespace Values {
         { "f11",       f11       },
         { "f12",       f12       },
     };
+
+    // Maps standard ASCII values to special character codes:
+    static const std::map<CharValue, CharValue> specialValueMap =
+    {
+        { 0x8,  backspace },
+        { 0xD,  enter     },
+        { 0x9,  tab       },
+        { 0x1B, escape    },
+    };
 } }
 
 // Gets the character value stored in a string loaded from a configuration file.
@@ -43,32 +52,61 @@ unsigned int Text::Values::getCharValue
     // Immediately recognize empty strings as invalid
     if (charString.length() == 0)
     {
+        DBG(dbgPrefix << __func__ 
+                << ": Tried to read a character value from an empty string.");
         return 0;
     }
     // Convert single characters
-    if (charString.length() == 1)
+    if (charString.length() == 1 && charString[0] >= normalPrintMin
+            && charString[0] <= normalPrintMax)
     {
         return charString[0];
     }
     // Search for mapped special characters
     try
     {
-        return specialCharMap.at(charString.toLowerCase());
+        CharValue specialChar = specialCharMap.at(charString.toLowerCase());
+        if (specialChar == outline || specialChar == fill)
+        {
+            DBG(dbgPrefix << __func__ 
+                    << ": Invalid 'outline' or 'fill' character read.");
+            return 0;
+        }
+        return specialChar;
+
     }
     catch (const std::out_of_range& e)
     {
+        // Read numeric values:
+        CharValue numericValue = 0;
         // Convert decimal strings
         if (charString.containsOnly("0123456789"))
         {
-            return std::max(charString.getIntValue(), 0);
+            numericValue = std::max(charString.getIntValue(), 0);
         }
         // Convert hex strings
-        if (charString.containsOnly("xX0123456789abcdefABCDEF"))
+        else if (charString.containsOnly("xX0123456789abcdefABCDEF"))
         {
-            return std::max(charString.getHexValue32(), 0);
+            numericValue = std::max(charString.getHexValue32(), 0);
         }
-        DBG(dbgPrefix << __func__ << ": Invalid special character string "
-                << charString << " (length " << charString.length() << ")");
+        if (numericValue > 0)
+        {
+            // Check if values need to be remapped to special character codes:
+            if (specialValueMap.count(numericValue) > 0)
+            {
+                return specialValueMap.at(numericValue);
+            }
+            // Discard keys overwritten by special character codes:
+            if (numericValue < normalPrintMin 
+                    || (numericValue > normalPrintMax 
+                       && numericValue < extraPrintMin))
+            {
+                return 0;
+            }
+            return numericValue;
+        }
+        DBG(dbgPrefix << __func__ << ": Invalid special character string \""
+                << charString << "\" (length " << charString.length() << ")");
         return 0;
     }
 }

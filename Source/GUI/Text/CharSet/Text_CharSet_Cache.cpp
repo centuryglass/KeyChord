@@ -61,6 +61,7 @@ static const juce::uint8 chordConvenienceOrder [] =
 Text::CharSet::Cache::Cache(const juce::var setData)
 {
     using juce::var;
+    using juce::String;
     using juce::Identifier;
     using juce::Array;
     using Text::CharValue;
@@ -74,12 +75,13 @@ Text::CharSet::Cache::Cache(const juce::var setData)
     // character object keys:
     static const Identifier charKey("character");
     static const juce::Identifier shiftCharKey("shifted");
+    static const juce::Identifier chordKey("chord");
     static const juce::Identifier priorityKey("chord priority");
 
     struct PrioritizedCharPair
     {
         CharPair charPair;
-        int priority = std::numeric_limits<int>::min();
+        int priority = 0;
     };
 
     class
@@ -123,32 +125,31 @@ Text::CharSet::Cache::Cache(const juce::var setData)
         PrioritizedCharPair newPair;
 
         // Load a character as either a string or a character code:
-        const std::function<CharValue(var&, const Identifier&)> getVarChar = 
-        [](var& varCharPair, const Identifier& key)
+        const std::function<CharValue(const var&, const Identifier&)> getVarChar
+                = [](const var& varCharPair, const Identifier& key)
         {
-            var varChar = varCharPair[key];
             CharValue charValue = 0;
+            if(! varCharPair.hasProperty(key))
+            {
+                return charValue;
+            }
+            var varChar = varCharPair[key];
             if (varChar.isInt())
             {
+                // Convert integers to hex strings so they can't be
+                // misinterpreted as nonstandard character values:
                 int value = varChar.operator int();
-                charValue = value;
+                charValue = Values::getCharValue(String("0x") 
+                        + String::toHexString(value));
             }
             else
             {
                 charValue = Values::getCharValue(
-                        varChar.operator juce::String());
+                        varChar.operator String());
             }
             return charValue;
         };
-        var mainCharVar = charVar[charKey];
-        if (mainCharVar.isInt())
-        {
-            newPair.charPair.charValue = mainCharVar.operator int();
-        }
-        else
-        {
-            newPair.charPair.charValue = Values::getCharValue(charVar[charKey]);
-        }
+        newPair.charPair.charValue = getVarChar(charVar, charKey);
         if (newPair.charPair.charValue == 0)
         {
             DBG(dbgPrefix << __func__ << ": Warning: character value \""
@@ -157,20 +158,58 @@ Text::CharSet::Cache::Cache(const juce::var setData)
             continue;
         }
 
-        if (charVar.hasProperty(shiftCharKey))
-        {
-            newPair.charPair.shiftedValue 
-                = Values::getCharValue(charVar[shiftCharKey]);
-        }
+        newPair.charPair.shiftedValue = getVarChar(charVar, shiftCharKey);
         // Reuse the main character value if there's no shifted value provided:
         if (newPair.charPair.shiftedValue == 0)
         {
             newPair.charPair.shiftedValue = newPair.charPair.charValue;
         }
 
-        // Read the chord priority, or use the default minimum if none is
-        // provided:
-        if (charVar.hasProperty(priorityKey))
+        // Check for an explicit chord assignment:
+        if (charVar.hasProperty(chordKey))
+        {
+            juce::String chordString = charVar[chordKey].toString();
+            if (chordString.length() == Input::Chord::numChordKeys()
+                    && chordString.containsChar('#')
+                    && chordString.containsOnly("#_"))
+            {
+                juce::uint8 chordByte = 0;
+                for (int i = 0; i < chordString.length(); i++)
+                {
+                    if (chordString[i] == '#')
+                    {
+                        chordByte |= (1 << i);
+                    }
+                }
+                jassert (chordByte > 0);
+                Input::Chord explicitChord(chordByte);
+                if (assignChord(newPair.charPair, explicitChord))
+                {
+                    newPair.priority = -1;
+                    DBG(dbgPrefix << __func__ 
+                            << ": Explicitly assigned chord \"" << chordString
+                            << "\" to character value \""
+                            << charVar.toString());
+                }
+                else
+                {
+                    DBG(dbgPrefix << __func__ << ": Couldn't assign chord \""
+                            << chordString << "\" to character value \""
+                            << charVar.toString() 
+                            << "\", chord priority will be used instead.");
+                }
+            }
+            else
+            {
+                DBG(dbgPrefix << __func__ << ": Warning: character value \""
+                        << charVar.toString() 
+                        << "\" uses invalid chord string \""
+                        << chordString << "\"");
+            }
+        }
+        // If no chord is assigned, read the chord priority, or use the default
+        // minimum if none is provided.
+        if (newPair.priority >= 0 && charVar.hasProperty(priorityKey))
         {
             var priority = charVar[priorityKey];
             if (priority.isInt())
@@ -190,20 +229,31 @@ Text::CharSet::Cache::Cache(const juce::var setData)
         {
             wideDrawCharacters++;
         }
-        chordOrderedSet.add(newPair);
+        if (newPair.priority >= 0)
+        {
+            chordOrderedSet.add(newPair);
+        }
         charSet.add(newPair.charPair);
     }
 
     // Assign chords by priority, keeping keys with shared priority values in
     // order:
+    int chordIndex = 0;
     chordOrderedSet.sort(priorityComparator, true);
     for (int i = 0; i < chordOrderedSet.size(); i++)
     {
-        Input::Chord nextChord(chordConvenienceOrder[i]);
+        Input::Chord nextChord(chordConvenienceOrder[chordIndex]);
+        // Skip chords that were explicitly assigned:
+        while (charPairMap.count(nextChord) > 0)
+        {
+            chordIndex++;
+            nextChord = Input::Chord(chordConvenienceOrder[chordIndex]);
+        }
+        jassert (chordIndex < numChords);
+        
         const CharPair& nextPair = chordOrderedSet.getReference(i).charPair;
-        chordMap[nextPair.charValue] = nextChord;
-        chordMap[nextPair.shiftedValue] = nextChord;
-        charPairMap[nextChord] = nextPair;
+        assignChord(nextPair, nextChord);
+        chordIndex++;
     }
 }
 
@@ -290,4 +340,20 @@ int Text::CharSet::Cache::getSize() const
 int Text::CharSet::Cache::wideDrawCharacterCount() const
 {
     return wideDrawCharacters;
+}
+
+
+// Attempts to assign a character value to a specific Chord.
+bool Text::CharSet::Cache::assignChord
+(const CharPair& character, const Input::Chord& chord)
+{
+    if (! chord.isValid() || character.charValue == 0
+            || charPairMap.count(chord) > 0)
+    {
+        return false;
+    }
+    chordMap[character.charValue] = chord;
+    chordMap[character.shiftedValue] = chord;
+    charPairMap[chord] = character;
+    return true;
 }

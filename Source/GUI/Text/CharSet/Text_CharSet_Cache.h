@@ -99,6 +99,19 @@ private:
         Text::CharValue shiftedValue = 0;
     };
 
+    /**
+     * @brief  Attempts to assign a character value to a specific Chord.
+     *
+     * @param character  A normal/shifted character value set.
+     *
+     * @param chord      The chord that should be used to type the character.
+     *
+     * @return           True if the assignment worked, false if another value
+     *                   was already assigned to that chord, the chord was
+     *                   invalid, or the character was invalid.
+     */
+    bool assignChord(const CharPair& character, const Input::Chord& chord);
+
     // All characters in the Alphabet, in order:
     juce::Array<CharPair> charSet;
     // Map of each individual character to its chord value:
