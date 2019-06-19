@@ -108,7 +108,8 @@ void Component::MainView::resized()
                 / (inputMargin + 1);
         inputView.setBounds(inputBounds.reduced(marginSize, marginSize));
         DBG("Minimized input view bounds: " << inputView.getBounds().toString()
-                << ", rowHeight=" << rowHeight << ", marginSize=" << marginSize);
+                << ", rowHeight=" << rowHeight << ", marginSize=" 
+                << marginSize);
         return;
     }
 

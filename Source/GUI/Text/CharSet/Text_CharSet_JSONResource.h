@@ -1,6 +1,6 @@
 #pragma once
 #ifndef TEXT_CHARSET_CONFIG_IMPLEMENTATION
-    #error "Text_CharSet_JSONResource.h included outside of config implementation!"
+    #error "JSONResource included outside of config implementation!"
 #endif
 /**
  * @file  Text_CharSet_JSONResource.h
