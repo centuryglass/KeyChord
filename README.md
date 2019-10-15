@@ -3,6 +3,7 @@ A chorded software keyboard for the ClockworkPi GameShell and similar devices. I
 
 
 ![Keyboard Preview](./docs/screenshots/typing.png?raw=true "typing with KeyChord")
+
 [Installation instructions](./docs/BuildAndInstall)
 
 ## How it Works
